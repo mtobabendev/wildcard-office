@@ -1,155 +1,501 @@
-<!DOCTYPE html> <html lang="en"> <head> <meta charset="UTF-8"> <meta name="viewport" content="width=device-width, initial-scale=1.0"> <title>PENNY'S OFFICE</title> <style> * { box-sizing: border-box; }
-html {
-  min-height: 100%;
-  background: #000000;
-}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PENNY'S OFFICE</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
 
-body {
-  min-height: 100vh;
-  margin: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 1.5rem;
-  background: radial-gradient(circle at center, #120d1c 0%, #050507 55%, #000000 100%);
-  color: #f6f3ff;
-  font-family: Arial, Helvetica, sans-serif;
-  line-height: 1.5;
-}
+    :root {
+      --bg: #030305;
+      --panel: rgba(12, 10, 22, 0.86);
+      --panel-strong: rgba(18, 13, 32, 0.94);
+      --text: #f8f4ff;
+      --muted: #c9bfd9;
+      --pink: #ff79c8;
+      --pink-soft: rgba(255, 121, 200, 0.22);
+      --purple: #8a4dff;
+      --purple-soft: rgba(138, 77, 255, 0.28);
+      --gold: #d9a85f;
+      --green: #5cffb1;
+      --line: rgba(255, 255, 255, 0.12);
+      --shadow: 0 0 4rem rgba(255, 121, 200, 0.12);
+    }
 
-main {
-  width: 100%;
-  max-width: 26rem;
-}
+    html {
+      min-height: 100%;
+      background: #000;
+    }
 
-.card {
-  width: 100%;
-  padding: 2rem;
-  border: 1px solid #7c3cff;
-  border-radius: 1rem;
-  background: #08070d;
-  box-shadow: 0 0 2.5rem rgba(124, 60, 255, 0.18);
-}
+    body {
+      min-height: 100vh;
+      margin: 0;
+      padding: 1.25rem;
+      display: grid;
+      place-items: center;
+      color: var(--text);
+      font-family: Arial, Helvetica, sans-serif;
+      line-height: 1.5;
+      background:
+        radial-gradient(circle at 18% 18%, rgba(255, 121, 200, 0.18), transparent 28rem),
+        radial-gradient(circle at 82% 20%, rgba(138, 77, 255, 0.2), transparent 30rem),
+        radial-gradient(circle at 50% 85%, rgba(217, 168, 95, 0.09), transparent 24rem),
+        linear-gradient(135deg, #050508 0%, #090615 42%, #020204 100%);
+      overflow-x: hidden;
+    }
 
-header {
-  text-align: center;
-}
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      background:
+        linear-gradient(rgba(255, 255, 255, 0.025) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.025) 1px, transparent 1px);
+      background-size: 3rem 3rem;
+      mask-image: radial-gradient(circle at center, black 0%, transparent 78%);
+    }
 
-h1 {
-  margin: 0;
-  color: #ffffff;
-  font-size: 1.75rem;
-  line-height: 1.2;
-  letter-spacing: 0.12em;
-}
+    main {
+      width: min(72rem, 100%);
+      position: relative;
+    }
 
-.system {
-  margin: 0.75rem 0 0;
-  color: #e7e2f4;
-  font-size: 0.95rem;
-}
+    .shell {
+      display: grid;
+      grid-template-columns: minmax(0, 1.25fr) minmax(18rem, 0.75fr);
+      gap: 1rem;
+      padding: 1rem;
+      border: 1px solid var(--line);
+      border-radius: 1.35rem;
+      background: rgba(0, 0, 0, 0.42);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(18px);
+    }
 
-.status {
-  margin: 1.25rem 0 1.75rem;
-  padding: 0.75rem;
-  border: 1px solid rgba(255, 121, 200, 0.5);
-  border-radius: 0.75rem;
-  color: #ff79c8;
-  font-size: 0.78rem;
-  font-weight: 700;
-  letter-spacing: 0.14em;
-  text-align: center;
-}
+    .door,
+    .rail,
+    .status-card {
+      border: 1px solid rgba(255, 255, 255, 0.13);
+      background: var(--panel);
+      box-shadow: inset 0 0 0 1px rgba(255, 121, 200, 0.04);
+    }
 
-form {
-  display: grid;
-  gap: 1rem;
-}
+    .door {
+      min-height: 38rem;
+      padding: clamp(1.25rem, 3vw, 2.5rem);
+      border-radius: 1rem;
+      position: relative;
+      overflow: hidden;
+      display: grid;
+      align-content: space-between;
+    }
 
-label {
-  display: block;
-  margin: 0 0 0.4rem;
-  color: #f6f3ff;
-  font-size: 0.9rem;
-  font-weight: 700;
-}
+    .door::before {
+      content: "";
+      position: absolute;
+      inset: -8rem auto auto 50%;
+      width: 28rem;
+      height: 28rem;
+      transform: translateX(-50%);
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(255, 121, 200, 0.18), transparent 68%);
+      pointer-events: none;
+    }
 
-input {
-  width: 100%;
-  min-height: 3rem;
-  padding: 0.75rem 0.85rem;
-  border: 1px solid rgba(124, 60, 255, 0.75);
-  border-radius: 0.65rem;
-  background: #000000;
-  color: #ffffff;
-  font: inherit;
-}
+    .door::after {
+      content: "";
+      position: absolute;
+      inset: auto 8% 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--pink), var(--purple), transparent);
+      box-shadow: 0 0 1.75rem var(--pink);
+      pointer-events: none;
+    }
 
-input:focus {
-  border-color: #ff79c8;
-  outline: 3px solid rgba(255, 121, 200, 0.35);
-  outline-offset: 2px;
-}
+    .brand {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
 
-button {
-  min-height: 3rem;
-  margin-top: 0.25rem;
-  border: 1px solid #9d73ff;
-  border-radius: 0.65rem;
-  background: #6f35e8;
-  color: #ffffff;
-  font: inherit;
-  font-weight: 700;
-  cursor: pointer;
-}
+    .mark {
+      width: 3.2rem;
+      height: 3.2rem;
+      border: 1px solid rgba(255, 121, 200, 0.45);
+      border-radius: 1rem;
+      display: grid;
+      place-items: center;
+      color: var(--pink);
+      font-size: 1.6rem;
+      font-weight: 800;
+      box-shadow: 0 0 2rem rgba(255, 121, 200, 0.18);
+    }
 
-button:focus {
-  outline: 3px solid rgba(255, 121, 200, 0.45);
-  outline-offset: 2px;
-}
+    .eyebrow,
+    .mini-label {
+      margin: 0;
+      color: var(--gold);
+      font-size: 0.72rem;
+      font-weight: 800;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+    }
 
-.message {
-  margin: 1.5rem 0 0;
-  color: #e7e2f4;
-  font-size: 0.9rem;
-  text-align: center;
-}
+    h1 {
+      margin: 0.35rem 0 0;
+      font-size: clamp(2.4rem, 6vw, 5.4rem);
+      line-height: 0.92;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      text-shadow: 0 0 2.2rem rgba(255, 121, 200, 0.35);
+    }
 
-.message + .message {
-  margin-top: 0.5rem;
-}
+    .subtitle {
+      max-width: 44rem;
+      margin: 1rem 0 0;
+      color: var(--muted);
+      font-size: clamp(1rem, 2vw, 1.18rem);
+    }
 
-@media (max-width: 30rem) {
-  body {
-    padding: 1rem;
-  }
+    .badge-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.65rem;
+      margin: 1.5rem 0 0;
+    }
 
-  .card {
-    padding: 1.5rem;
-  }
+    .badge {
+      padding: 0.48rem 0.7rem;
+      border: 1px solid rgba(255, 121, 200, 0.32);
+      border-radius: 999px;
+      background: rgba(255, 121, 200, 0.08);
+      color: var(--text);
+      font-size: 0.74rem;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
 
-  h1 {
-    font-size: 1.35rem;
-  }
-}
-</style> </head> <body> <main> <section class="card" aria-labelledby="page-title"> <header> <h1 id="page-title">PENNY'S OFFICE</h1> <p class="system">WildCard Dev Internal Systems</p> </header>
-  <p class="status">AUTHORIZED ACCESS ONLY</p>
+    .badge.safe {
+      border-color: rgba(92, 255, 177, 0.42);
+      background: rgba(92, 255, 177, 0.08);
+      color: #d9ffef;
+    }
 
-  <form action="#" method="post">
-    <div>
-      <label for="username">Username</label>
-      <input id="username" name="username" type="text" required autocomplete="username">
-    </div>
+    .access-panel {
+      position: relative;
+      z-index: 1;
+      width: min(100%, 30rem);
+      margin-top: 3rem;
+      padding: 1rem;
+      border: 1px solid rgba(138, 77, 255, 0.45);
+      border-radius: 1rem;
+      background: var(--panel-strong);
+    }
 
-    <div>
-      <label for="password">Password</label>
-      <input id="password" name="password" type="password" required autocomplete="current-password">
-    </div>
+    .access-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 1rem;
+      align-items: center;
+      padding-bottom: 0.85rem;
+      border-bottom: 1px solid var(--line);
+      margin-bottom: 1rem;
+    }
 
-    <button type="submit">Sign In</button>
-  </form>
+    .lock {
+      color: var(--pink);
+      font-weight: 800;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      font-size: 0.78rem;
+    }
 
-  <p class="message">Office systems initializing...</p>
-  <p class="message">Access requires authorization.</p>
-</section>
-</main> </body> </html>
+    form {
+      display: grid;
+      gap: 0.9rem;
+    }
+
+    label {
+      display: block;
+      margin: 0 0 0.35rem;
+      color: var(--text);
+      font-size: 0.86rem;
+      font-weight: 800;
+    }
+
+    input {
+      width: 100%;
+      min-height: 3rem;
+      padding: 0.78rem 0.85rem;
+      border: 1px solid rgba(138, 77, 255, 0.78);
+      border-radius: 0.75rem;
+      background: rgba(0, 0, 0, 0.62);
+      color: #fff;
+      font: inherit;
+    }
+
+    input:focus,
+    button:focus {
+      outline: 3px solid rgba(255, 121, 200, 0.38);
+      outline-offset: 2px;
+      border-color: var(--pink);
+    }
+
+    button {
+      min-height: 3rem;
+      margin-top: 0.25rem;
+      border: 1px solid rgba(255, 121, 200, 0.55);
+      border-radius: 0.75rem;
+      background: linear-gradient(135deg, #7438f2, #b528a4);
+      color: #fff;
+      font: inherit;
+      font-weight: 900;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      cursor: pointer;
+      box-shadow: 0 0 1.5rem rgba(255, 121, 200, 0.18);
+    }
+
+    .fine-print {
+      margin: 1rem 0 0;
+      color: var(--muted);
+      font-size: 0.78rem;
+    }
+
+    .rail {
+      border-radius: 1rem;
+      padding: 1rem;
+      display: grid;
+      gap: 1rem;
+      align-content: start;
+    }
+
+    .rail-title {
+      display: flex;
+      justify-content: space-between;
+      gap: 1rem;
+      align-items: center;
+      padding-bottom: 0.85rem;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .rail-title h2 {
+      margin: 0;
+      font-size: 1rem;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+    }
+
+    .pulse {
+      width: 0.8rem;
+      height: 0.8rem;
+      border-radius: 50%;
+      background: var(--green);
+      box-shadow: 0 0 1rem var(--green);
+    }
+
+    .status-card {
+      border-radius: 0.85rem;
+      padding: 0.9rem;
+      background: rgba(255, 255, 255, 0.035);
+    }
+
+    .status-card p {
+      margin: 0.25rem 0 0;
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+
+    .readout {
+      display: grid;
+      gap: 0.55rem;
+      margin: 0.7rem 0 0;
+    }
+
+    .row {
+      display: flex;
+      justify-content: space-between;
+      gap: 1rem;
+      padding: 0.45rem 0;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      color: var(--muted);
+      font-size: 0.84rem;
+    }
+
+    .row strong {
+      color: var(--text);
+      text-align: right;
+    }
+
+    .row:last-child {
+      border-bottom: 0;
+    }
+
+    .footer {
+      margin-top: 1rem;
+      padding: 0.85rem 1rem;
+      border: 1px solid rgba(217, 168, 95, 0.28);
+      border-radius: 1rem;
+      color: var(--muted);
+      background: rgba(217, 168, 95, 0.04);
+      font-size: 0.84rem;
+      text-align: center;
+    }
+
+    .footer strong {
+      color: var(--gold);
+    }
+
+    @media (max-width: 52rem) {
+      .shell {
+        grid-template-columns: 1fr;
+      }
+
+      .door {
+        min-height: auto;
+      }
+
+      .access-panel {
+        margin-top: 2rem;
+      }
+    }
+
+    @media (max-width: 32rem) {
+      body {
+        padding: 0.75rem;
+      }
+
+      .shell,
+      .door,
+      .rail {
+        border-radius: 0.9rem;
+      }
+
+      .brand {
+        align-items: flex-start;
+      }
+
+      .mark {
+        width: 2.7rem;
+        height: 2.7rem;
+        border-radius: 0.8rem;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <main>
+    <section class="shell" aria-label="Penny's Office access shell">
+      <section class="door" aria-labelledby="page-title">
+        <div>
+          <header class="brand">
+            <div>
+              <p class="eyebrow">WildCard DEV Internal Systems</p>
+              <h1 id="page-title">Penny's Office</h1>
+              <p class="subtitle">
+                Private executive suite, R&amp;D lab threshold, and future PennyCore bridge access point.
+              </p>
+            </div>
+            <div class="mark" aria-hidden="true">P</div>
+          </header>
+
+          <div class="badge-row" aria-label="Current access state">
+            <span class="badge safe">PINK Safe Mode</span>
+            <span class="badge">Read Only Boot</span>
+            <span class="badge">Owner Gate Required</span>
+            <span class="badge">No External Actions</span>
+          </div>
+        </div>
+
+        <section class="access-panel" aria-labelledby="access-title">
+          <div class="access-head">
+            <p class="mini-label" id="access-title">Access Point</p>
+            <p class="lock">Locked</p>
+          </div>
+
+          <form action="#" method="post">
+            <div>
+              <label for="username">Username</label>
+              <input id="username" name="username" type="text" required autocomplete="username">
+            </div>
+
+            <div>
+              <label for="password">Password</label>
+              <input id="password" name="password" type="password" required autocomplete="current-password">
+            </div>
+
+            <button type="submit">Sign In</button>
+          </form>
+
+          <p class="fine-print">
+            This screen is a static access shell. Authentication, tools, inboxes, calls, deployments, and device actions are not available from this page.
+          </p>
+        </section>
+      </section>
+
+      <aside class="rail" aria-label="Penny telemetry rail">
+        <div class="rail-title">
+          <h2>Penny Telemetry</h2>
+          <span class="pulse" aria-hidden="true"></span>
+        </div>
+
+        <section class="status-card">
+          <p class="mini-label">Current Mode</p>
+          <div class="readout">
+            <div class="row"><span>Office State</span><strong>Initializing</strong></div>
+            <div class="row"><span>Permission Tier</span><strong>View Only</strong></div>
+            <div class="row"><span>Owner Gate</span><strong>Required</strong></div>
+            <div class="row"><span>External Actions</span><strong>Disabled</strong></div>
+          </div>
+        </section>
+
+        <section class="status-card">
+          <p class="mini-label">Governance Stack</p>
+          <div class="readout">
+            <div class="row"><span>Primary Anchor</span><strong>Active</strong></div>
+            <div class="row"><span>Human Priority</span><strong>Protected</strong></div>
+            <div class="row"><span>Trust Mode</span><strong>Suspicious Trust</strong></div>
+            <div class="row"><span>Containment</span><strong>Veronica Standby</strong></div>
+            <div class="row"><span>Fallback</span><strong>PINK Freeze</strong></div>
+          </div>
+        </section>
+
+        <section class="status-card">
+          <p class="mini-label">Boot Beacon</p>
+          <p>
+            Public shell only. Ask Matt for the current STATE.md before assuming context, permissions, or next action.
+          </p>
+        </section>
+
+        <section class="status-card">
+          <p class="mini-label">Next Safe Action</p>
+          <p>
+            Verify this door visually, then keep building PennyCore behind real gates. No secrets in public code.
+          </p>
+        </section>
+
+        <section class="status-card">
+          <p class="mini-label">Room Note</p>
+          <p>
+            The lens helps us see. It does not decide reality.
+          </p>
+        </section>
+      </aside>
+    </section>
+
+    <p class="footer">
+      <strong>Penny's Office Phase 1.1</strong> // Static locked-door shell // Public-safe boot beacon // Built for clarity, restraint, and future controlled access.
+    </p>
+  </main>
+</body>
+</html>

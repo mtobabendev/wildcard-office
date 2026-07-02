@@ -1,501 +1,168 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>PENNY'S OFFICE</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>WildCard Office // Penny Loaded State</title>
   <style>
-    * {
-      box-sizing: border-box;
+    :root{
+      --bg:#030307;--panel:rgba(10,4,16,.78);--panel2:rgba(20,8,28,.92);
+      --pink:#ff4fb7;--pink2:#ff9bd8;--pink3:#ff1e9f;--violet:#9b7cff;
+      --green:#66ff99;--gold:#ffd166;--red:#ff4f72;--text:#fff5fb;--muted:#d8c8e2;
+      --line:rgba(255,79,183,.50);--line2:rgba(255,155,216,.27);--shadow:0 30px 90px rgba(0,0,0,.72);
+      --radius:28px;--font:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+      --orbit-depth:250px;
     }
-
-    :root {
-      --bg: #030305;
-      --panel: rgba(12, 10, 22, 0.86);
-      --panel-strong: rgba(18, 13, 32, 0.94);
-      --text: #f8f4ff;
-      --muted: #c9bfd9;
-      --pink: #ff79c8;
-      --pink-soft: rgba(255, 121, 200, 0.22);
-      --purple: #8a4dff;
-      --purple-soft: rgba(138, 77, 255, 0.28);
-      --gold: #d9a85f;
-      --green: #5cffb1;
-      --line: rgba(255, 255, 255, 0.12);
-      --shadow: 0 0 4rem rgba(255, 121, 200, 0.12);
-    }
-
-    html {
-      min-height: 100%;
-      background: #000;
-    }
-
-    body {
-      min-height: 100vh;
-      margin: 0;
-      padding: 1.25rem;
-      display: grid;
-      place-items: center;
-      color: var(--text);
-      font-family: Arial, Helvetica, sans-serif;
-      line-height: 1.5;
-      background:
-        radial-gradient(circle at 18% 18%, rgba(255, 121, 200, 0.18), transparent 28rem),
-        radial-gradient(circle at 82% 20%, rgba(138, 77, 255, 0.2), transparent 30rem),
-        radial-gradient(circle at 50% 85%, rgba(217, 168, 95, 0.09), transparent 24rem),
-        linear-gradient(135deg, #050508 0%, #090615 42%, #020204 100%);
-      overflow-x: hidden;
-    }
-
-    body::before {
-      content: "";
-      position: fixed;
-      inset: 0;
-      pointer-events: none;
-      background:
-        linear-gradient(rgba(255, 255, 255, 0.025) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(255, 255, 255, 0.025) 1px, transparent 1px);
-      background-size: 3rem 3rem;
-      mask-image: radial-gradient(circle at center, black 0%, transparent 78%);
-    }
-
-    main {
-      width: min(72rem, 100%);
-      position: relative;
-    }
-
-    .shell {
-      display: grid;
-      grid-template-columns: minmax(0, 1.25fr) minmax(18rem, 0.75fr);
-      gap: 1rem;
-      padding: 1rem;
-      border: 1px solid var(--line);
-      border-radius: 1.35rem;
-      background: rgba(0, 0, 0, 0.42);
-      box-shadow: var(--shadow);
-      backdrop-filter: blur(18px);
-    }
-
-    .door,
-    .rail,
-    .status-card {
-      border: 1px solid rgba(255, 255, 255, 0.13);
-      background: var(--panel);
-      box-shadow: inset 0 0 0 1px rgba(255, 121, 200, 0.04);
-    }
-
-    .door {
-      min-height: 38rem;
-      padding: clamp(1.25rem, 3vw, 2.5rem);
-      border-radius: 1rem;
-      position: relative;
-      overflow: hidden;
-      display: grid;
-      align-content: space-between;
-    }
-
-    .door::before {
-      content: "";
-      position: absolute;
-      inset: -8rem auto auto 50%;
-      width: 28rem;
-      height: 28rem;
-      transform: translateX(-50%);
-      border-radius: 50%;
-      background: radial-gradient(circle, rgba(255, 121, 200, 0.18), transparent 68%);
-      pointer-events: none;
-    }
-
-    .door::after {
-      content: "";
-      position: absolute;
-      inset: auto 8% 0;
-      height: 1px;
-      background: linear-gradient(90deg, transparent, var(--pink), var(--purple), transparent);
-      box-shadow: 0 0 1.75rem var(--pink);
-      pointer-events: none;
-    }
-
-    .brand {
-      position: relative;
-      z-index: 1;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 1rem;
-      margin-bottom: 2rem;
-    }
-
-    .mark {
-      width: 3.2rem;
-      height: 3.2rem;
-      border: 1px solid rgba(255, 121, 200, 0.45);
-      border-radius: 1rem;
-      display: grid;
-      place-items: center;
-      color: var(--pink);
-      font-size: 1.6rem;
-      font-weight: 800;
-      box-shadow: 0 0 2rem rgba(255, 121, 200, 0.18);
-    }
-
-    .eyebrow,
-    .mini-label {
-      margin: 0;
-      color: var(--gold);
-      font-size: 0.72rem;
-      font-weight: 800;
-      letter-spacing: 0.18em;
-      text-transform: uppercase;
-    }
-
-    h1 {
-      margin: 0.35rem 0 0;
-      font-size: clamp(2.4rem, 6vw, 5.4rem);
-      line-height: 0.92;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      text-shadow: 0 0 2.2rem rgba(255, 121, 200, 0.35);
-    }
-
-    .subtitle {
-      max-width: 44rem;
-      margin: 1rem 0 0;
-      color: var(--muted);
-      font-size: clamp(1rem, 2vw, 1.18rem);
-    }
-
-    .badge-row {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.65rem;
-      margin: 1.5rem 0 0;
-    }
-
-    .badge {
-      padding: 0.48rem 0.7rem;
-      border: 1px solid rgba(255, 121, 200, 0.32);
-      border-radius: 999px;
-      background: rgba(255, 121, 200, 0.08);
-      color: var(--text);
-      font-size: 0.74rem;
-      font-weight: 800;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-    }
-
-    .badge.safe {
-      border-color: rgba(92, 255, 177, 0.42);
-      background: rgba(92, 255, 177, 0.08);
-      color: #d9ffef;
-    }
-
-    .access-panel {
-      position: relative;
-      z-index: 1;
-      width: min(100%, 30rem);
-      margin-top: 3rem;
-      padding: 1rem;
-      border: 1px solid rgba(138, 77, 255, 0.45);
-      border-radius: 1rem;
-      background: var(--panel-strong);
-    }
-
-    .access-head {
-      display: flex;
-      justify-content: space-between;
-      gap: 1rem;
-      align-items: center;
-      padding-bottom: 0.85rem;
-      border-bottom: 1px solid var(--line);
-      margin-bottom: 1rem;
-    }
-
-    .lock {
-      color: var(--pink);
-      font-weight: 800;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      font-size: 0.78rem;
-    }
-
-    form {
-      display: grid;
-      gap: 0.9rem;
-    }
-
-    label {
-      display: block;
-      margin: 0 0 0.35rem;
-      color: var(--text);
-      font-size: 0.86rem;
-      font-weight: 800;
-    }
-
-    input {
-      width: 100%;
-      min-height: 3rem;
-      padding: 0.78rem 0.85rem;
-      border: 1px solid rgba(138, 77, 255, 0.78);
-      border-radius: 0.75rem;
-      background: rgba(0, 0, 0, 0.62);
-      color: #fff;
-      font: inherit;
-    }
-
-    input:focus,
-    button:focus {
-      outline: 3px solid rgba(255, 121, 200, 0.38);
-      outline-offset: 2px;
-      border-color: var(--pink);
-    }
-
-    button {
-      min-height: 3rem;
-      margin-top: 0.25rem;
-      border: 1px solid rgba(255, 121, 200, 0.55);
-      border-radius: 0.75rem;
-      background: linear-gradient(135deg, #7438f2, #b528a4);
-      color: #fff;
-      font: inherit;
-      font-weight: 900;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      cursor: pointer;
-      box-shadow: 0 0 1.5rem rgba(255, 121, 200, 0.18);
-    }
-
-    .fine-print {
-      margin: 1rem 0 0;
-      color: var(--muted);
-      font-size: 0.78rem;
-    }
-
-    .rail {
-      border-radius: 1rem;
-      padding: 1rem;
-      display: grid;
-      gap: 1rem;
-      align-content: start;
-    }
-
-    .rail-title {
-      display: flex;
-      justify-content: space-between;
-      gap: 1rem;
-      align-items: center;
-      padding-bottom: 0.85rem;
-      border-bottom: 1px solid var(--line);
-    }
-
-    .rail-title h2 {
-      margin: 0;
-      font-size: 1rem;
-      letter-spacing: 0.16em;
-      text-transform: uppercase;
-    }
-
-    .pulse {
-      width: 0.8rem;
-      height: 0.8rem;
-      border-radius: 50%;
-      background: var(--green);
-      box-shadow: 0 0 1rem var(--green);
-    }
-
-    .status-card {
-      border-radius: 0.85rem;
-      padding: 0.9rem;
-      background: rgba(255, 255, 255, 0.035);
-    }
-
-    .status-card p {
-      margin: 0.25rem 0 0;
-      color: var(--muted);
-      font-size: 0.9rem;
-    }
-
-    .readout {
-      display: grid;
-      gap: 0.55rem;
-      margin: 0.7rem 0 0;
-    }
-
-    .row {
-      display: flex;
-      justify-content: space-between;
-      gap: 1rem;
-      padding: 0.45rem 0;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-      color: var(--muted);
-      font-size: 0.84rem;
-    }
-
-    .row strong {
-      color: var(--text);
-      text-align: right;
-    }
-
-    .row:last-child {
-      border-bottom: 0;
-    }
-
-    .footer {
-      margin-top: 1rem;
-      padding: 0.85rem 1rem;
-      border: 1px solid rgba(217, 168, 95, 0.28);
-      border-radius: 1rem;
-      color: var(--muted);
-      background: rgba(217, 168, 95, 0.04);
-      font-size: 0.84rem;
-      text-align: center;
-    }
-
-    .footer strong {
-      color: var(--gold);
-    }
-
-    @media (max-width: 52rem) {
-      .shell {
-        grid-template-columns: 1fr;
-      }
-
-      .door {
-        min-height: auto;
-      }
-
-      .access-panel {
-        margin-top: 2rem;
-      }
-    }
-
-    @media (max-width: 32rem) {
-      body {
-        padding: 0.75rem;
-      }
-
-      .shell,
-      .door,
-      .rail {
-        border-radius: 0.9rem;
-      }
-
-      .brand {
-        align-items: flex-start;
-      }
-
-      .mark {
-        width: 2.7rem;
-        height: 2.7rem;
-        border-radius: 0.8rem;
-      }
-    }
+    *{box-sizing:border-box;margin:0;padding:0}
+    html{min-height:100%;scroll-behavior:smooth}
+    body{min-height:100%;font-family:var(--font);color:var(--text);background:radial-gradient(circle at 16% 4%,rgba(255,79,183,.24),transparent 24%),radial-gradient(circle at 82% 10%,rgba(155,124,255,.20),transparent 30%),radial-gradient(circle at 50% 58%,rgba(255,30,159,.13),transparent 38%),linear-gradient(180deg,#050511 0%,#07020b 56%,#020204 100%);overflow-x:hidden;overflow-y:auto;touch-action:pan-y pinch-zoom;-webkit-overflow-scrolling:touch}
+    body::before{content:"";position:fixed;inset:0;pointer-events:none;background-image:linear-gradient(rgba(255,79,183,.045) 1px,transparent 1px),linear-gradient(90deg,rgba(255,79,183,.045) 1px,transparent 1px);background-size:44px 44px;mask-image:radial-gradient(circle at center,black 0%,transparent 82%);z-index:0}
+    body::after{content:"";position:fixed;inset:0;pointer-events:none;background:linear-gradient(180deg,rgba(255,255,255,.035),transparent 8%,transparent 92%,rgba(255,79,183,.05));mix-blend-mode:screen;z-index:0}
+    a{color:inherit;text-decoration:none}button{border:0;cursor:pointer;color:inherit;font:inherit;background:none}
+    .shell{position:relative;z-index:1;width:min(1500px,calc(100% - 24px));margin:0 auto;padding:10px 0 28px}
+    .hero{min-height:100svh;display:grid;grid-template-rows:auto 1fr auto;gap:12px;border:1px solid rgba(255,79,183,.45);border-radius:34px;background:linear-gradient(135deg,rgba(14,7,22,.94),rgba(4,4,10,.94));box-shadow:var(--shadow),inset 0 0 0 1px rgba(255,255,255,.035);overflow:hidden;position:relative;isolation:isolate}
+    .hero::before{content:"";position:absolute;inset:-40%;background:radial-gradient(circle at 50% 42%,rgba(255,79,183,.18),transparent 24%),conic-gradient(from 160deg,transparent,rgba(255,79,183,.16),transparent,rgba(155,124,255,.14),transparent);animation:slowGlow 18s linear infinite;z-index:-1}
+    @keyframes slowGlow{to{transform:rotate(360deg)}}
+    .top-strip{display:grid;grid-template-columns:auto 1fr auto;gap:12px;align-items:center;padding:12px 14px 0}.mark{width:54px;height:54px;display:grid;place-items:center;border:1px solid var(--line);border-radius:18px;background:rgba(255,79,183,.08);font-size:1.8rem;color:var(--pink2);text-shadow:0 0 22px rgba(255,79,183,.9)}
+    .brand{text-align:center}.brand .eyebrow{font-weight:950;text-transform:uppercase;letter-spacing:.46em;color:var(--pink2);font-size:.74rem}.brand h1{margin-top:4px;font-size:clamp(1.55rem,5.8vw,4.8rem);line-height:.9;text-transform:uppercase;letter-spacing:.08em;color:var(--pink2);text-shadow:0 0 24px rgba(255,79,183,.6),0 0 58px rgba(255,79,183,.32)}.brand p{margin-top:6px;color:var(--green);font-weight:950;text-transform:uppercase;letter-spacing:.12em;font-size:.68rem}
+    .status-pill{padding:9px 11px;border:1px solid rgba(102,255,153,.36);border-radius:999px;color:var(--green);background:rgba(102,255,153,.07);font-size:.62rem;font-weight:950;text-transform:uppercase;letter-spacing:.08em;white-space:nowrap}
+    .orbit-stage{position:relative;display:grid;place-items:center;min-height:560px;perspective:1150px;overflow:hidden}.orbit-ring{position:absolute;width:min(680px,92vw);aspect-ratio:1;border-radius:50%;border:1px solid rgba(255,79,183,.34);box-shadow:0 0 54px rgba(255,79,183,.25),inset 0 0 50px rgba(255,79,183,.12)}.orbit-ring::after{content:"";position:absolute;inset:12%;border-radius:50%;border:1px dashed rgba(255,155,216,.38);animation:reverseSpin 32s linear infinite}@keyframes reverseSpin{to{transform:rotate(-360deg)}}
+    .orbit-drag{position:absolute;width:min(620px,90vw);height:420px;transform-style:preserve-3d;animation:spin 24s linear infinite}@keyframes spin{from{transform:rotateY(0deg)}to{transform:rotateY(360deg)}}.paused .orbit-drag{animation-play-state:paused}
+    .card{position:absolute;left:50%;top:50%;width:128px;height:176px;margin-left:-64px;margin-top:-88px;border:1px solid rgba(255,155,216,.48);border-radius:18px;background:linear-gradient(180deg,rgba(255,79,183,.16),rgba(9,4,14,.94));box-shadow:0 0 34px rgba(255,79,183,.22);display:grid;place-items:center;text-align:center;padding:10px;backface-visibility:hidden}.card.active{border-color:var(--green);box-shadow:0 0 46px rgba(102,255,153,.26),0 0 32px rgba(255,79,183,.26)}.card .ico{font-size:2rem;filter:drop-shadow(0 0 14px rgba(255,79,183,.8))}.card strong{display:block;margin-top:8px;color:var(--pink2);font-size:.7rem;text-transform:uppercase;letter-spacing:.08em}.card small{display:block;margin-top:5px;color:var(--muted);font-size:.62rem;line-height:1.25}
+    .core-button{position:relative;z-index:5;width:min(340px,78vw);min-height:300px;border:1px solid rgba(255,79,183,.60);border-radius:42px;background:radial-gradient(circle at 50% 16%,rgba(255,155,216,.22),transparent 30%),linear-gradient(180deg,rgba(255,79,183,.18),rgba(0,0,0,.48));box-shadow:0 0 58px rgba(255,79,183,.32);display:grid;place-items:center;text-align:center;padding:20px}.core-button .big{font-size:4.4rem;line-height:.8;color:var(--pink2);text-shadow:0 0 28px rgba(255,79,183,.9)}.core-button h2{margin-top:12px;color:var(--pink2);text-transform:uppercase;letter-spacing:.12em;font-size:1.18rem}.core-button p{margin-top:9px;color:var(--green);font-weight:950;text-transform:uppercase;letter-spacing:.08em;font-size:.68rem}.core-button .loaded{margin-top:12px;display:grid;gap:4px;color:var(--muted);font-size:.72rem;line-height:1.35}.led{display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--green);box-shadow:0 0 14px var(--green);margin-right:6px}
+    .dock{padding:0 14px 14px;display:grid;grid-template-columns:1fr 280px;gap:12px;align-items:stretch}.dock-panel,.side-panel{border:1px solid rgba(255,79,183,.34);border-radius:22px;background:rgba(0,0,0,.32);padding:14px;box-shadow:inset 0 0 28px rgba(255,79,183,.06)}.dock-title{display:flex;align-items:end;justify-content:space-between;gap:12px;margin-bottom:10px}.dock-title h2{font-size:clamp(1.05rem,3.5vw,2rem);color:var(--pink2);text-transform:uppercase;letter-spacing:.11em;line-height:1}.dock-title span{color:var(--green);font-weight:950;text-transform:uppercase;letter-spacing:.09em;font-size:.68rem}.route-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}.route-btn{min-height:58px;border:1px solid rgba(255,79,183,.34);border-radius:16px;background:rgba(255,79,183,.10);display:grid;place-items:center;text-align:center;padding:7px;gap:3px;text-transform:uppercase;font-weight:950;letter-spacing:.06em;font-size:.58rem}.route-btn.active{border-color:var(--green);color:var(--green);background:rgba(102,255,153,.09)}.route-btn.gold{border-color:rgba(255,209,102,.52);color:var(--gold);background:rgba(255,209,102,.08)}.route-btn .r-ico{font-size:1.15rem}.side-panel h3{color:var(--pink2);text-transform:uppercase;letter-spacing:.1em;font-size:.86rem;margin-bottom:8px}.side-panel p{color:var(--muted);font-size:.84rem;line-height:1.45}.controls{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}.btn{min-height:42px;display:inline-flex;align-items:center;justify-content:center;border:1px solid var(--line);border-radius:14px;background:rgba(255,79,183,.10);padding:10px 12px;text-transform:uppercase;font-weight:950;letter-spacing:.07em;font-size:.68rem}.btn.primary{border-color:rgba(102,255,153,.48);color:var(--green);background:rgba(102,255,153,.08)}.btn.gold{border-color:rgba(255,209,102,.48);color:var(--gold);background:rgba(255,209,102,.08)}.btn.red{border-color:rgba(255,79,114,.48);color:#ffb0bf;background:rgba(255,79,114,.08)}
+    .panel-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px}.panel{border:1px solid rgba(255,79,183,.30);border-radius:22px;background:rgba(0,0,0,.30);padding:16px}.panel h2{color:var(--pink2);text-transform:uppercase;letter-spacing:.11em;font-size:.92rem;margin-bottom:10px}.panel p,.panel li{color:var(--muted);line-height:1.5;font-size:.88rem}.panel ul{list-style:none;display:grid;gap:7px}.panel li::before{content:"♠";color:var(--pink);margin-right:8px}pre,textarea{width:100%;border:1px solid rgba(255,79,183,.24);border-radius:16px;background:rgba(0,0,0,.32);color:var(--text);padding:12px;font-family:ui-monospace,"SFMono-Regular",Menlo,Consolas,monospace;font-size:.76rem;line-height:1.45}pre{white-space:pre-wrap;overflow:auto;max-height:260px}textarea{min-height:150px;resize:vertical}.footer{padding:16px;text-align:center;color:var(--muted);text-transform:uppercase;letter-spacing:.1em;font-size:.76rem}.footer strong{color:var(--pink2)}
+    @media (prefers-reduced-motion:reduce){.orbit-drag,.orbit-ring::after,.hero::before{animation:none}}
+    @media (max-width:980px){.dock{grid-template-columns:1fr}.panel-row{grid-template-columns:1fr}.route-grid{grid-template-columns:repeat(3,1fr)}.orbit-stage{min-height:560px}}
+    @media (max-width:560px){.shell{width:min(100% - 10px,1500px);padding-top:5px}.hero{border-radius:24px;min-height:100svh}.top-strip{grid-template-columns:auto 1fr;gap:8px}.status-pill{grid-column:1/-1;text-align:center}.brand .eyebrow{letter-spacing:.22em;font-size:.58rem}.brand h1{font-size:1.45rem}.brand p{font-size:.55rem}.orbit-stage{min-height:420px}.orbit-drag{width:330px;height:270px}.card{width:84px;height:118px;margin-left:-42px;margin-top:-59px;border-radius:14px;padding:7px}.card .ico{font-size:1.3rem}.card strong{font-size:.52rem}.card small{display:none}.core-button{width:210px;min-height:210px;border-radius:30px}.core-button .big{font-size:3.2rem}.core-button h2{font-size:.82rem}.core-button p{font-size:.55rem}.core-button .loaded{font-size:.58rem}.dock{padding:0 8px 10px}.route-grid{grid-template-columns:repeat(2,1fr);gap:7px}.route-btn{min-height:52px;font-size:.52rem}.panel{padding:12px;border-radius:18px}.footer{font-size:.64rem}body{overflow-y:auto}}
+    @media (max-width:390px){:root{--orbit-depth:118px}.orbit-stage{min-height:380px}.route-grid{grid-template-columns:repeat(2,1fr)}.dock-title{display:block}.dock-title span{display:block;margin-top:6px}}
   </style>
 </head>
-
 <body>
-  <main>
-    <section class="shell" aria-label="Penny's Office access shell">
-      <section class="door" aria-labelledby="page-title">
-        <div>
-          <header class="brand">
-            <div>
-              <p class="eyebrow">WildCard DEV Internal Systems</p>
-              <h1 id="page-title">Penny's Office</h1>
-              <p class="subtitle">
-                Private executive suite, R&amp;D lab threshold, and future PennyCore bridge access point.
-              </p>
-            </div>
-            <div class="mark" aria-hidden="true">P</div>
-          </header>
-
-          <div class="badge-row" aria-label="Current access state">
-            <span class="badge safe">PINK Safe Mode</span>
-            <span class="badge">Read Only Boot</span>
-            <span class="badge">Owner Gate Required</span>
-            <span class="badge">No External Actions</span>
-          </div>
-        </div>
-
-        <section class="access-panel" aria-labelledby="access-title">
-          <div class="access-head">
-            <p class="mini-label" id="access-title">Access Point</p>
-            <p class="lock">Locked</p>
-          </div>
-
-          <form action="#" method="post">
-            <div>
-              <label for="username">Username</label>
-              <input id="username" name="username" type="text" required autocomplete="username">
-            </div>
-
-            <div>
-              <label for="password">Password</label>
-              <input id="password" name="password" type="password" required autocomplete="current-password">
-            </div>
-
-            <button type="submit">Sign In</button>
-          </form>
-
-          <p class="fine-print">
-            This screen is a static access shell. Authentication, tools, inboxes, calls, deployments, and device actions are not available from this page.
-          </p>
-        </section>
+<main class="shell">
+  <section class="hero" id="spinner-first" aria-label="Penny Office loaded-state spinner">
+    <header class="top-strip">
+      <div class="mark">Q♠</div>
+      <section class="brand">
+        <div class="eyebrow">WildCard DEV</div>
+        <h1>Penny's Office</h1>
+        <p>Loaded State // Office Workspace // Quick Launch Rail</p>
       </section>
+      <div class="status-pill"><span class="led"></span>Office Live</div>
+    </header>
 
-      <aside class="rail" aria-label="Penny telemetry rail">
-        <div class="rail-title">
-          <h2>Penny Telemetry</h2>
-          <span class="pulse" aria-hidden="true"></span>
+    <section class="orbit-stage" aria-label="Active route spinner">
+      <div class="orbit-ring"></div>
+      <div class="orbit-drag" id="orbit"></div>
+      <button class="core-button" type="button" id="openBtn" aria-label="Open selected office rail">
+        <div>
+          <div class="big">Q♠</div>
+          <h2 id="currentTitle">Penny Loaded</h2>
+          <p>Tap to open selected rail</p>
+          <div class="loaded">
+            <span><i class="led"></i>Loaded state visible</span>
+            <span><i class="led"></i>Main + Labs wired</span>
+            <span><i class="led"></i>Operator confirms execution</span>
+          </div>
         </div>
-
-        <section class="status-card">
-          <p class="mini-label">Current Mode</p>
-          <div class="readout">
-            <div class="row"><span>Office State</span><strong>Initializing</strong></div>
-            <div class="row"><span>Permission Tier</span><strong>View Only</strong></div>
-            <div class="row"><span>Owner Gate</span><strong>Required</strong></div>
-            <div class="row"><span>External Actions</span><strong>Disabled</strong></div>
-          </div>
-        </section>
-
-        <section class="status-card">
-          <p class="mini-label">Governance Stack</p>
-          <div class="readout">
-            <div class="row"><span>Primary Anchor</span><strong>Active</strong></div>
-            <div class="row"><span>Human Priority</span><strong>Protected</strong></div>
-            <div class="row"><span>Trust Mode</span><strong>Suspicious Trust</strong></div>
-            <div class="row"><span>Containment</span><strong>Veronica Standby</strong></div>
-            <div class="row"><span>Fallback</span><strong>PINK Freeze</strong></div>
-          </div>
-        </section>
-
-        <section class="status-card">
-          <p class="mini-label">Boot Beacon</p>
-          <p>
-            Public shell only. Ask Matt for the current STATE.md before assuming context, permissions, or next action.
-          </p>
-        </section>
-
-        <section class="status-card">
-          <p class="mini-label">Next Safe Action</p>
-          <p>
-            Verify this door visually, then keep building PennyCore behind real gates. No secrets in public code.
-          </p>
-        </section>
-
-        <section class="status-card">
-          <p class="mini-label">Room Note</p>
-          <p>
-            The lens helps us see. It does not decide reality.
-          </p>
-        </section>
-      </aside>
+      </button>
     </section>
 
-    <p class="footer">
-      <strong>Penny's Office Phase 1.1</strong> // Static locked-door shell // Public-safe boot beacon // Built for clarity, restraint, and future controlled access.
-    </p>
-  </main>
+    <footer class="dock">
+      <section class="dock-panel">
+        <div class="dock-title">
+          <h2>Penny Office Rail</h2>
+          <span id="currentStatus">First render is the active loaded-state spinner. This room is a live workspace wired back into Main and Labs.</span>
+        </div>
+        <nav class="route-grid" id="routeGrid" aria-label="Office quick launch routes"></nav>
+      </section>
+      <aside class="side-panel">
+        <h3 id="sideTitle">Loaded State</h3>
+        <p id="sideText">Penny's Office is the working bench: route staging, state capsule, visible handoff, and owner-gated execution.</p>
+        <div class="controls">
+          <button class="btn primary" type="button" id="openSelectedBtn">Open</button>
+          <button class="btn gold" type="button" id="copyStateBtn">Copy State</button>
+          <button class="btn" type="button" id="copyPromptBtn">Copy Prompt</button>
+          <button class="btn red" type="button" id="resetBtn">Reset</button>
+        </div>
+      </aside>
+    </footer>
+  </section>
+
+  <section class="panel-row" aria-label="Office detail panels">
+    <article class="panel">
+      <h2>Office Doctrine</h2>
+      <ul>
+        <li>Penny follows visible state, not invisible memory.</li>
+        <li>The Office is a live workspace, not a public secret vault.</li>
+        <li>Main is the rally point. Labs is Dragon's Lair. Office is the wiring bench.</li>
+        <li>The first visible object on every tiny screen is the active spinner.</li>
+      </ul>
+    </article>
+    <article class="panel">
+      <h2>Selected State Capsule</h2>
+      <pre id="stateOut">State loading...</pre>
+    </article>
+  </section>
+
+  <section class="panel-row">
+    <article class="panel">
+      <h2>Penny Load Prompt</h2>
+      <textarea id="promptBox" readonly></textarea>
+    </article>
+    <article class="panel">
+      <h2>Next Safe Action</h2>
+      <p id="nextAction">Verify this door visually, then wire the Office route into Main and Labs.</p>
+    </article>
+  </section>
+
+  <p class="footer"><strong>Penny's Office Phase 1.2</strong> // Spinner first // Loaded state visible // Main, Labs, and Office now share the deck.</p>
+</main>
+
+<script>
+const ROUTES = [
+  {id:"office-spinner",label:"Penny Loaded",short:"Loaded",icon:"Q♠",tier:"office state",url:"#loaded",kind:"local",tags:["office","state","loaded"],next:"Use the Office as the live wiring bench. Spinner remains first."},
+  {id:"main",label:"Main Site",short:"Main",icon:"🌐",tier:"rally point",url:"https://www.wildcarddev.com/?route=office&source=office-spinner",kind:"nav",tags:["main","rally","return"],next:"Return to Main with Office route available."},
+  {id:"labs",label:"Dragon's Lair",short:"Labs",icon:"🐉",tier:"second spinner",url:"https://labs.wildcarddev.com/?route=dragons-lair-portal&source=office-spinner",kind:"nav",tags:["labs","dragon","lair"],next:"Open Labs as the second spinner."},
+  {id:"alfred-viewer",label:"Alfred Viewer",short:"Viewer",icon:"👁",tier:"camera portal",url:"https://alfred.camera/webapp/viewer/",kind:"official",tags:["alfred","viewer","camera"],next:"Open Alfred WebViewer using the prepared browser session."},
+  {id:"alfred-station",label:"Camera Station",short:"Station",icon:"🎥",tier:"laptop camera",url:"https://alfred.camera/webapp/camera/",kind:"official",tags:["alfred","station","webcam"],next:"Open Alfred WebCamera and confirm camera permissions manually."},
+  {id:"quick-roku",label:"Quick Roku",short:"Roku",icon:"📺",tier:"official route",url:"https://therokuchannel.roku.com/",kind:"official",tags:["roku","official","watch"],next:"Open official Roku route."},
+  {id:"star-trek",label:"Star Trek",short:"Trek",icon:"🖖",tier:"Roku search",url:"https://therokuchannel.roku.com/search/star%20trek",kind:"official",tags:["star-trek","roku","watch"],next:"Open official Star Trek search rail."},
+  {id:"comms",label:"Comms",short:"Comms",icon:"💬",tier:"relay",url:"https://discord.com/channels/@me",kind:"official",tags:["comms","discord","relay"],next:"Open comms. Operator chooses channel and sends manually."},
+  {id:"penny-zero",label:"Penny Zero",short:"Zero",icon:"♠",tier:"reset prompt",url:"https://chatgpt.com/",kind:"prompt",tags:["zero","reset","state"],next:"Copy the visible state capsule, then reload from Penny Zero."},
+  {id:"reset",label:"Reset Room",short:"Reset",icon:"↻",tier:"local reset",url:"#reset",kind:"reset",tags:["clear","visible","room"],next:"Clear drift and rebuild from the visible office state."}
+];
+const PAGE = "office";
+const DEFAULT_ROUTE = "office-spinner";
+const qs = new URLSearchParams(location.search);
+let selected = Math.max(0, ROUTES.findIndex(r => r.id === (qs.get('route') || DEFAULT_ROUTE)));
+let paused = false;
+const $ = (id) => document.getElementById(id);
+const orbit = $('orbit');
+const grid = $('routeGrid');
+const promptBox = $('promptBox');
+const stateOut = $('stateOut');
+const openBtn = $('openBtn');
+const sideTitle = $('sideTitle');
+const sideText = $('sideText');
+const nextAction = $('nextAction');
+const currentTitle = $('currentTitle');
+const currentStatus = $('currentStatus');
+function surface(){const w=innerWidth;if(w<430)return 'watch';if(w<740)return 'mobile';return 'desktop';}
+function route(){return ROUTES[selected] || ROUTES[0];}
+function depth(){const w=innerWidth;if(w<390)return 118;if(w<560)return 138;if(w<980)return 210;return 250;}
+function prompt(){const r=route();return `PENNYCORE / WILDCARD OFFICE / LOADED STATE\nLoad this visible state packet.\nRoom: Penny's Office\nSelected rail: ${r.label}\nSurface: ${surface()}\nMain: https://www.wildcarddev.com/\nLabs: https://labs.wildcarddev.com/\nOffice: https://office.wildcarddev.com/\nDoctrine: Penny follows state, not memory. First render is the active spinner. Office is the live wiring bench. Operator confirms real sends, payments, rides, logins, hardware control, camera permissions, and deployments.\nNext safest action: ${r.next}`;}
+function packet(){const r=route();return {packet:"PENNYCORE_OFFICE_LOADED_STATE",version:"OFFICE-SPINNER-001",timestamp:new Date().toISOString(),room:"Penny's Office",selectedRoute:r,surface:surface(),firstRender:"active spinner",wired:{main:"https://www.wildcarddev.com/",labs:"https://labs.wildcarddev.com/",office:"https://office.wildcarddev.com/"},rules:["No secrets in public HTML.","No credential injection.","Visible state capsule only.","Operator confirms execution."],nextSafeAction:r.next};}
+function build(){orbit.innerHTML='';grid.innerHTML='';ROUTES.forEach((r,i)=>{const angle=(360/ROUTES.length)*i;const c=document.createElement('button');c.type='button';c.className='card';c.style.transform=`rotateY(${angle}deg) translateZ(${depth()}px)`;c.innerHTML=`<div><div class="ico">${r.icon}</div><strong>${r.short}</strong><small>${r.tier}</small></div>`;c.addEventListener('click',()=>select(i));orbit.appendChild(c);const b=document.createElement('button');b.type='button';b.className='route-btn'+(r.id==='office-spinner'?' gold':'');b.innerHTML=`<span class="r-ico">${r.icon}</span><span>${r.short}</span>`;b.addEventListener('click',()=>select(i));grid.appendChild(b);});}
+function select(i){selected=(i+ROUTES.length)%ROUTES.length;render();}
+function render(){const r=route();document.querySelectorAll('.card').forEach((el,i)=>el.classList.toggle('active',i===selected));document.querySelectorAll('.route-btn').forEach((el,i)=>el.classList.toggle('active',i===selected));document.documentElement.style.setProperty('--orbit-depth', depth()+'px');currentTitle.textContent=r.label;currentStatus.textContent=`${r.label}: ${r.next}`;sideTitle.textContent=r.label;sideText.textContent=`${r.tier}. Tags: ${r.tags.join(' / ')}.`;nextAction.textContent=r.next;promptBox.value=prompt();stateOut.textContent=JSON.stringify(packet(),null,2);document.body.classList.toggle('paused',paused);}
+function openRoute(){const r=route();if(r.kind==='reset'){resetRoom();return;} if(r.kind==='local'){render();return;} location.href = r.url;}
+function resetRoom(){selected=0;paused=false;render();}
+async function copyText(txt,btn,label){try{await navigator.clipboard.writeText(txt);btn.textContent='Copied';setTimeout(()=>btn.textContent=label,1200);}catch(e){btn.textContent='Copy Failed';setTimeout(()=>btn.textContent=label,1400);}}
+openBtn.addEventListener('click',openRoute);$('openSelectedBtn').addEventListener('click',openRoute);$('resetBtn').addEventListener('click',resetRoom);$('copyStateBtn').addEventListener('click',()=>copyText(JSON.stringify(packet(),null,2),$('copyStateBtn'),'Copy State'));$('copyPromptBtn').addEventListener('click',()=>copyText(prompt(),$('copyPromptBtn'),'Copy Prompt'));
+document.addEventListener('keydown',(e)=>{if(e.key==='ArrowLeft')select(selected-1);if(e.key==='ArrowRight')select(selected+1);if(e.key==='Enter')openRoute();if(e.key.toLowerCase()===' '){e.preventDefault();paused=!paused;render();}});
+addEventListener('resize',()=>{build();render();});
+build();render();
+</script>
 </body>
 </html>

@@ -153,7 +153,7 @@
       font-family: 'Dancing Script', 'Pacifico', cursive;
       font-size: 1.25rem;
       line-height: 1.6;
-      min-height: 130px;
+      min-height: 160px;
       border-bottom: 1px solid rgba(255,79,183,0.2);
       color: #ff9bd8;
       animation: colorPulse 3.5s ease-in-out infinite;
@@ -245,19 +245,19 @@
       color: var(--muted);
     }
 
-    /* Erica – fixed lower-left of the BROWSER, outside the bar */
+    /* Erica – floating outside the bar */
     .erica-slot {
       position: fixed;
-      left: 18px;
-      bottom: 18px;
-      width: min(240px, 28vw);
-      z-index: 85;
+      left: 14px;
+      bottom: 14px;
+      width: min(220px, 26vw);
+      z-index: 95;
       border-radius: 12px;
       overflow: hidden;
-      border: 1px solid rgba(192,132,252,0.5);
-      box-shadow: 0 0 22px rgba(192,132,252,0.45);
+      border: 1px solid rgba(192,132,252,0.55);
+      box-shadow: 0 0 20px rgba(192,132,252,0.5);
       opacity: 0;
-      transform: translate(-60px, 40px) scale(0.4) rotate(-12deg);
+      transform: translate(-50px, 30px) scale(0.35) rotate(-10deg);
       pointer-events: none;
       transition: opacity 0.3s ease, transform 0.5s cubic-bezier(0.22,1,0.36,1);
     }
@@ -275,7 +275,7 @@
     .overlay {
       position: fixed;
       inset: 0;
-      background: rgba(0,0,0,0.5);
+      background: rgba(0,0,0,0.45);
       z-index: 80;
       opacity: 0;
       pointer-events: none;
@@ -286,12 +286,40 @@
       pointer-events: auto;
     }
 
-    @media (max-width: 500px) {
-      :root { --tab-w: 60px; --bar-w: 100vw; }
-      body.open .tab { width: min(280px, 70vw); }
-      .orbit-stage { height: 120px; }
-      .typewriter { font-size: 1.1rem; }
-      .erica-slot { width: min(180px, 42vw); left: 10px; bottom: 10px; }
+    /* ===== MOBILE FIRST OVERRIDES ===== */
+    @media (max-width: 600px) {
+      :root {
+        --tab-w: 58px;
+        --bar-w: 100vw;
+      }
+
+      body.open .tab {
+        width: min(260px, 68vw);
+      }
+
+      .orbit-stage {
+        height: 110px;
+      }
+
+      .typewriter {
+        font-size: 1.05rem;
+        padding: 14px 16px;
+        min-height: 140px;
+      }
+
+      .erica-slot {
+        left: 10px;
+        bottom: 110px;
+        width: min(150px, 38vw);
+        z-index: 95;
+      }
+    }
+
+    @media (max-width: 400px) {
+      .erica-slot {
+        bottom: 100px;
+        width: min(130px, 42vw);
+      }
     }
   </style>
 </head>
@@ -305,7 +333,7 @@
     </div>
   </main>
 
-  <!-- Erica lives outside the bar, lower-left of the whole window -->
+  <!-- Erica – outside the bar, floating lower-left -->
   <div class="erica-slot" id="ericaSlot">
     <video src="assets/penny/EricaHelpsOut.mp4" muted loop playsinline id="ericaVideo"></video>
   </div>
@@ -371,7 +399,7 @@
       orbit.appendChild(c);
     });
 
-    const fullText = "We are just cuter than Doombots, but because us girls do things better than the boys we don't need as many. Typical males. Always overcompensating for something.🙄";
+    const fullText = "We are just cuter than Doombots, but because us girls do things better than the boys we don't need as many. Typical males. Always overcompensating for something.🙄 So Ladies, if you would like a side hustle encouraging a bunch of horny retards to empty their wallet into your purse, WildCard DEV has already been approached about this business opportunity for all you other Femme Fatale's out there! Take the Red Pill to find out all about it!";
     const typeEl = document.getElementById('typeText');
     const redPill = document.getElementById('redPill');
     let typing = false;

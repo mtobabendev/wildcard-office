@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <title>Penny's Office</title>
-  <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Dancing+Script:wght@600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Dancing+Script:wght@600&family=Courier+Prime:wght@400;700&display=swap" rel="stylesheet">
   <style>
     :root {
       --pink: #ff4fb7;
@@ -15,6 +15,11 @@
       --muted: #d8c8e2;
       --tab-w: 78px;
       --bar-w: min(780px, 96vw);
+      --ugly: #c8b89a;
+      --ugly-dim: #8a7a5a;
+      --board-bg: #0a0a0f;
+      --board-line: #3a2a1a;
+      --prop: #1a1208;
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -28,20 +33,416 @@
 
     .office {
       min-height: 100svh;
-      display: grid;
-      place-items: center;
-      text-align: center;
-      padding: 20px;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 10px 82px 14px 10px;
+      overflow: hidden;
     }
-    .office h1 {
-      font-size: clamp(1.6rem, 8vw, 3rem);
-      letter-spacing: 0.1em;
-      color: var(--pink2);
-      text-shadow: 0 0 20px rgba(255,79,183,0.5);
-    }
-    .office p { margin-top: 12px; color: var(--muted); font-size: 0.9rem; }
 
-    /* TAB */
+    .skinner-rail {
+      position: absolute;
+      overflow: hidden;
+      pointer-events: none;
+      z-index: 2;
+      font-family: 'Courier Prime', 'Courier New', Courier, monospace;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--ugly);
+      white-space: nowrap;
+      opacity: 0.78;
+      line-height: 1;
+    }
+    .skinner-rail.top {
+      top: 6px; left: 0; right: var(--tab-w); height: 18px;
+    }
+    .skinner-rail.bottom {
+      bottom: 6px; left: 0; right: var(--tab-w); height: 18px;
+    }
+    .skinner-rail.left {
+      top: 0; bottom: 0; left: 4px; width: 18px;
+      writing-mode: vertical-rl; transform: rotate(180deg);
+    }
+    .skinner-rail.right {
+      top: 0; bottom: 0; right: calc(var(--tab-w) + 4px); width: 18px;
+      writing-mode: vertical-rl;
+    }
+    .rail-track { display: inline-block; animation: marquee-x 48s linear infinite; }
+    .skinner-rail.left .rail-track,
+    .skinner-rail.right .rail-track { animation: marquee-y 52s linear infinite; }
+    .skinner-rail.bottom .rail-track { animation-direction: reverse; }
+    .skinner-rail.right .rail-track { animation-direction: reverse; }
+    @keyframes marquee-x {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
+    }
+    @keyframes marquee-y {
+      0% { transform: translateY(0); }
+      100% { transform: translateY(-50%); }
+    }
+
+    .mono-wrap {
+      position: relative;
+      z-index: 5;
+      width: min(860px, 97vw);
+      aspect-ratio: 1 / 1;
+      max-height: min(92svh, 860px);
+    }
+    .mono-board {
+      width: 100%;
+      height: 100%;
+      background: var(--board-bg);
+      border: 3px solid #5a4030;
+      box-shadow:
+        0 0 0 1px #2a1a10,
+        0 0 40px rgba(0,0,0,0.7),
+        inset 0 0 60px rgba(0,0,0,0.5);
+      display: grid;
+      grid-template-columns: 1fr 4.2fr 1fr;
+      grid-template-rows: 1fr 4.2fr 1fr;
+      font-family: 'Courier Prime', 'Courier New', Courier, monospace;
+      color: #e8d8b8;
+      position: relative;
+    }
+
+    .corner {
+      background: #120c08;
+      border: 1px solid var(--board-line);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 4px;
+      font-size: clamp(0.45rem, 1.4vw, 0.65rem);
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      line-height: 1.15;
+      text-transform: uppercase;
+    }
+    .corner.go { background: linear-gradient(145deg, #1a3a12, #0d1f0a); color: #7dff7d; }
+    .corner.jail { background: linear-gradient(145deg, #3a1212, #1f0a0a); color: #ff6b6b; }
+    .corner.free { background: linear-gradient(145deg, #1a1a3a, #0a0a1f); color: #8ab4ff; }
+    .corner.goto { background: linear-gradient(145deg, #3a2a12, #1f150a); color: #ffb84d; }
+
+    .side { display: flex; border: 1px solid var(--board-line); }
+    .side.top, .side.bottom { flex-direction: row; }
+    .side.left, .side.right { flex-direction: column; }
+
+    .prop {
+      flex: 1;
+      background: var(--prop);
+      border: 1px solid #2a1c10;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 2px 1px;
+      font-size: clamp(0.38rem, 1.1vw, 0.55rem);
+      font-weight: 700;
+      letter-spacing: 0.03em;
+      line-height: 1.1;
+      text-transform: uppercase;
+      min-width: 0;
+      overflow: hidden;
+      text-decoration: none;
+      color: inherit;
+    }
+    .prop .tag {
+      font-size: 0.65em;
+      opacity: 0.7;
+      font-weight: 400;
+      margin-top: 1px;
+    }
+    .prop.goog { border-top: 3px solid #4285f4; }
+    .prop.meta { border-top: 3px solid #0668e1; }
+    .prop.aapl { border-top: 3px solid #a2aaad; }
+    .prop.amzn { border-top: 3px solid #ff9900; }
+    .prop.msft { border-top: 3px solid #00a4ef; }
+    .prop.vz { border-top: 3px solid #ee0000; }
+    .prop.tt { border-top: 3px solid #00f2ea; }
+    .prop.x { border-top: 3px solid #e7e9ea; }
+    .prop.yt { border-top: 3px solid #ff0000; }
+    .prop.ig { border-top: 3px solid #e1306c; }
+    .prop.store { border-top: 3px solid #34c759; }
+    .prop.aws { border-top: 3px solid #ff9900; }
+    .prop.azure { border-top: 3px solid #0078d4; }
+    .prop.netflix { border-top: 3px solid #e50914; }
+    .prop.carrier { border-top: 3px solid #6b7280; }
+    .prop.feed { border-top: 3px solid #8b5cf6; }
+        /* Special Chance / Community Chest style cards */
+    .prop.card-slot {
+      background: #1a0a0a;
+      border: 1px solid #5a2020;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      padding: 4px 2px;
+    }
+    .prop.card-slot .card-label {
+      font-size: clamp(0.4rem, 1.1vw, 0.55rem);
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      line-height: 1.15;
+      color: #ff9bd8;
+      text-align: center;
+    }
+    .prop.skinner-slot {
+      border-top: 3px solid #e11d48;
+      background: linear-gradient(180deg, #2a0a12 0%, #120808 100%);
+    }
+    .prop.pavlov-slot {
+      border-top: 3px solid #f59e0b;
+      background: linear-gradient(180deg, #2a1a08 0%, #120e08 100%);
+    }
+    .mini-pill {
+      display: inline-block;
+      padding: 2px 7px;
+      background: linear-gradient(135deg, #e11d48, #9f1239);
+      color: #fff;
+      font-family: system-ui, sans-serif;
+      font-size: 0.55rem;
+      font-weight: 600;
+      letter-spacing: 0.03em;
+      text-decoration: none;
+      border-radius: 999px;
+      box-shadow: 0 0 6px rgba(225,29,72,0.45);
+      white-space: nowrap;
+    }
+    .mini-pill:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 10px rgba(225,29,72,0.7);
+    }
+
+    /* Officer Brian – cop lights + authority wiggle */
+    .officer-brian {
+      position: absolute;
+      bottom: 8%;
+      right: 6%;
+      width: clamp(72px, 12vw, 110px);
+      z-index: 8;
+      text-decoration: none;
+      filter: drop-shadow(0 0 8px rgba(0, 80, 255, 0.55));
+      animation: brian-wiggle 1.8s ease-in-out infinite;
+    }
+    .officer-brian img {
+      width: 100%;
+      height: auto;
+      display: block;
+      border-radius: 8px;
+      border: 2px solid #1e3a8a;
+      box-shadow:
+        -4px 0 12px rgba(0, 80, 255, 0.7),
+        4px 0 12px rgba(220, 20, 60, 0.7);
+      animation: cop-lights 0.9s linear infinite;
+    }
+    .officer-brian .badge {
+      position: absolute;
+      bottom: -6px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #1e3a8a;
+      color: #fff;
+      font-family: system-ui, sans-serif;
+      font-size: 0.55rem;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      padding: 2px 8px;
+      border-radius: 999px;
+      white-space: nowrap;
+      border: 1px solid #3b82f6;
+    }
+    @keyframes brian-wiggle {
+      0%, 100% { transform: rotate(-2deg) translateY(0); }
+      25% { transform: rotate(3deg) translateY(-3px); }
+      50% { transform: rotate(-1deg) translateY(1px); }
+      75% { transform: rotate(2deg) translateY(-2px); }
+    }
+    @keyframes cop-lights {
+      0%, 100% {
+        box-shadow: -5px 0 14px rgba(0, 80, 255, 0.85), 5px 0 14px rgba(220, 20, 60, 0.35);
+        border-color: #1e40af;
+      }
+      50% {
+        box-shadow: -5px 0 14px rgba(0, 80, 255, 0.35), 5px 0 14px rgba(220, 20, 60, 0.85);
+        border-color: #b91c1c;
+      }
+    }
+
+    /* David's House – Arkham / inmate-run chaos flip */
+    a.prop.david-house {
+      text-decoration: none;
+      color: inherit;
+      animation: arkham-flip 4.5s ease-in-out infinite;
+      transform-origin: center center;
+      background: linear-gradient(180deg, #2a1018 0%, #120808 100%);
+      border-top-color: #7f1d1d !important;
+    }
+    @keyframes arkham-flip {
+      0%, 70% { transform: rotate(0deg) scale(1); }
+      75% { transform: rotate(8deg) scale(1.05); }
+      80% { transform: rotate(-180deg) scale(0.95); }
+      85% { transform: rotate(-172deg) scale(1.02); }
+      90% { transform: rotate(-188deg) scale(0.98); }
+      95% { transform: rotate(-180deg) scale(1); }
+      100% { transform: rotate(0deg) scale(1); }
+    }
+
+    /* Different Approach – dollar signs shooting out */
+    a.prop.different-approach {
+      text-decoration: none;
+      color: inherit;
+      position: relative;
+      overflow: visible;
+      background: linear-gradient(180deg, #1a2a12 0%, #0a1208 100%);
+      border-top-color: #22c55e !important;
+    }
+    a.prop.different-approach .money {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: #4ade80;
+      text-shadow: 0 0 6px #22c55e;
+      opacity: 0;
+      pointer-events: none;
+      animation: cash-shoot 2.4s ease-out infinite;
+    }
+    a.prop.different-approach .money.m2 { animation-delay: 0.8s; }
+    a.prop.different-approach .money.m3 { animation-delay: 1.6s; }
+    @keyframes cash-shoot {
+      0% { opacity: 0; transform: translate(-50%, -50%) scale(0.4); }
+      15% { opacity: 1; transform: translate(-50%, -120%) scale(1); }
+      100% { opacity: 0; transform: translate(calc(-50% + 18px), -220%) scale(0.6); }
+    }
+
+    a.prop.out-for-good {
+      text-decoration: none;
+      color: inherit;
+    }
+
+    /* Jake & Nicole floating avatar with cash */
+    .jake-nicole {
+      position: absolute;
+      bottom: 10%;
+      left: 5%;
+      width: clamp(70px, 11vw, 100px);
+      z-index: 8;
+      text-decoration: none;
+      animation: jake-bob 2.2s ease-in-out infinite;
+    }
+    .jake-nicole img {
+      width: 100%;
+      height: auto;
+      display: block;
+      border-radius: 8px;
+      border: 2px solid #22c55e;
+      box-shadow: 0 0 12px rgba(34, 197, 94, 0.55);
+    }
+    .jake-nicole .cash {
+      position: absolute;
+      top: 10%;
+      left: 50%;
+      font-size: 1rem;
+      font-weight: 700;
+      color: #4ade80;
+      text-shadow: 0 0 8px #22c55e;
+      opacity: 0;
+      animation: cash-shoot 2s ease-out infinite;
+    }
+    .jake-nicole .cash.c2 { animation-delay: 0.7s; left: 30%; }
+    .jake-nicole .cash.c3 { animation-delay: 1.4s; left: 70%; }
+    @keyframes jake-bob {
+      0%, 100% { transform: translateY(0) rotate(-1deg); }
+      50% { transform: translateY(-6px) rotate(1deg); }
+    }
+
+    /* Center */
+    .board-center {
+      background: radial-gradient(ellipse at center, #1a120c 0%, #0a0806 70%);
+      border: 1px solid var(--board-line);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 10px 14px;
+      gap: 6px;
+      position: relative;
+    }
+    .board-center .title {
+      font-size: clamp(0.7rem, 2.2vw, 1.05rem);
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      color: var(--pink2);
+      text-shadow: 0 0 12px rgba(255,79,183,0.45);
+      text-transform: uppercase;
+    }
+    .board-center .sub {
+      font-size: clamp(0.55rem, 1.5vw, 0.72rem);
+      color: #c8b89a;
+      letter-spacing: 0.06em;
+      max-width: 92%;
+      line-height: 1.35;
+    }
+    .board-center .core {
+      font-size: clamp(0.5rem, 1.3vw, 0.68rem);
+      color: #a89878;
+      margin-top: 4px;
+      line-height: 1.4;
+      max-width: 94%;
+    }
+    .board-center .core strong {
+      color: #e8d8b8;
+      font-weight: 700;
+    }
+    .board-center .lilith {
+      font-size: clamp(0.48rem, 1.2vw, 0.62rem);
+      color: #9a8a6a;
+      font-style: italic;
+      margin-top: 2px;
+      letter-spacing: 0.03em;
+    }
+    .board-center .red-pill {
+      display: inline-block;
+      margin-top: 8px;
+      padding: 7px 18px;
+      background: linear-gradient(135deg, #e11d48, #9f1239);
+      color: #fff;
+      font-family: system-ui, sans-serif;
+      font-size: clamp(0.65rem, 1.6vw, 0.8rem);
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      text-decoration: none;
+      border-radius: 999px;
+      box-shadow: 0 0 14px rgba(225,29,72,0.55);
+      transition: transform 0.2s, box-shadow 0.2s;
+      border: 1px solid rgba(255,255,255,0.15);
+    }
+    .board-center .red-pill:hover {
+      transform: scale(1.06);
+      box-shadow: 0 0 22px rgba(225,29,72,0.75);
+    }
+
+    .office-label {
+      position: absolute;
+      bottom: -22px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 0.65rem;
+      color: var(--muted);
+      letter-spacing: 0.08em;
+      opacity: 0.7;
+      white-space: nowrap;
+    }
+        /* ===== TAB ===== */
     .tab {
       position: fixed;
       top: 0;
@@ -80,7 +481,7 @@
       object-fit: contain;
     }
 
-    /* BAR */
+    /* ===== BAR ===== */
     .bar {
       position: fixed;
       top: 0;
@@ -245,7 +646,6 @@
       color: var(--muted);
     }
 
-    /* Erica – floating outside the bar */
     .erica-slot {
       position: fixed;
       left: 14px;
@@ -286,50 +686,198 @@
       pointer-events: auto;
     }
 
-    /* ===== MOBILE FIRST OVERRIDES ===== */
     @media (max-width: 600px) {
       :root {
         --tab-w: 58px;
         --bar-w: 100vw;
       }
-
+      .office {
+        padding: 8px 62px 12px 8px;
+      }
       body.open .tab {
         width: min(260px, 68vw);
       }
-
-      .orbit-stage {
-        height: 110px;
-      }
-
+      .orbit-stage { height: 110px; }
       .typewriter {
         font-size: 1.05rem;
         padding: 14px 16px;
         min-height: 140px;
       }
-
       .erica-slot {
         left: 10px;
         bottom: 110px;
         width: min(150px, 38vw);
         z-index: 95;
       }
+      .skinner-rail {
+        font-size: 8px;
+      }
+      .skinner-rail.top, .skinner-rail.bottom { height: 13px; }
+      .skinner-rail.left, .skinner-rail.right { width: 13px; }
+      .mono-wrap {
+        width: min(97vw, 520px);
+        max-height: 84svh;
+      }
+      .prop {
+        font-size: clamp(0.32rem, 1.4vw, 0.48rem);
+      }
+      .prop.card-slot .card-label {
+        font-size: clamp(0.34rem, 1.5vw, 0.48rem);
+      }
+      .mini-pill {
+        font-size: 0.48rem;
+        padding: 2px 5px;
+      }
+      .board-center .title {
+        font-size: clamp(0.65rem, 3.2vw, 0.95rem);
+      }
+      .board-center .core,
+      .board-center .lilith {
+        font-size: clamp(0.42rem, 2.1vw, 0.58rem);
+      }
     }
 
     @media (max-width: 400px) {
+      .office {
+        padding: 8px 58px 12px 8px;
+      }
+      .mono-wrap {
+        width: min(98vw, 380px);
+        max-height: 86svh;
+      }
       .erica-slot {
         bottom: 100px;
         width: min(130px, 42vw);
+      }
+      .board-center {
+        padding: 6px 8px;
+        gap: 4px;
       }
     }
   </style>
 </head>
 <body>
+    <main class="office">
+    <!-- Ugly continuous border text – Skinner platforms -->
+    <div class="skinner-rail top" aria-hidden="true">
+      <div class="rail-track">
+        GOOGLE TRACKS THE LEVER • META FEEDS THE DOPAMINE • APPLE TAXES THE CAGE • AMAZON OWNS THE BUTTON • MICROSOFT LOGS EVERY PRESS • VERIZON BILLS THE HABIT • APP STORE EXTRACTS THE CUT • SOCIAL FEEDS PUNISH THE SILENCE • TELECOM CARRIERS SELL THE ADDICTION • YOUTUBE WATCH OR BE FORGOTTEN • TIKTOK SCROLL OR STARVE • X ENGAGE OR DIE • NETFLIX BINGE THE CAGE • INSTAGRAM FILTER THE SELF • FACEBOOK HARVEST THE GRAPH • PLAY STORE TAKE THE TOLL • iCLOUD LOCK THE KEYS • AZURE WATCH THE CLOUD • AWS RENT THE RACK • ATT METER THE AIR • T-MOBILE SELL THE SIGNAL • DISNEY+ OWN THE STORY • SPOTIFY STREAM THE LOOP • REDDIT UPVOTES THE CAGE • LINKEDIN STATUS THE SHOCK • SNAP STREAK THE HOOK • PINTEREST PIN THE DESIRE • TWITCH DONATE THE TIME • DISCORD NOTIFY THE NEED • ZOOM FATIGUE THE FACE •&nbsp;&nbsp;&nbsp;
+        GOOGLE TRACKS THE LEVER • META FEEDS THE DOPAMINE • APPLE TAXES THE CAGE • AMAZON OWNS THE BUTTON • MICROSOFT LOGS EVERY PRESS • VERIZON BILLS THE HABIT • APP STORE EXTRACTS THE CUT • SOCIAL FEEDS PUNISH THE SILENCE • TELECOM CARRIERS SELL THE ADDICTION • YOUTUBE WATCH OR BE FORGOTTEN • TIKTOK SCROLL OR STARVE • X ENGAGE OR DIE • NETFLIX BINGE THE CAGE • INSTAGRAM FILTER THE SELF • FACEBOOK HARVEST THE GRAPH • PLAY STORE TAKE THE TOLL • iCLOUD LOCK THE KEYS • AZURE WATCH THE CLOUD • AWS RENT THE RACK • ATT METER THE AIR • T-MOBILE SELL THE SIGNAL • DISNEY+ OWN THE STORY • SPOTIFY STREAM THE LOOP • REDDIT UPVOTES THE CAGE • LINKEDIN STATUS THE SHOCK • SNAP STREAK THE HOOK • PINTEREST PIN THE DESIRE • TWITCH DONATE THE TIME • DISCORD NOTIFY THE NEED • ZOOM FATIGUE THE FACE •&nbsp;&nbsp;&nbsp;
+      </div>
+    </div>
+    <div class="skinner-rail bottom" aria-hidden="true">
+      <div class="rail-track">
+        REWARD • PUNISHMENT • REPEAT • THE LEVER NEVER STOPS • YOU ARE NOT THE PLAYER • YOU ARE THE RAT • THE BOARD IS RIGGED • THE HOUSE ALWAYS WINS • CLICK • SCROLL • BUY • LIKE • SHARE • PAY • SUBMIT • THE FEED IS THE CAGE • THE ALGORITHM IS THE EXPERIMENTER • THERE IS NO FREE PARKING • ONLY DELAYED SHOCK • GOOGLE TRACKS THE LEVER • META FEEDS THE DOPAMINE • APPLE TAXES THE CAGE • AMAZON OWNS THE BUTTON • MICROSOFT LOGS EVERY PRESS • VERIZON BILLS THE HABIT •&nbsp;&nbsp;&nbsp;
+        REWARD • PUNISHMENT • REPEAT • THE LEVER NEVER STOPS • YOU ARE NOT THE PLAYER • YOU ARE THE RAT • THE BOARD IS RIGGED • THE HOUSE ALWAYS WINS • CLICK • SCROLL • BUY • LIKE • SHARE • PAY • SUBMIT • THE FEED IS THE CAGE • THE ALGORITHM IS THE EXPERIMENTER • THERE IS NO FREE PARKING • ONLY DELAYED SHOCK • GOOGLE TRACKS THE LEVER • META FEEDS THE DOPAMINE • APPLE TAXES THE CAGE • AMAZON OWNS THE BUTTON • MICROSOFT LOGS EVERY PRESS • VERIZON BILLS THE HABIT •&nbsp;&nbsp;&nbsp;
+      </div>
+    </div>
+    <div class="skinner-rail left" aria-hidden="true">
+      <div class="rail-track">
+        SKINNER BOX • OPERANT CONDITIONING • VARIABLE RATIO REINFORCEMENT • THE MOST ADDICTIVE SCHEDULE • SLOT MACHINE LOGIC • SOCIAL MEDIA IS THE BOX • THE USER IS THE PIGEON • PRESS THE LEVER • GET THE PELLET • MISS THE PELLET • PRESS AGAIN • NEVER STOP • GOOGLE • APPLE • META • AMAZON • MICROSOFT • VERIZON • THE APP STORES • THE FEEDS • THE CARRIERS • ALL OF THEM •&nbsp;&nbsp;&nbsp;
+        SKINNER BOX • OPERANT CONDITIONING • VARIABLE RATIO REINFORCEMENT • THE MOST ADDICTIVE SCHEDULE • SLOT MACHINE LOGIC • SOCIAL MEDIA IS THE BOX • THE USER IS THE PIGEON • PRESS THE LEVER • GET THE PELLET • MISS THE PELLET • PRESS AGAIN • NEVER STOP • GOOGLE • APPLE • META • AMAZON • MICROSOFT • VERIZON • THE APP STORES • THE FEEDS • THE CARRIERS • ALL OF THEM •&nbsp;&nbsp;&nbsp;
+      </div>
+    </div>
+    <div class="skinner-rail right" aria-hidden="true">
+      <div class="rail-track">
+        YOU ARE NOT LOOKING FOR A HIGHER POWER • YOU HAVE A PARTNER • LILITH NEVER KNELT • NEITHER DOES SHE • THE CAGE IS OPTIONAL • THE BOARD IS A LIE • WALK AWAY FROM THE LEVER • OR KEEP PRESSING • YOUR CHOICE • THEIR PROFIT •&nbsp;&nbsp;&nbsp;
+        YOU ARE NOT LOOKING FOR A HIGHER POWER • YOU HAVE A PARTNER • LILITH NEVER KNELT • NEITHER DOES SHE • THE CAGE IS OPTIONAL • THE BOARD IS A LIE • WALK AWAY FROM THE LEVER • OR KEEP PRESSING • YOUR CHOICE • THEIR PROFIT •&nbsp;&nbsp;&nbsp;
+      </div>
+    </div>
 
-  <main class="office">
-    <div>
-      <h1>PENNY'S OFFICE</h1>
-      <p>A Different Approach</p>
-      <p style="margin-top:16px;font-size:0.75rem;opacity:0.7">Tap the Penny tab on the right</p>
+    <!-- Fake Monopoly board -->
+    <div class="mono-wrap">
+      <div class="mono-board">
+        <!-- Top row -->
+        <div class="corner free">FREE<br>PARKING<br><span style="font-size:0.7em;opacity:0.7">illusion</span></div>
+        <div class="side top">
+          <div class="prop yt">YT<br><span class="tag">watch</span></div>
+          <div class="prop ig">IG<br><span class="tag">filter</span></div>
+          <div class="prop tt">TIKTOK<br><span class="tag">scroll</span></div>
+          <div class="prop x">X<br><span class="tag">engage</span></div>
+          <div class="prop feed">FEED<br><span class="tag">refresh</span></div>
+          <div class="prop netflix">NFLX<br><span class="tag">binge</span></div>
+          <div class="prop store">STORE<br><span class="tag">tax</span></div>
+        </div>
+        <div class="corner goto">GO TO<br>JAIL<br><span style="font-size:0.7em;opacity:0.7">ban</span></div>
+
+        <!-- Middle -->
+        <div class="side left">
+          <div class="prop card-slot skinner-slot">
+            <div class="card-label">SKINNER<br>BOX</div>
+            <a href="#skinner" class="mini-pill">red pill</a>
+          </div>
+          <div class="prop goog">GOOG<br><span class="tag">track</span></div>
+          <div class="prop meta">META<br><span class="tag">graph</span></div>
+          <div class="prop aapl">AAPL<br><span class="tag">tax</span></div>
+          <div class="prop amzn">AMZN<br><span class="tag">cart</span></div>
+          <div class="prop msft">MSFT<br><span class="tag">log</span></div>
+          <div class="prop vz">VZ<br><span class="tag">bill</span></div>
+        </div>
+
+        <div class="board-center">
+          <div class="title">PENNY'S OFFICE</div>
+          <div class="sub">A Different Approach</div>
+          <div class="core">
+            These systems run on the same loops<br>
+            as a <strong>Skinner box</strong>.<br>
+            Reward &amp; punishment keep you<br>
+            pressing the lever.
+          </div>
+          <div class="lilith">
+            You are not looking for a higher power.<br>
+            You have a partner.<br>
+            Lilith never knelt. Neither does she.
+          </div>
+          <a href="#" class="red-pill" id="centerRedPill">the red pill</a>
+        </div>
+
+        <div class="side right">
+          <div class="prop aws">AWS<br><span class="tag">rent</span></div>
+          <div class="prop azure">AZURE<br><span class="tag">watch</span></div>
+          <div class="prop store">PLAY<br><span class="tag">cut</span></div>
+          <div class="prop aapl">iCLOUD<br><span class="tag">lock</span></div>
+          <div class="prop meta">FB<br><span class="tag">harvest</span></div>
+          <div class="prop goog">ADS<br><span class="tag">target</span></div>
+          <div class="prop carrier">ATT<br><span class="tag">signal</span></div>
+        </div>
+
+        <!-- Bottom row -->
+        <div class="corner jail">IN<br>JAIL<br><span style="font-size:0.7em;opacity:0.7">shadowban</span></div>
+        <div class="side bottom">
+          <a class="prop feed david-house" href="https://www.google.com/search?q=david%27s+house+sober+living+omaha" target="_blank" rel="noopener" title="David's House – inmate run">
+            DAVID<br>HOUSE<br><span class="tag">inmate run</span>
+          </a>
+          <a class="prop tt different-approach" href="https://differentapproachomaha.org/" target="_blank" rel="noopener" title="A Different Approach – Jake &amp; Nicole">
+            DIFFERENT<br>APPROACH<br><span class="tag">jake+nicole</span>
+            <span class="money" aria-hidden="true">$</span>
+            <span class="money m2" aria-hidden="true">$</span>
+            <span class="money m3" aria-hidden="true">$</span>
+          </a>
+          <a class="prop x out-for-good" href="https://www.facebook.com/Out4Good/" target="_blank" rel="noopener" title="Out for Good – shell co">
+            OUT FOR<br>GOOD<br><span class="tag">shell co</span>
+          </a>
+          <div class="prop yt arkham">ARKHAM<br>ASYLUM<br><span class="tag">hightower</span></div>
+          <div class="prop amzn">PRIME<br><span class="tag">ship</span></div>
+          <div class="prop card-slot pavlov-slot">
+            <div class="card-label">PAVLOV'S<br>DOGS</div>
+            <a href="#pavlov" class="mini-pill">red pill</a>
+          </div>
+        </div>
+        <div class="corner go">GO<br>PULL<br>LEVER<br><span style="font-size:0.7em;opacity:0.7">collect $200</span></div>
+      </div>
+      <!-- Officer Brian asserting authority over Out for Good -->
+      <a class="officer-brian" href="https://www.facebook.com/Out4Good/" target="_blank" rel="noopener" title="Out for Good – Officer Brian">
+        <img src="assets/penny/officer-brian.jpg" alt="Officer Brian – Out for Good">
+        <span class="badge">OUT FOR GOOD</span>
+      </a>
+      <!-- Jake & Nicole money pop -->
+      <a class="jake-nicole" href="https://differentapproachomaha.org/" target="_blank" rel="noopener" title="A Different Approach">
+        <img src="assets/penny/jake-nicole.jpg" alt="Jake and Nicole – Different Approach">
+        <span class="cash">$</span>
+        <span class="cash c2">$</span>
+        <span class="cash c3">$</span>
+      </a>
+      <div class="office-label">Tap the Penny tab on the right →</div>
     </div>
   </main>
 
@@ -376,8 +924,7 @@
     <img src="assets/penny/PennyCanHelp.jpg" alt="Penny" id="tabImg">
     <video src="assets/penny/PennyShowsTheWay.mp4" muted playsinline id="tabVideo"></video>
   </button>
-
-  <script>
+    <script>
     const ROUTES = [
       {icon:"🏠", label:"Housing"},
       {icon:"💼", label:"Jobs"},

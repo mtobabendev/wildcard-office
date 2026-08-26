@@ -933,9 +933,89 @@
         padding: 9px 10px 11px;
       }
     }
+
+    /* ===== DOOMSDAY LANDING INTRO ===== */
+    .landing-intro {
+      position: fixed;
+      inset: 0;
+      z-index: 10000;
+      overflow: hidden;
+      background: #000;
+      opacity: 1;
+      visibility: visible;
+      transition: opacity 0.8s ease, visibility 0.8s ease;
+    }
+    .landing-intro.is-leaving {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+    }
+    .landing-intro-player {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      background: #000;
+    }
+    .landing-intro-player iframe {
+      display: block;
+      width: 100%;
+      height: 100%;
+      border: 0;
+    }
+    .landing-intro-line {
+      position: absolute;
+      left: 50%;
+      bottom: 9svh;
+      z-index: 2;
+      width: min(760px, calc(100% - 32px));
+      min-height: 64px;
+      transform: translateX(-50%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 12px 18px;
+      border: 1px solid rgba(255,155,216,0.76);
+      border-radius: 10px;
+      background: rgba(3,3,7,0.78);
+      box-shadow:
+        0 0 20px rgba(255,79,183,0.42),
+        inset 0 0 16px rgba(255,79,183,0.08);
+      color: #fff5fb;
+      font-family: 'Courier Prime', 'Courier New', Courier, monospace;
+      font-size: clamp(1rem, 2vw, 1.35rem);
+      font-weight: 700;
+      line-height: 1.35;
+      letter-spacing: 0.025em;
+      text-align: center;
+      text-shadow: 0 0 8px rgba(255,79,183,0.55);
+      pointer-events: none;
+    }
+    .landing-intro-line span::after {
+      content: "▌";
+      margin-left: 3px;
+      color: var(--pink);
+      animation: blink 0.8s step-end infinite;
+    }
+
+    @media (max-width: 600px) {
+      .landing-intro-line {
+        bottom: 7svh;
+        min-height: 74px;
+        padding: 11px 13px;
+        font-size: 1rem;
+      }
+    }
   </style>
 </head>
 <body>
+  <section class="landing-intro" id="landingIntro" aria-label="Opening video">
+    <div class="landing-intro-player" id="landingIntroPlayer"></div>
+    <div class="landing-intro-line">
+      <span id="landingIntroText"></span>
+    </div>
+  </section>
+
     <main class="office">
     <!-- Ugly continuous border text – Skinner platforms -->
     <div class="skinner-rail top" aria-hidden="true">
@@ -1309,6 +1389,77 @@
       attributes: true,
       attributeFilter: ['class']
     });
+
+    const landingIntro = document.getElementById('landingIntro');
+    const landingIntroText = document.getElementById('landingIntroText');
+    const landingIntroCopy = "Okay, the system is rigged, but we know how to fix it.";
+    let landingIntroPlayer = null;
+    let landingIntroFinished = false;
+    let landingIntroTypeIndex = 0;
+    let landingIntroTypeTimer = null;
+    let landingIntroEndTimer = null;
+
+    function typeLandingIntro() {
+      landingIntroText.textContent = landingIntroCopy.slice(0, landingIntroTypeIndex);
+      if (landingIntroTypeIndex < landingIntroCopy.length) {
+        landingIntroTypeIndex += 1;
+        landingIntroTypeTimer = setTimeout(typeLandingIntro, 58);
+      }
+    }
+
+    function finishLandingIntro() {
+      if (landingIntroFinished) return;
+      landingIntroFinished = true;
+      clearTimeout(landingIntroTypeTimer);
+      clearTimeout(landingIntroEndTimer);
+
+      try {
+        landingIntroPlayer?.stopVideo();
+      } catch (_) {}
+
+      landingIntro.classList.add('is-leaving');
+      setTimeout(() => landingIntro.remove(), 850);
+    }
+
+    window.onYouTubeIframeAPIReady = function () {
+      landingIntroPlayer = new YT.Player('landingIntroPlayer', {
+        videoId: 'X1aFkAkFASk',
+        playerVars: {
+          autoplay: 1,
+          controls: 1,
+          disablekb: 0,
+          fs: 1,
+          playsinline: 1,
+          rel: 0,
+          start: 68,
+          origin: window.location.origin
+        },
+        events: {
+          onReady: event => {
+            event.target.mute();
+            event.target.seekTo(68, true);
+            event.target.playVideo();
+            typeLandingIntro();
+            landingIntroEndTimer = setTimeout(finishLandingIntro, 65000);
+          },
+          onStateChange: event => {
+            if (event.data === YT.PlayerState.ENDED) {
+              finishLandingIntro();
+            }
+          },
+          onError: finishLandingIntro
+        }
+      });
+    };
+
+    const landingIntroApi = document.createElement('script');
+    landingIntroApi.src = 'https://www.youtube.com/iframe_api';
+    landingIntroApi.async = true;
+    document.head.appendChild(landingIntroApi);
+
+    setTimeout(() => {
+      if (!landingIntroPlayer) finishLandingIntro();
+    }, 12000);
   </script>
 </body>
 </html>

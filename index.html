@@ -876,6 +876,63 @@
         width: min(150px, 40vw);
       }
     }
+
+    /* ===== COMPACT TRANSPARENCY SCREEN ===== */
+    .transparency-flyout {
+      width: min(320px, calc(100% - 28px));
+      margin: 14px auto 8px;
+      overflow: hidden;
+      border: 1px solid rgba(255,155,216,0.72);
+      border-radius: 12px;
+      background: #030306;
+      box-shadow:
+        0 0 0 1px rgba(255,255,255,0.08),
+        0 0 18px rgba(255,79,183,0.34);
+    }
+    .transparency-screen {
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      background: #000;
+    }
+    .transparency-screen iframe {
+      display: block;
+      width: 100%;
+      height: 100%;
+      border: 0;
+    }
+    .transparency-copy {
+      min-height: 78px;
+      padding: 10px 12px 12px;
+      border-top: 1px solid rgba(255,79,183,0.34);
+      background:
+        linear-gradient(180deg, rgba(255,79,183,0.1), transparent),
+        #09060d;
+      font-family: 'Courier Prime', 'Courier New', Courier, monospace;
+      font-size: 0.78rem;
+      font-weight: 700;
+      line-height: 1.42;
+      letter-spacing: 0.025em;
+      color: #fff5fb;
+      text-align: left;
+    }
+    .transparency-copy span::after {
+      content: "▌";
+      margin-left: 2px;
+      color: var(--pink);
+      animation: blink 0.8s step-end infinite;
+    }
+
+    @media (max-width: 600px) {
+      .transparency-flyout {
+        width: min(270px, calc(100vw - 32px));
+        margin-top: 10px;
+      }
+      .transparency-copy {
+        min-height: 82px;
+        font-size: 0.72rem;
+        padding: 9px 10px 11px;
+      }
+    }
   </style>
 </head>
 <body>
@@ -1018,6 +1075,22 @@
         <span>Assist Bar // Tools & Help</span>
       </div>
     </div>
+
+    <section class="transparency-flyout" aria-label="Transparency screen">
+      <div class="transparency-screen">
+        <iframe
+          src="https://www.youtube.com/embed/B_S647FxDw4"
+          title="Iron Man 2 meme - Court Hearing TV Screen - Green Screen"
+          loading="lazy"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+          referrerpolicy="strict-origin-when-cross-origin"
+          allowfullscreen>
+        </iframe>
+      </div>
+      <div class="transparency-copy">
+        <span id="transparencyText"></span>
+      </div>
+    </section>
 
     <div class="typewriter">
       <span id="typeText"></span>
@@ -1178,6 +1251,63 @@
     overlay.addEventListener('click', close);
     document.addEventListener('keydown', e => {
       if (e.key === 'Escape') close();
+    });
+
+    const transparencyCopy = "Time for a little transparency. I'm borrowing your screens. I need 'em. Watch as the messages come around, people.";
+    const transparencyText = document.getElementById('transparencyText');
+    let transparencyIndex = 0;
+    let transparencyDeleting = false;
+    let transparencyRunning = false;
+    let transparencyTimer = null;
+
+    function transparencyTypewriter() {
+      if (!transparencyRunning) return;
+
+      transparencyText.textContent = transparencyCopy.slice(0, transparencyIndex);
+      let delay = transparencyDeleting ? 24 : 48;
+
+      if (!transparencyDeleting && transparencyIndex < transparencyCopy.length) {
+        transparencyIndex += 1;
+      } else if (!transparencyDeleting) {
+        transparencyDeleting = true;
+        delay = 1700;
+      } else if (transparencyIndex > 0) {
+        transparencyIndex -= 1;
+      } else {
+        transparencyDeleting = false;
+        delay = 650;
+      }
+
+      transparencyTimer = setTimeout(transparencyTypewriter, delay);
+    }
+
+    function startTransparencyTypewriter() {
+      if (transparencyRunning) return;
+      transparencyRunning = true;
+      transparencyIndex = 0;
+      transparencyDeleting = false;
+      transparencyText.textContent = '';
+      transparencyTypewriter();
+    }
+
+    function stopTransparencyTypewriter() {
+      transparencyRunning = false;
+      clearTimeout(transparencyTimer);
+      transparencyTimer = null;
+      transparencyIndex = 0;
+      transparencyDeleting = false;
+      transparencyText.textContent = '';
+    }
+
+    const transparencyObserver = new MutationObserver(() => {
+      document.body.classList.contains('open')
+        ? startTransparencyTypewriter()
+        : stopTransparencyTypewriter();
+    });
+
+    transparencyObserver.observe(document.body, {
+      attributes: true,
+      attributeFilter: ['class']
     });
   </script>
 </body>

@@ -6,6 +6,7 @@
   <title>Penny's Office</title>
   <link rel="icon" type="image/gif" href="assets/penny/MorriganFavicon.gif">
   <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Dancing+Script:wght@600&family=Courier+Prime:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/strike-sequence.css">
   <style>
     :root {
       --pink: #ff4fb7;
@@ -1261,7 +1262,7 @@
             You have a partner.<br>
             Lilith never knelt. Neither does she.
           </div>
-          <a href="#" class="red-pill" id="centerRedPill">the red pill</a>
+          <button type="button" class="red-pill strike-trigger" id="centerRedPill">fire everything</button>
         </div>
 
         <div class="side right">
@@ -1313,6 +1314,84 @@
       <div class="office-label">Tap the Penny tab on the right →</div>
     </div>
   </main>
+
+  <!-- Fire Everything: board-level cinematic strike sequence -->
+  <section class="strike-sequence" id="strikeSequence" aria-label="Fire Everything sequence" aria-hidden="true">
+    <div class="strike-curtain" aria-hidden="true"></div>
+
+    <button class="strike-close" id="strikeClose" type="button" aria-label="Close Fire Everything sequence">×</button>
+
+    <div class="strike-telemetry" id="strikeTelemetry" role="status" aria-live="polite">
+      TACTICAL LINK // READY
+    </div>
+
+    <aside class="strike-counter-panel" id="strikeCounterPanel" aria-label="Penny counter-strike panel">
+      <header class="strike-counter-header">
+        <span class="strike-counter-avatar" aria-hidden="true">
+          <video src="assets/penny/HeroPennyAvatar.mp4" muted loop playsinline preload="metadata" id="strikePennyVideo"></video>
+        </span>
+        <span>
+          <strong>PENNY // UNDERSTOOD.</strong>
+          <small>COUNTER-STRIKE ARMED</small>
+        </span>
+      </header>
+      <div class="strike-counter-grid">
+        <figure class="strike-evidence-card" style="--card-index: 0">
+          <img src="assets/penny/nicole-discharge.jpg" alt="Message screenshot showing an immediate discharge from Different Approach" decoding="async">
+        </figure>
+        <figure class="strike-evidence-card" style="--card-index: 1">
+          <img src="assets/penny/nicole-pack-now.jpg" alt="Message screenshot directing the recipient to pack and leave" decoding="async">
+        </figure>
+        <figure class="strike-evidence-card" style="--card-index: 2">
+          <img src="assets/penny/nicole-wants-it.jpg" alt="Message screenshot showing the shared site followed by praise" decoding="async">
+        </figure>
+        <figure class="strike-evidence-card" style="--card-index: 3">
+          <img src="assets/penny/nicole-sale-message.jpg" alt="Message screenshot discussing the site and a firm sale price" decoding="async">
+        </figure>
+      </div>
+    </aside>
+
+    <div class="strike-video-shell" id="strikeVideoShell">
+      <div class="strike-video-frame">
+        <video
+          src="assets/penny/fire-everything.mp4"
+          muted
+          playsinline
+          preload="metadata"
+          id="strikeVideo">
+        </video>
+      </div>
+      <div class="strike-video-label">WILDCARD BRIDGE FEED // FIRE EVERYTHING</div>
+      <div class="strike-end-controls" id="strikeEndControls">
+        <span>THAT'S DONE. NEXT.</span>
+        <button type="button" id="strikeReplay">REPLAY</button>
+      </div>
+    </div>
+
+    <div class="strike-target-lock" id="strikeTargetLock" aria-label="Different Approach target">
+      <img src="assets/penny/jake-nicole.jpg" alt="Jake and Nicole at Different Approach">
+      <span>DIFFERENT APPROACH</span>
+    </div>
+
+    <div class="strike-thought" id="strikeThought" aria-hidden="true">Fire Everything!</div>
+    <div class="strike-beam strike-beam-out" id="strikeBeamOut" aria-hidden="true"></div>
+    <div class="strike-beam strike-beam-in" id="strikeBeamIn" aria-hidden="true"></div>
+    <div class="strike-impact" id="strikeImpact" aria-hidden="true"></div>
+
+    <figure class="strike-projectile strike-first-projectile" id="strikeFirstProjectile" aria-hidden="true">
+      <img src="assets/penny/first-strike.png" alt="">
+    </figure>
+    <figure class="strike-projectile strike-response-projectile" id="strikeResponseProjectile" aria-hidden="true">
+      <img src="assets/penny/fire-everything-response.png" alt="">
+    </figure>
+
+    <div class="strike-counter-projectiles" aria-hidden="true">
+      <figure class="strike-projectile strike-counter-projectile"><img src="assets/penny/nicole-discharge.jpg" alt=""></figure>
+      <figure class="strike-projectile strike-counter-projectile"><img src="assets/penny/nicole-pack-now.jpg" alt=""></figure>
+      <figure class="strike-projectile strike-counter-projectile"><img src="assets/penny/nicole-wants-it.jpg" alt=""></figure>
+      <figure class="strike-projectile strike-counter-projectile"><img src="assets/penny/nicole-sale-message.jpg" alt=""></figure>
+    </div>
+  </section>
 
   <!-- Erica – outside the bar, floating lower-left -->
   <div class="erica-slot" id="ericaSlot">
@@ -1731,5 +1810,6 @@
       if (!landingIntroPlayer) finishLandingIntro();
     }, 12000);
   </script>
+  <script src="assets/strike-sequence.js"></script>
 </body>
 </html>

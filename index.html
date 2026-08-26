@@ -559,42 +559,6 @@
       color: inherit;
     }
 
-    /* Jake & Nicole floating avatar with cash */
-    .jake-nicole {
-      position: absolute;
-      bottom: 10%;
-      left: 5%;
-      width: clamp(70px, 11vw, 100px);
-      z-index: 8;
-      text-decoration: none;
-      animation: jake-bob 2.2s ease-in-out infinite;
-    }
-    .jake-nicole img {
-      width: 100%;
-      height: auto;
-      display: block;
-      border-radius: 8px;
-      border: 2px solid #22c55e;
-      box-shadow: 0 0 12px rgba(34, 197, 94, 0.55);
-    }
-    .jake-nicole .cash {
-      position: absolute;
-      top: 10%;
-      left: 50%;
-      font-size: 1rem;
-      font-weight: 700;
-      color: #4ade80;
-      text-shadow: 0 0 8px #22c55e;
-      opacity: 0;
-      animation: cash-shoot 2s ease-out infinite;
-    }
-    .jake-nicole .cash.c2 { animation-delay: 0.7s; left: 30%; }
-    .jake-nicole .cash.c3 { animation-delay: 1.4s; left: 70%; }
-    @keyframes jake-bob {
-      0%, 100% { transform: translateY(0) rotate(-1deg); }
-      50% { transform: translateY(-6px) rotate(1deg); }
-    }
-
     .side-profit-scene {
       position: absolute;
       left: 14%;
@@ -1756,13 +1720,6 @@
       <a class="officer-brian" href="https://www.facebook.com/Out4Good/" target="_blank" rel="noopener" title="Out for Good – Officer Brian">
         <img src="assets/penny/officer-brian.jpg" alt="Officer Brian – Out for Good">
         <span class="badge">OUT FOR THE BENJAMINS</span>
-      </a>
-      <!-- Jake and graduate money pop -->
-      <a class="jake-nicole" href="https://differentapproachomaha.org/" target="_blank" rel="noopener" title="Jake and graduate – A Different Approach">
-        <img src="assets/penny/jake-nicole.jpg" alt="Jake and graduate – A Different Approach">
-        <span class="cash">$</span>
-        <span class="cash c2">$</span>
-        <span class="cash c3">$</span>
       </a>
       <div class="side-profit-scene" aria-label="A Different Profit side scene">
         <figure class="side-profit-card website">

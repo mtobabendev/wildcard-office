@@ -459,9 +459,9 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: center;
+      justify-content: flex-start;
       text-align: center;
-      padding: 10px 14px;
+      padding: 7% 14px 10px;
       gap: 6px;
       position: relative;
     }
@@ -472,6 +472,8 @@
       color: var(--pink2);
       text-shadow: 0 0 12px rgba(255,79,183,0.45);
       text-transform: uppercase;
+      position: relative;
+      z-index: 13;
     }
     .board-center .sub {
       font-size: clamp(0.55rem, 1.5vw, 0.72rem);
@@ -479,6 +481,8 @@
       letter-spacing: 0.06em;
       max-width: 92%;
       line-height: 1.35;
+      position: relative;
+      z-index: 13;
     }
     .board-center .core {
       font-size: clamp(0.5rem, 1.3vw, 0.68rem);
@@ -486,6 +490,8 @@
       margin-top: 4px;
       line-height: 1.4;
       max-width: 94%;
+      position: relative;
+      z-index: 13;
     }
     .board-center .core strong {
       color: #e8d8b8;
@@ -497,6 +503,8 @@
       font-style: italic;
       margin-top: 2px;
       letter-spacing: 0.03em;
+      position: relative;
+      z-index: 13;
     }
     .board-center .red-pill {
       display: inline-block;
@@ -522,10 +530,10 @@
       box-shadow: 0 0 22px rgba(225,29,72,0.75);
     }
 
-    /* A Different Profit: panic orbit around the actual Fire Everything control */
+    /* A Different Profit: three-card fan and incoming punch */
     .profit-panic { position: absolute; inset: 0; z-index: 12; pointer-events: none; overflow: visible; }
     .panic-thought {
-      position: absolute; left: 50%; top: 54%; width: min(42%, 250px);
+      position: absolute; left: 50%; top: 48%; width: min(42%, 250px);
       transform: translate(-50%, -100%) rotate(-2deg); padding: 8px 11px;
       border: 2px solid #f8fafc; border-radius: 50%; background: #fff; color: #17100b;
       font-family: system-ui, sans-serif; font-size: clamp(0.45rem, 1vw, 0.68rem);
@@ -537,22 +545,34 @@
       content: ""; position: absolute; left: 56%; bottom: -10px; width: 14px; height: 14px;
       border: 2px solid #fff; border-radius: 50%; background: #fff;
     }
-    .panic-orbiter {
-      --orbit-radius: clamp(82px, 16vw, 165px); position: absolute; left: 50%; top: 74%;
-      width: 1px; height: 1px; animation: profit-orbit 2.15s linear infinite;
-    }
-    .panic-orbiter.jake { animation-delay: -1.075s; }
+    .panic-orbiter { position: absolute; left: 50%; top: 68%; }
+    .panic-orbiter.nicole-jake { transform: translate(-112%,-50%) rotate(-13deg); }
+    .panic-orbiter.website { transform: translate(-50%,-57%) rotate(-1deg); z-index: 2; }
+    .panic-orbiter.jake { transform: translate(12%,-50%) rotate(13deg); z-index: 3; }
     .panic-card {
-      width: clamp(76px, 11vw, 118px); margin: 0; transform: translate(-50%, -50%);
+      width: clamp(76px, 11vw, 118px); margin: 0;
       border: 2px solid #ff2d75; border-radius: 7px; overflow: hidden; background: #120907;
       box-shadow: 0 0 12px #ff2d75, 0 0 24px rgba(255,45,117,.65);
-      animation: profit-counter-orbit 2.15s linear infinite, profit-rattle .16s steps(2,end) infinite;
+      animation: profit-rattle .22s steps(2,end) infinite;
     }
-    .panic-orbiter.jake .panic-card { animation-delay: -1.075s, -.08s; border-color: #fbbf24; box-shadow: 0 0 12px #fbbf24, 0 0 24px rgba(251,191,36,.55); }
+    .panic-orbiter.jake .panic-card { animation-delay: -.08s; border-color: #fbbf24; box-shadow: 0 0 12px #fbbf24, 0 0 24px rgba(251,191,36,.55); }
+    .panic-orbiter.website .panic-card { border-color: #60a5fa; box-shadow: 0 0 12px #2563eb, 0 0 24px rgba(37,99,235,.5); }
     .panic-card img { display: block; width: 100%; height: clamp(52px, 7vw, 76px); object-fit: cover; }
     .panic-card figcaption {
       padding: 4px 3px 5px; color: #fff; font: 900 clamp(.35rem,.7vw,.5rem)/1.05 system-ui,sans-serif;
       letter-spacing: .04em; text-transform: uppercase;
+    }
+    .profit-punch {
+      position: absolute;
+      left: 50%;
+      top: 67%;
+      z-index: 7;
+      width: clamp(125px, 22vw, 235px);
+      border: 2px solid #ff4fb7;
+      border-radius: 8px;
+      box-shadow: 0 0 16px #ff2d75, 0 0 32px rgba(255,45,117,.62);
+      opacity: 0;
+      animation: girls-punch-in 3.2s cubic-bezier(.2,.8,.2,1) infinite;
     }
     .panic-money-rain { position: absolute; inset: 0; z-index: 10; overflow: hidden; pointer-events: none; }
     .panic-money-rain span {
@@ -565,22 +585,30 @@
       0%,100% { transform: scale(1); box-shadow: 0 0 12px rgba(225,29,72,.65), 0 0 0 0 rgba(255,45,117,.55); }
       50% { transform: scale(1.14); box-shadow: 0 0 28px #ff2d75, 0 0 0 12px rgba(255,45,117,0); }
     }
-    @keyframes profit-orbit { to { transform: rotate(360deg) translateX(var(--orbit-radius)); } }
-    @keyframes profit-counter-orbit { to { transform: translate(-50%, -50%) rotate(-360deg); } }
     @keyframes profit-rattle { 50% { filter: saturate(1.5) contrast(1.12); } }
     @keyframes panic-bubble { 50% { transform: translate(-50%, -100%) rotate(2deg) scale(1.05); } }
+    @keyframes girls-punch-in {
+      0%,18% { opacity: 0; transform: translate(95%,-50%) rotate(7deg) scale(.7); }
+      34%,70% { opacity: 1; transform: translate(-34%,-50%) rotate(-4deg) scale(1); }
+      82%,100% { opacity: 0; transform: translate(-62%,-50%) rotate(-8deg) scale(.9); }
+    }
     @keyframes profit-money-fall {
-      0% { opacity: 0; transform: translate(0,-18px) rotate(0); } 12% { opacity: 1; }
-      82% { opacity: .9; } 100% { opacity: 0; transform: translate(var(--fall-drift), 360px) rotate(var(--fall-spin)); }
+      0% { opacity: 0; top: 88%; transform: translate(0,18px) rotate(0); }
+      18% { opacity: 1; }
+      48% { opacity: 1; top: 55%; left: var(--fall-x); transform: translate(var(--fall-drift),0) rotate(180deg) scale(1.18); }
+      72% { opacity: .9; top: 69%; left: 50%; transform: translate(0,0) rotate(var(--fall-spin)) scale(.62); }
+      100% { opacity: 0; top: 72%; left: 50%; transform: translate(0,0) rotate(var(--fall-spin)) scale(.25); }
     }
     @media (max-width: 600px) {
-      .panic-orbiter { --orbit-radius: clamp(58px, 14vw, 90px); top: 76%; }
+      .board-center { padding-top: 5%; }
+      .panic-orbiter { top: 71%; }
       .panic-card { width: clamp(54px, 11vw, 76px); }
       .panic-card img { height: clamp(38px, 7vw, 54px); }
-      .panic-thought { top: 52%; width: 48%; padding: 5px 7px; }
+      .panic-thought { top: 51%; width: 48%; padding: 5px 7px; }
+      .profit-punch { top: 71%; width: clamp(96px, 22vw, 145px); }
     }
     @media (prefers-reduced-motion: reduce) {
-      .panic-orbiter, .panic-card, .panic-thought, .panic-money-rain span, .board-center .red-pill { animation-duration: 8s; }
+      .panic-card, .panic-thought, .profit-punch, .panic-money-rain span, .board-center .red-pill { animation-duration: 8s; }
     }
 
     .office-label {
@@ -1473,12 +1501,19 @@
                 <figcaption>Nicole + Jake<br>A Different Profit</figcaption>
               </figure>
             </div>
+            <div class="panic-orbiter website">
+              <figure class="panic-card">
+                <img src="assets/penny/a-different-profit-website.jpg" alt="Different Approach website">
+                <figcaption>The Real Website<br>A Different Profit</figcaption>
+              </figure>
+            </div>
             <div class="panic-orbiter jake">
               <figure class="panic-card">
                 <img src="assets/penny/a-different-profit-jake.jpg" alt="Jake">
                 <figcaption>Jake<br>A Different Profit</figcaption>
               </figure>
             </div>
+            <img class="profit-punch" src="assets/penny/profit-punch.png" alt="Girls knocking the money back toward the board">
           </div>
           <button type="button" class="red-pill strike-trigger" id="centerRedPill">fire everything</button>
         </div>

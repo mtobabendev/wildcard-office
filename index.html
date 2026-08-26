@@ -310,6 +310,59 @@
       transform: skewX(-8deg) scaleX(1.05);
     }
     .corner.free { background: linear-gradient(145deg, #1a1a3a, #0a0a1f); color: #8ab4ff; }
+    .corner.free.boner-garage {
+      position: relative;
+      isolation: isolate;
+      overflow: hidden;
+      padding: 0;
+      background: #08030a;
+    }
+    .boner-garage video {
+      position: absolute;
+      inset: 0;
+      z-index: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center;
+    }
+    .boner-garage::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+      background: linear-gradient(180deg,rgba(0,0,0,.78),transparent 34% 63%,rgba(0,0,0,.8));
+      pointer-events: none;
+    }
+    .boner-garage .garage-title,
+    .boner-garage .parking-title {
+      position: absolute;
+      z-index: 2;
+      left: 3px;
+      right: 3px;
+      font-family: system-ui,sans-serif;
+      font-weight: 1000;
+      line-height: 1;
+      letter-spacing: .055em;
+      text-align: center;
+    }
+    .boner-garage .garage-title {
+      top: 6px;
+      color: #ff4fb7;
+      font-size: clamp(.48rem,1.1vw,.68rem);
+      text-shadow: 0 0 4px #ff2d75,0 0 10px #ff2d75,0 0 18px #ff2d75;
+      animation: garage-pink-flicker 1.8s steps(2,end) infinite;
+    }
+    .boner-garage .parking-title {
+      bottom: 6px;
+      color: #b7ff00;
+      font-size: clamp(.42rem,1vw,.62rem);
+      text-shadow: 0 0 4px #76ff03,0 0 10px #76ff03,0 0 18px #39ff14;
+    }
+    @keyframes garage-pink-flicker {
+      0%,18%,22%,68%,72%,100% { opacity: 1; }
+      20%,70% { opacity: .58; }
+    }
     .corner.goto { background: linear-gradient(145deg, #3a2a12, #1f150a); color: #ffb84d; }
 
     .side { display: flex; border: 1px solid var(--board-line); }
@@ -1600,7 +1653,13 @@
     <div class="mono-wrap">
       <div class="mono-board">
         <!-- Top row -->
-        <div class="corner free">FREE<br>PARKING<br><span style="font-size:0.7em;opacity:0.7">illusion</span></div>
+        <div class="corner free boner-garage" aria-label="Boner Garage — Free Parking">
+          <video autoplay muted loop playsinline preload="metadata" aria-hidden="true">
+            <source src="assets/penny/boner-garage.mp4" type="video/mp4">
+          </video>
+          <span class="garage-title">BONER GARAGE</span>
+          <span class="parking-title">FREE PARKING</span>
+        </div>
         <div class="side top">
           <div class="prop yt">YT<br><span class="tag">watch</span></div>
           <div class="prop ig">IG<br><span class="tag">filter</span></div>

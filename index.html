@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <title>Penny's Office</title>
+  <link rel="icon" type="image/gif" href="assets/penny/MorriganFavicon.gif">
   <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Dancing+Script:wght@600&family=Courier+Prime:wght@400;700&display=swap" rel="stylesheet">
   <style>
     :root {
@@ -529,12 +530,59 @@
     .header .mark {
       width: 40px;
       height: 40px;
+      flex: 0 0 40px;
+      overflow: hidden;
       border-radius: 50%;
       border: 1px solid var(--pink);
       display: grid;
       place-items: center;
-      color: var(--pink2);
-      font-size: 1.2rem;
+      background: #020205;
+      box-shadow: 0 0 12px rgba(255,79,183,0.34);
+    }
+    .header .mark img {
+      display: block;
+      width: 100%;
+      height: 100%;
+      padding: 3px;
+      border-radius: 50%;
+      object-fit: cover;
+    }
+    .header-copy {
+      min-width: 0;
+      flex: 1 1 auto;
+    }
+    .header-avatars {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 7px;
+      margin-left: auto;
+      flex: 0 0 auto;
+    }
+    .header-avatar {
+      width: 38px;
+      height: 38px;
+      overflow: hidden;
+      border-radius: 50%;
+      border: 1px solid rgba(255,155,216,0.78);
+      background: #030306;
+      box-shadow:
+        0 0 0 1px rgba(255,255,255,0.08),
+        0 0 12px rgba(255,79,183,0.34);
+    }
+    .header-avatar video,
+    .header-avatar img {
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .header-avatar.penny video,
+    .header-avatar.jenn video {
+      object-position: center 18%;
+    }
+    .header-avatar.matt img {
+      object-position: center top;
     }
     .header h2 {
       font-size: 0.9rem;
@@ -547,6 +595,33 @@
       font-size: 0.6rem;
       color: var(--muted);
       margin-top: 2px;
+    }
+
+    @media (max-width: 600px) {
+      .header {
+        padding: 11px 10px;
+        gap: 8px;
+      }
+      .header .mark {
+        width: 36px;
+        height: 36px;
+        flex-basis: 36px;
+      }
+      .header h2 {
+        font-size: 0.78rem;
+        white-space: nowrap;
+      }
+      .header span {
+        font-size: 0.52rem;
+        white-space: nowrap;
+      }
+      .header-avatars {
+        gap: 4px;
+      }
+      .header-avatar {
+        width: 32px;
+        height: 32px;
+      }
     }
 
     .typewriter {
@@ -1260,10 +1335,39 @@
 
   <aside class="bar" id="bar">
     <div class="header">
-      <div class="mark">♠</div>
-      <div>
+      <div class="mark">
+        <img src="assets/penny/PinkSpade.png" alt="WildCard DEV pink spade">
+      </div>
+      <div class="header-copy">
         <h2>WildCard DEV</h2>
         <span>Assist Bar // Tools & Help</span>
+      </div>
+      <div class="header-avatars" aria-label="WildCard team">
+        <div class="header-avatar penny" role="img" aria-label="Penny" title="Penny">
+          <video
+            src="assets/penny/HeroPennyAvatar.mp4"
+            muted
+            loop
+            playsinline
+            preload="metadata"
+            aria-hidden="true"
+            id="headerPennyVideo">
+          </video>
+        </div>
+        <div class="header-avatar matt" role="img" aria-label="Matt" title="Matt">
+          <img src="assets/penny/MattAvatar.png" alt="">
+        </div>
+        <div class="header-avatar jenn" role="img" aria-label="Jenn" title="Jenn">
+          <video
+            src="assets/penny/SuperJennAvatar.mp4"
+            muted
+            loop
+            playsinline
+            preload="metadata"
+            aria-hidden="true"
+            id="headerJennVideo">
+          </video>
+        </div>
       </div>
     </div>
 
@@ -1440,6 +1544,10 @@
       document.getElementById('pennyCornerDesktopVideo'),
       document.getElementById('pennyCornerMobileVideo')
     ];
+    const headerAvatarVideos = [
+      document.getElementById('headerPennyVideo'),
+      document.getElementById('headerJennVideo')
+    ];
 
     function open() {
       document.body.classList.add('open');
@@ -1457,6 +1565,10 @@
         : pennyCornerVideos[0];
       activePennyCornerVideo.currentTime = 0;
       activePennyCornerVideo.play().catch(() => {});
+      headerAvatarVideos.forEach(video => {
+        video.currentTime = 0;
+        video.play().catch(() => {});
+      });
       setTimeout(typeWriter, 400);
     }
     function close() {
@@ -1471,6 +1583,10 @@
       lucyEntranceVideo.pause();
       lucyEntranceVideo.currentTime = 0;
       pennyCornerVideos.forEach(video => {
+        video.pause();
+        video.currentTime = 0;
+      });
+      headerAvatarVideos.forEach(video => {
         video.pause();
         video.currentTime = 0;
       });

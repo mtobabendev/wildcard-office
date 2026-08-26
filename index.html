@@ -262,6 +262,53 @@
     .prop.netflix { border-top: 3px solid #e50914; }
     .prop.carrier { border-top: 3px solid #6b7280; }
     .prop.feed { border-top: 3px solid #8b5cf6; }
+
+    .prop.chemical-eval {
+      border-top: 3px solid #facc15;
+      background: linear-gradient(180deg, #2b2206 0%, #120e08 100%);
+      color: #fff3a3;
+    }
+    .prop.chemical-eval .joke {
+      margin-top: 3px;
+      color: #ff4fb7;
+      font: 800 clamp(.38rem,.85vw,.52rem)/1 'Dancing Script',cursive;
+      transform: rotate(-5deg);
+      text-shadow: 0 0 7px rgba(255,79,183,.7);
+    }
+    .prop.community-chest {
+      position: relative;
+      isolation: isolate;
+      padding: 0;
+      border-top: 3px solid #ff4fb7;
+      background: #070308;
+    }
+    .prop.community-chest video {
+      position: absolute;
+      inset: 0;
+      z-index: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center;
+    }
+    .prop.community-chest::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+      background: linear-gradient(180deg,rgba(0,0,0,.08),rgba(0,0,0,.15) 45%,rgba(0,0,0,.82));
+    }
+    .prop.community-chest .chest-title {
+      position: absolute;
+      z-index: 2;
+      left: 3px;
+      right: 3px;
+      bottom: 5px;
+      color: #fff;
+      font: 900 clamp(.4rem,1vw,.58rem)/1.05 system-ui,sans-serif;
+      letter-spacing: .045em;
+      text-shadow: 0 1px 2px #000,0 0 8px #ff2d75;
+    }
         /* Special Chance / Community Chest style cards */
     .prop.card-slot {
       background: #1a0a0a;
@@ -587,7 +634,7 @@
     /* Center panic keeps orbiting; the new evidence fan lives beside Jake's photo. */
     .profit-panic { position: absolute; inset: 0; z-index: 12; pointer-events: none; overflow: visible; }
     .panic-thought {
-      position: absolute; left: 50%; top: 54%; width: min(42%, 250px);
+      position: absolute; left: 50%; top: 43%; z-index: 18; width: min(62%, 340px);
       transform: translate(-50%, -100%) rotate(-2deg); padding: 8px 11px;
       border: 2px solid #f8fafc; border-radius: 50%; background: #fff; color: #17100b;
       font-family: system-ui, sans-serif; font-size: clamp(0.45rem, 1vw, 0.68rem);
@@ -644,7 +691,7 @@
       .panic-orbiter { --orbit-radius: clamp(58px,14vw,90px); top: 76%; }
       .panic-card { width: clamp(54px, 11vw, 76px); }
       .panic-card img { height: clamp(38px, 7vw, 54px); }
-      .panic-thought { top: 54%; width: 48%; padding: 5px 7px; }
+      .panic-thought { top: 40%; width: 68%; padding: 5px 7px; }
     }
     @media (prefers-reduced-motion: reduce) {
       .panic-orbiter, .panic-card, .panic-thought, .side-profit-punch, .panic-money-rain span, .board-center .red-pill { animation-duration: 8s; }
@@ -1532,8 +1579,8 @@
             You have a partner.<br>
             Lilith never knelt. Neither does she.
           </div>
+          <div class="panic-thought">Holy crap—profits are threatened! Quick! Quick! …</div>
           <div class="profit-panic">
-            <div class="panic-thought">Holy crap—profits are threatened! Quick! Quick! …</div>
             <div class="panic-orbiter nicole-jake">
               <figure class="panic-card">
                 <img src="assets/penny/a-different-profit-nicole-jake.jpg" alt="Nicole and Jake">
@@ -1577,6 +1624,16 @@
           </a>
           <div class="prop yt arkham">ARKHAM<br>ASYLUM<br><span class="tag">hightower</span></div>
           <div class="prop amzn">PRIME<br><span class="tag">ship</span></div>
+          <a class="prop chemical-eval" href="#" title="Chemical dependency evaluation placeholder">
+            CHEMICAL<br>DEPENDENCY<br>EVAL
+            <span class="joke">what a joke</span>
+          </a>
+          <a class="prop community-chest" href="#" title="Community Chest placeholder" aria-label="Community Chest placeholder">
+            <video autoplay muted loop playsinline preload="metadata" aria-hidden="true">
+              <source src="assets/penny/community-chest.mp4" type="video/mp4">
+            </video>
+            <span class="chest-title">COMMUNITY<br>CHEST</span>
+          </a>
           <div class="prop card-slot pavlov-slot">
             <div class="card-label">PAVLOV'S<br>DOGS</div>
             <a href="#pavlov" class="mini-pill">red pill</a>

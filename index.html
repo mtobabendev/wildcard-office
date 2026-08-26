@@ -877,7 +877,38 @@
       }
     }
 
+    /* ===== LUCY + TRANSPARENCY EVIDENCE ROW ===== */
+    .evidence-stage {
+      display: grid;
+      grid-template-columns: 180px 320px;
+      align-items: start;
+      justify-content: start;
+      gap: 20px;
+      padding: 18px 18px 8px;
+    }
+    .lucy-entrance {
+      width: 180px;
+      aspect-ratio: 2 / 3;
+      overflow: hidden;
+      border: 1px solid rgba(255, 112, 58, 0.82);
+      border-radius: 12px;
+      background: #030306;
+      box-shadow:
+        0 0 0 1px rgba(255,255,255,0.07),
+        0 0 20px rgba(255, 70, 30, 0.4);
+    }
+    .lucy-entrance video {
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
     /* ===== COMPACT TRANSPARENCY SCREEN ===== */
+    .evidence-stage .transparency-flyout {
+      width: 100%;
+      margin: 0;
+    }
     .transparency-flyout {
       width: min(320px, calc(100% - 28px));
       margin: 14px auto 8px;
@@ -923,6 +954,21 @@
     }
 
     @media (max-width: 600px) {
+      .evidence-stage {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+        padding: 10px 16px 8px;
+      }
+      .lucy-entrance {
+        width: min(112px, 34vw);
+      }
+      .evidence-stage .transparency-flyout {
+        width: min(270px, calc(100vw - 32px));
+        margin: 0;
+        align-self: center;
+      }
       .transparency-flyout {
         width: min(270px, calc(100vw - 32px));
         margin-top: 10px;
@@ -1156,21 +1202,34 @@
       </div>
     </div>
 
-    <section class="transparency-flyout" aria-label="Transparency screen">
-      <div class="transparency-screen">
-        <iframe
-          src="https://www.youtube.com/embed/B_S647FxDw4"
-          title="Iron Man 2 meme - Court Hearing TV Screen - Green Screen"
-          loading="lazy"
-          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-          referrerpolicy="strict-origin-when-cross-origin"
-          allowfullscreen>
-        </iframe>
-      </div>
-      <div class="transparency-copy">
-        <span id="transparencyText"></span>
-      </div>
-    </section>
+    <div class="evidence-stage">
+      <section class="lucy-entrance" aria-label="Lucy entrance">
+        <video
+          src="assets/penny/LucyEnters.mp4"
+          muted
+          loop
+          playsinline
+          preload="metadata"
+          id="lucyEntranceVideo">
+        </video>
+      </section>
+
+      <section class="transparency-flyout" aria-label="Transparency screen">
+        <div class="transparency-screen">
+          <iframe
+            src="https://www.youtube.com/embed/B_S647FxDw4"
+            title="Iron Man 2 meme - Court Hearing TV Screen - Green Screen"
+            loading="lazy"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            referrerpolicy="strict-origin-when-cross-origin"
+            allowfullscreen>
+          </iframe>
+        </div>
+        <div class="transparency-copy">
+          <span id="transparencyText"></span>
+        </div>
+      </section>
+    </div>
 
     <div class="typewriter">
       <span id="typeText"></span>
@@ -1299,6 +1358,7 @@
     const tabVideo = document.getElementById('tabVideo');
     const tabImg = document.getElementById('tabImg');
     const ericaVideo = document.getElementById('ericaVideo');
+    const lucyEntranceVideo = document.getElementById('lucyEntranceVideo');
 
     function open() {
       document.body.classList.add('open');
@@ -1309,6 +1369,8 @@
       tabVideo.play().catch(() => {});
       ericaVideo.currentTime = 0;
       ericaVideo.play().catch(() => {});
+      lucyEntranceVideo.currentTime = 0;
+      lucyEntranceVideo.play().catch(() => {});
       setTimeout(typeWriter, 400);
     }
     function close() {
@@ -1320,6 +1382,8 @@
       tabImg.style.display = 'block';
       ericaVideo.pause();
       ericaVideo.currentTime = 0;
+      lucyEntranceVideo.pause();
+      lucyEntranceVideo.currentTime = 0;
       typeEl.textContent = '';
       redPill.style.display = 'none';
       typing = false;

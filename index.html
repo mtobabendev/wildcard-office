@@ -473,6 +473,36 @@
     }
     .tab video { display: none; }
 
+    .tab-touch-label {
+      position: absolute;
+      top: 61%;
+      left: 50%;
+      z-index: 3;
+      width: calc(100% - 10px);
+      transform: translate(-50%, -50%);
+      color: #fff;
+      font-family: 'Courier Prime', 'Courier New', Courier, monospace;
+      font-size: clamp(0.58rem, 0.8vw, 0.72rem);
+      font-weight: 700;
+      line-height: 1.05;
+      letter-spacing: 0.06em;
+      text-align: center;
+      text-transform: uppercase;
+      text-shadow:
+        0 0 3px #fff,
+        0 0 7px #ff9bd8,
+        0 0 13px #ff4fb7,
+        0 0 20px #ff4fb7;
+      pointer-events: none;
+      animation: touch-here-glow 1.15s ease-in-out infinite;
+      transition: opacity 0.2s ease;
+    }
+
+    @keyframes touch-here-glow {
+      0%, 100% { opacity: 0.82; transform: translate(-50%, -50%) scale(0.96); }
+      50% { opacity: 1; transform: translate(-50%, -50%) scale(1.08); }
+    }
+
     body.open .tab {
       width: min(420px, 50vw);
       transform: translateX(calc(-1 * var(--bar-w) + 8px));
@@ -482,6 +512,7 @@
       display: block;
       object-fit: contain;
     }
+    body.open .tab-touch-label { opacity: 0; }
 
     /* ===== BAR ===== */
     .bar {
@@ -772,6 +803,12 @@
       }
       body.open .tab {
         width: min(260px, 68vw);
+      }
+      .tab-touch-label {
+        top: 61%;
+        width: calc(100% - 6px);
+        font-size: 0.52rem;
+        letter-spacing: 0.035em;
       }
       .orbit-stage { height: 110px; }
       .typewriter {
@@ -1567,6 +1604,7 @@
   <button class="tab" id="tab" aria-label="Open assist bar">
     <img src="assets/penny/PennyCanHelp.jpg" alt="Penny" id="tabImg">
     <video src="assets/penny/PennyShowsTheWay.mp4" muted playsinline id="tabVideo"></video>
+    <span class="tab-touch-label" aria-hidden="true">TOUCH<br>HERE</span>
   </button>
     <script>
     const ROUTES = [

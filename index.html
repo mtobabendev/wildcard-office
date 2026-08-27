@@ -44,6 +44,10 @@
       color: #17100b;
       border-bottom: 2px solid #ff2d75;
       box-shadow: 0 4px 18px rgba(0,0,0,.62);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: .75em;
       text-align: center;
       font: 700 clamp(.62rem,1.4vw,.9rem)/1.1 'Courier Prime',monospace;
       letter-spacing: .045em;
@@ -56,6 +60,26 @@
       font: 700 clamp(.78rem,1.9vw,1.18rem)/.8 'Dancing Script',cursive;
       transform: rotate(-3deg);
       text-shadow: 0 0 7px rgba(225,29,72,.45);
+    }
+    .square-donate-button {
+      display: inline-block;
+      flex: 0 0 auto;
+      padding: 5px 12px 4px;
+      border: 2px solid #111;
+      border-radius: 999px;
+      background: #ff2d75;
+      color: #fff;
+      font: 900 clamp(.58rem,1.1vw,.76rem)/1 system-ui,sans-serif;
+      letter-spacing: .08em;
+      text-decoration: none;
+      box-shadow: 0 0 8px rgba(255,45,117,.75);
+      transition: transform .18s ease,box-shadow .18s ease;
+    }
+    .square-donate-button:hover,
+    .square-donate-button:focus-visible {
+      transform: scale(1.08);
+      box-shadow: 0 0 14px #ff2d75;
+      outline: none;
     }
 
     .inmate-cookie-gag {
@@ -150,8 +174,9 @@
     }
 
     @media (max-width: 600px) {
-      .profit-donate-strip { text-align: left; padding: 5px 7px; font-size: .48rem; }
-      .profit-donate-strip .afterthought { margin-left: .3em; font-size: .7rem; }
+      .profit-donate-strip { justify-content: space-between; text-align: left; padding: 5px 7px; font-size: .48rem; }
+      .profit-donate-strip .afterthought { display: none; }
+      .square-donate-button { padding: 4px 8px 3px; font-size: .56rem; }
       .inmate-cookie-gag { right: calc(var(--tab-w) + 7px); bottom: 8px; width: min(220px, calc(100vw - var(--tab-w) - 14px)); padding: 9px 10px; }
       .inmate-cookie-gag .cookie-heading { font-size: .62rem; }
       .inmate-cookie-gag .cookies-crossed { font-size: .72rem; }
@@ -1599,8 +1624,11 @@
 </head>
 <body>
   <div class="profit-donate-strip">
-    Please donate to us to line our own pockets.
-    <span class="afterthought">Every dollar helps… us.</span>
+    <span class="donate-copy">
+      Please donate to us to line our own pockets.
+      <span class="afterthought">Every dollar helps… us.</span>
+    </span>
+    <a class="square-donate-button" href="https://square.link/u/YnAVr8ht" target="_blank" rel="noopener" aria-label="Donate securely through Square">DONATE</a>
   </div>
 
   <aside class="inmate-cookie-gag" aria-label="A Different Profit evidence preview">

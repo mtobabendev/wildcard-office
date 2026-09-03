@@ -356,3 +356,99 @@
     if (active) placeTargetLock();
   });
 })();
+
+(() => {
+  const routes = [
+    ['.corner.boner-garage', '/boner-garage/'],
+    ['.side.top .prop.yt', '/revelation/media/'],
+    ['.side.top .prop.ig', '/revelation/media/'],
+    ['.side.top .prop.tt', '/revelation/media/'],
+    ['.side.top .prop.x', '/revelation/media/'],
+    ['.side.top .prop.feed', '/revelation/media/'],
+    ['.side.top .prop.netflix', '/revelation/media/'],
+    ['.side.top .prop.store', '/revelation/apple/'],
+    ['.corner.goto', '/go-to-jail/'],
+    ['.skinner-slot', '/skinner-box/'],
+    ['.side.left .prop.goog', '/revelation/google/'],
+    ['.side.left .prop.meta', '/revelation/meta/'],
+    ['.side.left .prop.aapl', '/revelation/apple/'],
+    ['.side.left .prop.amzn', '/revelation/amazon/'],
+    ['.side.left .prop.msft', '/revelation/microsoft/'],
+    ['.side.left .prop.vz', '/revelation/carriers/'],
+    ['.side.right .prop.aws', '/revelation/amazon/'],
+    ['.side.right .prop.azure', '/revelation/microsoft/'],
+    ['.side.right .prop.store', '/revelation/google/'],
+    ['.side.right .prop.aapl', '/revelation/apple/'],
+    ['.side.right .prop.meta', '/revelation/meta/'],
+    ['.side.right .prop.goog', '/revelation/google/'],
+    ['.side.right .prop.carrier', '/revelation/carriers/'],
+    ['.corner.jail', '/jail/'],
+    ['.david-house', '/david-house/'],
+    ['.different-approach', '/different-approach/'],
+    ['.out-for-good', '/different-approach/out4good/'],
+    ['.side.bottom .prop.arkham', '/arkham/'],
+    ['.side.bottom .prop.amzn', '/revelation/amazon/'],
+    ['.chemical-eval', '/chemical-eval/'],
+    ['.community-chest', '/community-chest/'],
+    ['.pavlov-slot', '/pavlov/'],
+    ['.corner.go', '/lever/']
+  ];
+
+  const style = document.createElement('style');
+  style.textContent = `
+    .board-route { cursor: pointer; }
+    .board-route:focus-visible {
+      outline: 2px solid #ff4fb7;
+      outline-offset: -3px;
+    }
+  `;
+  document.head.appendChild(style);
+
+  const normalizeLabel = element =>
+    (element.getAttribute('aria-label') || element.textContent || 'Board exhibit')
+      .replace(/\s+/g, ' ')
+      .trim();
+
+  const wireRoute = (element, path) => {
+    if (!element || element.dataset.boardRouteWired === 'true') return;
+
+    element.dataset.boardRouteWired = 'true';
+    element.dataset.boardRoute = path;
+    element.classList.add('board-route');
+
+    const nestedLinks = [...element.querySelectorAll('a')];
+    nestedLinks.forEach(link => {
+      link.href = path;
+      link.removeAttribute('target');
+      link.removeAttribute('rel');
+    });
+
+    if (element.tagName === 'A') {
+      element.href = path;
+      element.removeAttribute('target');
+      element.removeAttribute('rel');
+      return;
+    }
+
+    element.setAttribute('role', 'link');
+    element.tabIndex = 0;
+    if (!element.getAttribute('aria-label')) {
+      element.setAttribute('aria-label', `${normalizeLabel(element)} — open exhibit`);
+    }
+
+    element.addEventListener('click', event => {
+      if (event.target.closest('a')) return;
+      window.location.assign(path);
+    });
+
+    element.addEventListener('keydown', event => {
+      if (event.key !== 'Enter' && event.key !== ' ') return;
+      event.preventDefault();
+      window.location.assign(path);
+    });
+  };
+
+  routes.forEach(([selector, path]) => {
+    document.querySelectorAll(selector).forEach(element => wireRoute(element, path));
+  });
+})();

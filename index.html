@@ -1621,6 +1621,7 @@
       }
     }
   </style>
+  <link rel="stylesheet" href="assets/responsive-layout.css">
 </head>
 <body>
   <div class="profit-donate-strip">
@@ -1631,6 +1632,11 @@
     <a class="square-donate-button" href="https://square.link/u/YnAVr8ht" target="_blank" rel="noopener" aria-label="Donate securely through Square">DONATE</a>
   </div>
 
+  <aside class="compatibility-notice" aria-label="12-step notice">
+    <p>If AA or NA is your scene, please keep stepping right past this office.</p>
+    <p>No pitches. No partnerships. No ‘you should come to a meeting.’ No debates about the policy.</p>
+    <p>We’re clearly running different operating systems, and this one does not support that software.</p>
+  </aside>
   <aside class="inmate-cookie-gag" aria-label="A Different Profit evidence preview">
     <div class="cookie-heading">THIS WEBSITE USES</div>
     <span class="cookies-crossed">COOKIES</span>
@@ -1644,6 +1650,7 @@
     </div>
   </aside>
   <section class="landing-intro" id="landingIntro" aria-label="Opening video">
+    <button type="button" class="skip-intro">Skip intro</button>
     <div class="landing-intro-player" id="landingIntroPlayer"></div>
     <div class="landing-intro-line">
       <span id="landingIntroText"></span>
@@ -2321,6 +2328,7 @@
     }
 
     window.onYouTubeIframeAPIReady = function () {
+      if (landingIntroFinished) return;
       landingIntroPlayer = new YT.Player('landingIntroPlayer', {
         videoId: 'X1aFkAkFASk',
         playerVars: {
@@ -2361,5 +2369,6 @@
     }, 12000);
   </script>
   <script src="assets/strike-sequence.js"></script>
+  <script src="assets/responsive-layout.js"></script>
 </body>
 </html>

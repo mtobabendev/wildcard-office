@@ -53,12 +53,6 @@ body.open { overflow: hidden; }
 .evidence-stage .transparency-flyout { width: 100%; }
 .lucy-entrance, .penny-corner-mobile { display: none; }
 .erica-slot, .penny-corner-desktop { display: none; }
-.bryan-vertical-spinner { position: static; width: 100%; height: auto; display: grid; gap: 12px; opacity: 1; visibility: visible; }
-.bryan-loop-card { position: static; width: 100%; opacity: 1; transform: none; animation: none; }
-.bryan-loop-card img { width: 100%; height: auto; }
-.orbit-stage { height: auto; overflow: visible; padding: 12px; }
-.orbit { position: static; display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 8px; width: 100%; height: auto; animation: none; transform: none; }
-.card { position: static; width: 100%; height: auto; min-height: 64px; transform: none !important; font-size: .85rem; }
 .skip-intro { position: absolute; top: 12px; right: 12px; z-index: 3; min-height: 44px; padding: 10px 16px; background: #171018; color: white; border: 1px solid var(--pink); border-radius: 8px; cursor: pointer; }
 a:focus-visible, button:focus-visible, summary:focus-visible { outline: 3px solid #fff; outline-offset: 3px; }
 /* Watch-sized viewports retain the same reading order and full-size controls. */
@@ -89,7 +83,6 @@ a:focus-visible, button:focus-visible, summary:focus-visible { outline: 3px soli
   .side-profit-scene { max-width: 680px; margin: 24px auto; grid-template-columns: repeat(3,minmax(0,1fr)); align-items: start; }
   .side-profit-punch { grid-column: auto; }
   .office-notices { grid-template-columns: repeat(2,minmax(0,1fr)); align-items: start; }
-  .bryan-vertical-spinner { grid-template-columns: repeat(3,minmax(0,1fr)); }
 }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
@@ -109,3 +102,55 @@ a:focus-visible, button:focus-visible, summary:focus-visible { outline: 3px soli
 .soundtrack-player { max-width: 560px; margin-top: 12px; }
 .soundtrack-player iframe { display: block; width: 100%; min-height: 200px; aspect-ratio: 16/9; border: 0; }
 @media (max-width: 280px) { .soundtrack { padding: 8px; } .soundtrack-controls { gap: 4px; } }
+
+/* Restored drawer scenes: each animation owns space in the scrolling panel. */
+.bar { --tool-radius: clamp(66px, 25vw, 130px); }
+.evidence-stage { display: flex; flex-direction: column; gap: 14px; padding: 12px; }
+.assist-cast { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 8px; width: 100%; align-items: start; }
+.assist-cast .lucy-entrance, .assist-cast .erica-slot, .assist-cast .penny-corner-mobile {
+  display: block; position: relative; inset: auto; grid-area: auto; min-width: 0; width: 100%; height: auto; aspect-ratio: 2/3;
+  margin: 0; opacity: 1; visibility: visible; transform: none; pointer-events: auto; z-index: auto;
+  overflow: hidden; border-radius: 10px;
+}
+.assist-cast video { display: block; width: 100%; height: 100%; object-fit: contain; }
+.evidence-stage .transparency-flyout { width: 100%; min-width: 0; }
+.bryan-vertical-spinner {
+  position: relative; inset: auto; width: 100%; height: 320px; display: block; overflow: hidden;
+  opacity: 1; visibility: visible; z-index: 0; background: radial-gradient(ellipse,#35122b,#030306);
+  container-type: inline-size;
+}
+.bryan-loop-card {
+  position: absolute; inset: 0 auto auto 0; width: min(42%,150px); height: 210px; margin: 0;
+  opacity: 0; animation: evidence-flight 135s linear infinite both; animation-delay: var(--delay);
+  animation-play-state: paused; transform: none;
+}
+.bryan-loop-card img { width: 100%; height: 100%; object-fit: contain; background: #08060b; border-radius: 8px; }
+body.open .bryan-loop-card { animation-play-state: running; }
+@keyframes evidence-flight {
+  0% { opacity: 0; transform: translate(4px,-100%) rotate(-4deg); }
+  .55% { opacity: 1; transform: translate(4px,8px) rotate(-4deg); }
+  1.7% { opacity: 1; transform: translate(calc(100cqw - 100% - 4px),8px) rotate(4deg); }
+  3.3% { opacity: 1; transform: translate(calc(100cqw - 100% - 4px),100px) rotate(-4deg); }
+  4.65% { opacity: 1; transform: translate(4px,100px) rotate(4deg); }
+  6% { opacity: 1; transform: translate(4px,8px) rotate(-4deg); }
+  6.66%,100% { opacity: 0; transform: translate(4px,-100%) rotate(-4deg); }
+}
+.orbit-stage { height: 190px; padding: 0; perspective: 800px; overflow: hidden; isolation: isolate; }
+.orbit { position: absolute; inset: 0; display: block; width: 100%; height: 100%; transform-style: preserve-3d; animation: spin 20s linear infinite; animation-play-state: paused; }
+body.open .orbit { animation-play-state: running; }
+.orbit .card { position: absolute; left: 50%; top: 50%; width: 64px; height: 90px; min-height: 0; margin: -45px 0 0 -32px; font-size: .7rem; backface-visibility: hidden; }
+.bar .vid-top video, .bar .vid-bottom video { max-height: 320px; object-fit: contain; }
+@media (max-width: 280px) {
+  .evidence-stage { padding: 6px; gap: 8px; }
+  .assist-cast { grid-template-columns: repeat(2,minmax(0,1fr)); gap: 6px; }
+  .assist-cast .penny-corner-mobile { grid-column: 1/-1; width: 50%; justify-self: center; }
+  .orbit .card { width: 48px; height: 76px; margin: -38px 0 0 -24px; font-size: .6rem; }
+  .transparency-copy { padding: 8px; font-size: .85rem; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .orbit { display: grid; position: static; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 8px; padding: 8px; }
+  .orbit-stage { height: auto; }
+  .orbit .card { position: static; width: 100%; height: 76px; margin: 0; transform: none !important; }
+  .bryan-vertical-spinner { display: flex; gap: 8px; height: 230px; overflow-x: auto; pointer-events: auto; }
+  .bryan-loop-card { position: static; opacity: 1; flex: 0 0 85%; width: 85%; height: 210px; transform: none; }
+}

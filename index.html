@@ -2025,7 +2025,7 @@
     </div>
 
     <div class="vid-top">
-      <video src="assets/penny/PennyClubFinal.mp4" muted loop playsinline autoplay></video>
+      <video src="assets/penny/PennyClubFinal.mp4" muted loop playsinline preload="metadata"></video>
     </div>
 
     <div class="orbit-stage">
@@ -2033,7 +2033,7 @@
     </div>
 
     <div class="vid-bottom">
-      <video src="assets/penny/ClubPennyLapDance1.mp4" muted loop playsinline autoplay></video>
+      <video src="assets/penny/ClubPennyLapDance1.mp4" muted loop playsinline preload="metadata"></video>
     </div>
 
     <div class="footer">
@@ -2113,7 +2113,7 @@
       const angle = (360 / ROUTES.length) * i;
       const c = document.createElement('div');
       c.className = 'card';
-      c.style.transform = `rotateY(${angle}deg) translateZ(130px)`;
+      c.style.transform = `rotateY(${angle}deg) translateZ(var(--tool-radius))`;
       c.innerHTML = `<div class="ico">${r.icon}</div>${r.label}`;
       orbit.appendChild(c);
     });
@@ -2159,28 +2159,18 @@
     function open() {
       document.body.classList.add('open');
       bar.classList.add('open');
-      tabImg.style.display = 'none';
-      tabVideo.style.display = 'block';
-      tabVideo.currentTime = 0;
-      tabVideo.play().catch(() => {});
-      ericaVideo.currentTime = 0;
-      ericaVideo.play().catch(() => {});
-      lucyEntranceVideo.currentTime = 0;
-      lucyEntranceVideo.play().catch(() => {});
-      const activePennyCornerVideo = window.matchMedia('(max-width: 600px)').matches
-        ? pennyCornerVideos[1]
-        : pennyCornerVideos[0];
-      activePennyCornerVideo.currentTime = 0;
-      activePennyCornerVideo.play().catch(() => {});
-      headerAvatarVideos.forEach(video => {
-        video.currentTime = 0;
-        video.play().catch(() => {});
+      bar.querySelectorAll('video').forEach(video => {
+        if (video.getClientRects().length) {
+          video.currentTime = 0;
+          video.play().catch(() => {});
+        }
       });
       setTimeout(typeWriter, 400);
     }
     function close() {
       document.body.classList.remove('open');
       bar.classList.remove('open');
+      bar.querySelectorAll('video').forEach(video => video.pause());
       tabVideo.pause();
       tabVideo.currentTime = 0;
       tabVideo.style.display = 'none';

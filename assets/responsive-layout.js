@@ -12,7 +12,13 @@
   }
   disclosure('12-step notice', document.querySelector('.compatibility-notice'));
   disclosure('Evidence preview', document.querySelector('.inmate-cookie-gag'));
-  disclosure('Bryan message timeline', document.querySelector('.bryan-vertical-spinner'));
+  const evidenceStage = document.querySelector('.evidence-stage');
+  const cast = document.createElement('div');
+  cast.className = 'assist-cast';
+  cast.setAttribute('aria-label', 'Lucy, Erica and Penny');
+  cast.append(document.querySelector('.lucy-entrance'), document.getElementById('ericaSlot'), document.querySelector('.penny-corner-mobile'));
+  evidenceStage.prepend(cast);
+  document.querySelector('.transparency-screen').after(document.querySelector('.bryan-vertical-spinner'));
   const tab = document.getElementById('tab');
   document.querySelector('.profit-donate-strip').after(tab);
   tab.querySelector('.tab-touch-label').textContent = 'Open Penny’s help & tools';
@@ -48,4 +54,3 @@
   });
   document.querySelector('.skip-intro').addEventListener('click', finishLandingIntro);
 })();
-

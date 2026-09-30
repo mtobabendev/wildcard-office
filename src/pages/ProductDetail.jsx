@@ -1,8 +1,9 @@
 import { useMemo, useState } from 'react';
 import ListingHeader from '../components/listing/ListingHeader.jsx';
-import MediaGallery from '../components/listing/MediaGallery.jsx';
 import OptionSelector from '../components/listing/OptionSelector.jsx';
 import ProductPurchasePanel from '../components/store/ProductPurchasePanel.jsx';
+import ProductSpinViewer from '../components/store/ProductSpinViewer.jsx';
+import SuitBadge from '../components/store/SuitBadge.jsx';
 import DetailAccordion from '../components/listing/DetailAccordion.jsx';
 import RelatedListings from '../components/listing/RelatedListings.jsx';
 import {
@@ -41,6 +42,7 @@ export default function ProductDetail({ product, addToCart, navigate }) {
 
   const details = [
     { title: 'About This Item', content: product.details },
+    { title: 'Source / Classification', content: product.displayLabel + ' (' + product.sourceType + ')' },
     { title: 'Status', content: statusLabel(product.status) },
     { title: 'Fulfillment / Shipping', content: fulfillmentText },
     { title: 'Tax', content: 'Penny\'s Garage does not calculate custom tax in this stage.' },
@@ -50,8 +52,17 @@ export default function ProductDetail({ product, addToCart, navigate }) {
   return (
     <section className="section-shell detail-page">
       <div className="detail-grid">
-        <MediaGallery media={product.media} requestedIndex={mediaIndex} />
+        <ProductSpinViewer
+          viewer={product.viewer}
+          fallbackMedia={product.media}
+          suit={product.displaySuit}
+          label={product.displayLabel}
+          status={statusLabel(product.status)}
+          requestedIndex={mediaIndex}
+        />
+
         <div className="detail-info">
+          <SuitBadge suit={product.displaySuit} label={product.displayLabel} />
           <ListingHeader eyebrow="PARTS CAGE // PRODUCT LISTING" name={product.name} subtitle={product.subtitle} tags={product.tags} />
           <p>{product.description}</p>
           <OptionSelector groups={product.optionGroups} selections={selections} onChange={onOptionChange} />
@@ -73,6 +84,7 @@ export default function ProductDetail({ product, addToCart, navigate }) {
           {notice && <p className="inline-notice" role="status">{notice}</p>}
         </div>
       </div>
+
       <DetailAccordion sections={details} />
       <RelatedListings relatedIds={product.relatedIds} records={products} basePath="/merch" navigate={navigate} />
     </section>

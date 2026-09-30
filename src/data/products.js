@@ -11,6 +11,9 @@ export const products = [
     featured: true,
     basePrice: null,
     currency: 'USD',
+    sourceType: 'wildcard',
+    displaySuit: 'spade',
+    displayLabel: 'WildCard Merch',
     tags: ['DEMO', 'NOT FOR SALE'],
     media: [
       {
@@ -20,6 +23,16 @@ export const products = [
         poster: '',
       },
     ],
+    viewer: {
+      mode: 'static',
+      mainFrames: [
+        {
+          src: '/assets/penny/PennyWildCard.jpg',
+          alt: 'Penny WildCard artwork used as non-sale demonstration listing media',
+        },
+      ],
+      sideImages: [],
+    },
     optionGroups: [
       {
         id: 'finish',
@@ -45,6 +58,13 @@ export const products = [
     relatedIds: [],
   },
 ];
+
+export const listingSourceSystem = {
+  wildcard: { displaySuit: 'spade', displayLabel: 'WildCard Merch' },
+  'hosted-merch': { displaySuit: 'diamond', displayLabel: 'Hosted Merch' },
+  'hosted-service': { displaySuit: 'heart', displayLabel: 'Hosted Service' },
+  experimental: { displaySuit: 'club', displayLabel: 'Experimental' },
+};
 
 export function getProduct(productId) {
   return products.find((product) => product.id === productId);

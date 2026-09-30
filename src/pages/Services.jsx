@@ -2,18 +2,18 @@ import ServiceCard from '../components/services/ServiceCard.jsx';
 import GarageLink from '../components/layout/GarageLink.jsx';
 import { services } from '../data/services.js';
 
-const categories = ['Web & App Builds', 'Repair / Remediation', 'Linux & Raspberry Pi', 'Automation', 'Custom Weirdness'];
+const categories = ['Web & App Builds', 'Repair / Remediation', 'Linux & Raspberry Pi', 'Automation', 'Troubleshooting', 'Custom Weirdness'];
 
 export default function Services({ navigate }) {
   return (
     <section className="section-shell page-shell">
       <header className="page-heading">
-        <p className="eyebrow">SERVICE DESK // WORK ORDERS</p>
+        <p className="eyebrow">SERVICE DESK // REAL WORK ORDERS</p>
         <h1>Services</h1>
-        <p>Technical work is scoped like a job, not tossed into a generic product cart.</p>
+        <p>Builds, repairs, troubleshooting, automation, Linux/Pi work, and the technical problems that do not fit ordinary support menus.</p>
       </header>
 
-      <div className="category-strip" aria-label="Future service categories">
+      <div className="category-strip" aria-label="Service categories">
         {categories.map((category) => <span key={category}>{category}</span>)}
       </div>
 

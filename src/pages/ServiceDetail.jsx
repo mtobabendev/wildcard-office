@@ -26,8 +26,8 @@ export default function ServiceDetail({ service, navigate }) {
     { title: 'What You Get', content: service.details },
     { title: 'Process', content: service.process },
     { title: 'Typical Turnaround', content: service.turnaround },
-    { title: 'What We Need From You', content: 'Enough context to reproduce or understand the problem, plus any constraints that matter.' },
-    { title: 'Scope / Limitations', content: 'Demo service record only. No job is submitted or purchased from this page.' },
+    { title: 'What We Need From You', content: 'A clear description of the system or device, what you expected, what actually happened, relevant constraints, and any deadline that matters. Do not send passwords or secrets.' },
+    { title: 'Scope / Limitations', content: 'Intake is a request only. Scope and pricing must be agreed before work begins. Submitting this request does not authorize work or create a charge.' },
   ];
 
   return (
@@ -35,7 +35,7 @@ export default function ServiceDetail({ service, navigate }) {
       <div className="detail-grid">
         <MediaGallery media={service.media} requestedIndex={mediaIndex} />
         <div className="detail-info">
-          <ListingHeader eyebrow="WORK ORDER // DEMO SERVICE" name={service.name} subtitle={service.subtitle} tags={service.tags} />
+          <ListingHeader eyebrow="WORK ORDER // WILDCARD DEV SERVICE" name={service.name} subtitle={service.subtitle} tags={service.tags} />
           <p>{service.description}</p>
           <OptionSelector groups={service.optionGroups} selections={selections} onChange={onOptionChange} />
           <ServiceActionPanel service={service} selections={selections} navigate={navigate} />

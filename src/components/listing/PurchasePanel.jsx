@@ -17,15 +17,22 @@ export function ProductPurchasePanel({ product, quantity, setQuantity, selection
 }
 
 export function ServiceActionPanel({ service, selections, navigate }) {
+  const params = new URLSearchParams({ service: service.slug });
+  Object.entries(selections).forEach(([key, value]) => {
+    if (value) params.set(key, value);
+  });
+  const quoteHref = '/quote?' + params.toString();
+
   return (
     <aside className="purchase-panel" aria-label="Service request controls">
       <p className="panel-kicker">WORK ORDER // INTAKE PATH</p>
-      <p className="price-line">{service.pricingModel === 'quote' ? 'QUOTE REQUIRED' : service.pricingModel.toUpperCase()}</p>
-      {service.startingPrice != null && <p>Starting at DEMO {'$'}{service.startingPrice.toFixed(2)}</p>}
+      <p className="price-line">
+        {service.pricingModel === 'hourly' ? '$' + service.startingPrice + ' / HOUR' : 'QUOTE REQUIRED'}
+      </p>
       {service.turnaround && <p><strong>Typical turnaround:</strong> {service.turnaround}</p>}
       <SelectedOptions selections={selections} groups={service.optionGroups} />
-      <GarageLink href="/quote" navigate={navigate} className="button button-primary full-width">Request This Job</GarageLink>
-      <p className="fine-print">This stage provides the intake route only. The form does not submit.</p>
+      <GarageLink href={quoteHref} navigate={navigate} className="button button-primary full-width">Request This Job</GarageLink>
+      <p className="fine-print">Submitting intake requests a review only. Scope and pricing must be agreed before work begins, and no charge occurs from submitting the form.</p>
     </aside>
   );
 }

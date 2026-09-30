@@ -41,9 +41,10 @@ export default function App() {
   }, []);
 
   const navigate = (href) => {
-    if (href === window.location.pathname) return;
-    window.history.pushState({}, '', href);
-    setPathname(href);
+    const destination = new URL(href, window.location.origin);
+    if (destination.pathname === window.location.pathname && destination.search === window.location.search) return;
+    window.history.pushState({}, '', destination.pathname + destination.search);
+    setPathname(destination.pathname);
     window.scrollTo({ top: 0, behavior: 'auto' });
   };
 

@@ -1,4 +1,4 @@
-const RECIPIENT = 'matt@wildcarddev.com';
+const DEFAULT_RECIPIENT = 'matt@wildcarddev.com';
 const MIN_SUBMISSION_MS = 1500;
 
 const limits = {
@@ -18,17 +18,23 @@ const limits = {
   sourcePath: 500,
 };
 
-const allowedServices = new Set([
-  'web-app-build',
-  'repair-remediation',
-  'linux-raspberry-pi',
-  'automation-integration',
-  'technical-troubleshooting',
-  'custom-weirdness',
+const serviceNames = new Map([
+  ['web-app-build', 'Web & App Build'],
+  ['repair-remediation', 'Repair & Remediation'],
+  ['linux-raspberry-pi', 'Linux & Raspberry Pi'],
+  ['automation-integration', 'Automation & Integration'],
+  ['technical-troubleshooting', 'Technical Troubleshooting'],
+  ['custom-weirdness', 'Custom Weirdness'],
 ]);
+
+const allowedServices = new Set(serviceNames.keys());
 
 function text(value) {
   return typeof value === 'string' ? value.trim() : '';
+}
+
+function singleLine(value) {
+  return text(value).replace(/[\r\n]+/g, ' ');
 }
 
 function validate(body) {
@@ -58,6 +64,44 @@ function validate(body) {
   return errors;
 }
 
+function formatLine(label, value) {
+  return label + ': ' + (text(value) || '—');
+}
+
+function formatWorkOrder(payload) {
+  return [
+    'PENNY\'S GARAGE — QUOTE REQUEST',
+    '',
+    formatLine('Timestamp', payload.timestamp),
+    formatLine('Name', payload.name),
+    formatLine('Email', payload.email),
+    formatLine('Phone', payload.phone),
+    formatLine('Service', payload.serviceName),
+    formatLine('Platform / device', payload.platformDevice),
+    formatLine('Urgency', payload.urgency),
+    formatLine('Engagement', payload.engagement),
+    '',
+    'PROJECT / BUILD SUMMARY',
+    payload.projectSummary || '—',
+    '',
+    'CURRENT PROBLEM',
+    payload.currentProblem || '—',
+    '',
+    'DESIRED OUTCOME',
+    payload.desiredOutcome || '—',
+    '',
+    formatLine('Budget', payload.budget),
+    formatLine('Target date', payload.targetDate),
+    '',
+    'ADDITIONAL DETAILS',
+    payload.additionalDetails || '—',
+    '',
+    formatLine('Source path', payload.sourcePath),
+    '',
+    'Intake is a request only. Scope and pricing must be agreed before work begins.',
+  ].join('\n');
+}
+
 export default async function handler(request, response) {
   if (request.method !== 'POST') {
     response.setHeader('Allow', 'POST');
@@ -80,20 +124,33 @@ export default async function handler(request, response) {
     return response.status(400).json({ error: 'Please correct the highlighted fields.', fields: errors });
   }
 
+  const apiKey = process.env.RESEND_API_KEY;
+  const from = text(process.env.QUOTE_FROM_EMAIL);
+  const recipient = text(process.env.QUOTE_TO_EMAIL) || DEFAULT_RECIPIENT;
+
+  if (!apiKey || !from) {
+    console.error('Quote delivery configuration missing:', {
+      hasResendApiKey: Boolean(apiKey),
+      hasQuoteFromEmail: Boolean(from),
+    });
+    return response.status(503).json({
+      error: 'Quote delivery is not configured yet. Your form data has not been sent.',
+      code: 'DELIVERY_NOT_CONFIGURED',
+    });
+  }
+
+  const serviceSlug = text(body.service);
   const payload = {
     timestamp: new Date().toISOString(),
-    recipient: RECIPIENT,
+    recipient,
     name: text(body.name),
     email: text(body.email),
     phone: text(body.phone),
-    service: text(body.service),
-    selectedOptions: {
-      platform: text(body.platform),
-      urgency: text(body.urgency),
-      engagement: text(body.engagement),
-    },
+    service: serviceSlug,
+    serviceName: serviceNames.get(serviceSlug),
     platformDevice: text(body.platform),
     urgency: text(body.urgency),
+    engagement: text(body.engagement),
     projectSummary: text(body.project),
     currentProblem: text(body.problem),
     desiredOutcome: text(body.outcome),
@@ -103,12 +160,63 @@ export default async function handler(request, response) {
     sourcePath: text(body.sourcePath),
   };
 
-  // Delivery provider intentionally remains unselected until Owner approval.
-  // The validated payload above is the stable boundary for the approved adapter.
-  void payload;
+  const subject = '[PENNY\'S GARAGE] Quote Request — ' +
+    singleLine(payload.serviceName) + ' — ' + singleLine(payload.name);
 
-  return response.status(503).json({
-    error: 'Quote delivery is not configured yet. Your form data has not been sent. Please retry after the business delivery channel is configured.',
-    code: 'DELIVERY_NOT_CONFIGURED',
-  });
+  try {
+    const resendResponse = await fetch('https://api.resend.com/emails', {
+      method: 'POST',
+      headers: {
+        Authorization: 'Bearer ' + apiKey,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        from,
+        to: [recipient],
+        reply_to: payload.email,
+        subject,
+        text: formatWorkOrder(payload),
+      }),
+    });
+
+    if (!resendResponse.ok) {
+      let providerCode = '';
+      try {
+        const providerBody = await resendResponse.json();
+        providerCode = singleLine(providerBody?.name || providerBody?.statusCode || '');
+      } catch {
+        providerCode = '';
+      }
+
+      console.error('Resend quote delivery failed:', {
+        status: resendResponse.status,
+        providerCode: providerCode || undefined,
+      });
+
+      return response.status(502).json({
+        error: 'The work order could not be delivered. Your form data is still available so you can retry.',
+        code: 'DELIVERY_FAILED',
+      });
+    }
+
+    const accepted = await resendResponse.json().catch(() => ({}));
+    if (!accepted?.id) {
+      console.error('Resend quote delivery returned no message id.');
+      return response.status(502).json({
+        error: 'The delivery provider did not confirm the work order. Please retry.',
+        code: 'DELIVERY_UNCONFIRMED',
+      });
+    }
+
+    return response.status(200).json({ ok: true });
+  } catch (error) {
+    console.error('Resend quote delivery request failed:', {
+      name: error instanceof Error ? error.name : 'UnknownError',
+    });
+
+    return response.status(502).json({
+      error: 'The work order could not be delivered. Your form data is still available so you can retry.',
+      code: 'DELIVERY_FAILED',
+    });
+  }
 }

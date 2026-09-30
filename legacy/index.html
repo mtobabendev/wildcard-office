@@ -1,0 +1,2375 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Penny's Office</title>
+  <link rel="icon" type="image/gif" href="assets/penny/MorriganFavicon.gif">
+  <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Dancing+Script:wght@600&family=Courier+Prime:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/strike-sequence.css">
+  <style>
+    :root {
+      --pink: #ff4fb7;
+      --pink2: #ff9bd8;
+      --bg: #05050a;
+      --panel: rgba(12,6,18,0.97);
+      --text: #fff5fb;
+      --muted: #d8c8e2;
+      --tab-w: 78px;
+      --bar-w: min(780px, 96vw);
+      --ugly: #c8b89a;
+      --ugly-dim: #8a7a5a;
+      --board-bg: #0a0a0f;
+      --board-line: #3a2a1a;
+      --prop: #1a1208;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body {
+      height: 100%;
+      background: var(--bg);
+      color: var(--text);
+      font-family: system-ui, sans-serif;
+      overflow-x: hidden;
+    }
+
+    .profit-donate-strip {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: var(--tab-w);
+      z-index: 42;
+      padding: 7px 12px;
+      background: #f8f5ef;
+      color: #17100b;
+      border-bottom: 2px solid #ff2d75;
+      box-shadow: 0 4px 18px rgba(0,0,0,.62);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: .75em;
+      text-align: center;
+      font: 700 clamp(.62rem,1.4vw,.9rem)/1.1 'Courier Prime',monospace;
+      letter-spacing: .045em;
+      text-transform: uppercase;
+    }
+    .profit-donate-strip .afterthought {
+      display: inline-block;
+      margin-left: .65em;
+      color: #e11d48;
+      font: 700 clamp(.78rem,1.9vw,1.18rem)/.8 'Dancing Script',cursive;
+      transform: rotate(-3deg);
+      text-shadow: 0 0 7px rgba(225,29,72,.45);
+    }
+    .square-donate-button {
+      display: inline-block;
+      flex: 0 0 auto;
+      padding: 5px 12px 4px;
+      border: 2px solid #111;
+      border-radius: 999px;
+      background: #ff2d75;
+      color: #fff;
+      font: 900 clamp(.58rem,1.1vw,.76rem)/1 system-ui,sans-serif;
+      letter-spacing: .08em;
+      text-decoration: none;
+      box-shadow: 0 0 8px rgba(255,45,117,.75);
+      transition: transform .18s ease,box-shadow .18s ease;
+    }
+    .square-donate-button:hover,
+    .square-donate-button:focus-visible {
+      transform: scale(1.08);
+      box-shadow: 0 0 14px #ff2d75;
+      outline: none;
+    }
+
+    .inmate-cookie-gag {
+      position: fixed;
+      right: calc(var(--tab-w) + 16px);
+      bottom: 24px;
+      z-index: 41;
+      width: min(310px, calc(100vw - var(--tab-w) - 28px));
+      padding: 15px 16px 13px;
+      background: rgba(24,20,20,.96);
+      border: 1px solid rgba(255,255,255,.15);
+      border-radius: 9px;
+      box-shadow: 0 12px 35px rgba(0,0,0,.78);
+      color: #fff;
+      pointer-events: none;
+    }
+    .inmate-cookie-gag .cookie-heading {
+      font: 800 .82rem/1.2 system-ui,sans-serif;
+      letter-spacing: .02em;
+    }
+    .inmate-cookie-gag .cookies-crossed {
+      position: relative;
+      display: inline-block;
+      margin: 7px 8px 4px 0;
+      color: #d5d0cb;
+      font: 700 1rem/1 'Courier Prime',monospace;
+      text-transform: uppercase;
+    }
+    .inmate-cookie-gag .cookies-crossed::after {
+      content: "";
+      position: absolute;
+      left: -5%; right: -5%; top: 46%; height: 5px;
+      background: #ff2d75;
+      border-radius: 60% 35% 55% 40%;
+      transform: rotate(-8deg);
+      box-shadow: 0 0 7px #ff2d75;
+    }
+    .inmate-cookie-gag .inmates-spray {
+      display: inline-block;
+      color: #ff4fb7;
+      font: 800 1.45rem/.9 'Dancing Script',cursive;
+      text-transform: uppercase;
+      transform: rotate(-5deg);
+      text-shadow: 1px 1px 0 #64103c, 0 0 9px #ff2d75;
+    }
+    .inmate-cookie-gag .evidence-teaser {
+      margin-top: 8px;
+      color: #e8d8b8;
+      font: 700 .66rem/1.42 'Courier Prime',monospace;
+    }
+    .inmate-cookie-gag .evidence-teaser strong { color: #fff; }
+    .inmate-cookie-gag .coming { margin-top: 6px; color: #ff9bd8; text-transform: uppercase; letter-spacing: .12em; }
+    .evidence-countdown {
+      position: relative;
+      display: block;
+      width: max-content;
+      margin-top: 6px;
+      color: #7dff7d;
+      font: 900 clamp(.72rem,1.5vw,1rem)/1 'Courier Prime',monospace;
+      letter-spacing: .08em;
+      text-shadow: 0 0 5px #22c55e,2px 0 #ff2d75,-2px 0 #00f2ea;
+      animation: evidence-clock-jitter .38s steps(2,end) infinite;
+    }
+    .evidence-countdown::before,
+    .evidence-countdown::after {
+      content: attr(data-text);
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+    }
+    .evidence-countdown::before {
+      color: #ff2d75;
+      clip-path: inset(8% 0 56% 0);
+      transform: translateX(-2px);
+      animation: evidence-clock-slice .61s steps(2,end) infinite reverse;
+    }
+    .evidence-countdown::after {
+      color: #00f2ea;
+      clip-path: inset(58% 0 7% 0);
+      transform: translateX(2px);
+      animation: evidence-clock-slice .47s steps(2,end) infinite;
+    }
+    @keyframes evidence-clock-jitter {
+      0%,84%,100% { transform: translate(0); filter: brightness(1); }
+      86% { transform: translate(3px,-1px) skewX(8deg); filter: brightness(1.8); }
+      90% { transform: translate(-2px,1px) skewX(-5deg); }
+    }
+    @keyframes evidence-clock-slice {
+      0%,76%,100% { transform: translateX(0); }
+      80% { transform: translateX(5px); }
+      88% { transform: translateX(-4px); }
+    }
+
+    @media (max-width: 600px) {
+      .profit-donate-strip { justify-content: space-between; text-align: left; padding: 5px 7px; font-size: .48rem; }
+      .profit-donate-strip .afterthought { display: none; }
+      .square-donate-button { padding: 4px 8px 3px; font-size: .56rem; }
+      .inmate-cookie-gag { right: calc(var(--tab-w) + 7px); bottom: 8px; width: min(220px, calc(100vw - var(--tab-w) - 14px)); padding: 9px 10px; }
+      .inmate-cookie-gag .cookie-heading { font-size: .62rem; }
+      .inmate-cookie-gag .cookies-crossed { font-size: .72rem; }
+      .inmate-cookie-gag .inmates-spray { font-size: 1rem; }
+      .inmate-cookie-gag .evidence-teaser { font-size: .49rem; line-height: 1.3; }
+    }
+
+    .office {
+      min-height: 100svh;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 10px 82px 14px 10px;
+      overflow: hidden;
+    }
+
+    .skinner-rail {
+      position: absolute;
+      overflow: hidden;
+      pointer-events: none;
+      z-index: 2;
+      font-family: 'Courier Prime', 'Courier New', Courier, monospace;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--ugly);
+      white-space: nowrap;
+      opacity: 0.78;
+      line-height: 1;
+    }
+    .skinner-rail.top {
+      top: 6px; left: 0; right: var(--tab-w); height: 18px;
+    }
+    .skinner-rail.bottom {
+      bottom: 6px; left: 0; right: var(--tab-w); height: 18px;
+    }
+    .skinner-rail.left {
+      top: 0; bottom: 0; left: 4px; width: 18px;
+      writing-mode: vertical-rl; transform: rotate(180deg);
+    }
+    .skinner-rail.right {
+      top: 0; bottom: 0; right: calc(var(--tab-w) + 4px); width: 18px;
+      writing-mode: vertical-rl;
+    }
+    .rail-track { display: inline-block; animation: marquee-x 48s linear infinite; }
+    .skinner-rail.left .rail-track,
+    .skinner-rail.right .rail-track { animation: marquee-y 52s linear infinite; }
+    .skinner-rail.bottom .rail-track { animation-direction: reverse; }
+    .skinner-rail.right .rail-track { animation-direction: reverse; }
+    @keyframes marquee-x {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
+    }
+    @keyframes marquee-y {
+      0% { transform: translateY(0); }
+      100% { transform: translateY(-50%); }
+    }
+
+    .mono-wrap {
+      position: relative;
+      z-index: 5;
+      width: min(860px, 97vw);
+      aspect-ratio: 1 / 1;
+      max-height: min(92svh, 860px);
+    }
+    .mono-board {
+      width: 100%;
+      height: 100%;
+      background: var(--board-bg);
+      border: 3px solid #5a4030;
+      box-shadow:
+        0 0 0 1px #2a1a10,
+        0 0 40px rgba(0,0,0,0.7),
+        inset 0 0 60px rgba(0,0,0,0.5);
+      display: grid;
+      grid-template-columns: 1fr 4.2fr 1fr;
+      grid-template-rows: 1fr 4.2fr 1fr;
+      font-family: 'Courier Prime', 'Courier New', Courier, monospace;
+      color: #e8d8b8;
+      position: relative;
+    }
+
+    .corner {
+      background: #120c08;
+      border: 1px solid var(--board-line);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 4px;
+      font-size: clamp(0.45rem, 1.4vw, 0.65rem);
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      line-height: 1.15;
+      text-transform: uppercase;
+    }
+    .corner.go { background: linear-gradient(145deg, #1a3a12, #0d1f0a); color: #7dff7d; }
+    .corner.jail { background: linear-gradient(145deg, #3a1212, #1f0a0a); color: #ff6b6b; }
+    .corner.jail.jail-cell {
+      position: relative;
+      isolation: isolate;
+      overflow: hidden;
+      padding: 0;
+      background: #100707;
+    }
+    .jail-cell video {
+      position: absolute;
+      inset: 0;
+      z-index: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center;
+    }
+    .jail-cell::before {
+      content: "";
+      position: absolute;
+      inset: 0 0 22%;
+      z-index: 1;
+      background:
+        linear-gradient(180deg,transparent 47%,rgba(12,8,6,.92) 48% 55%,transparent 56%),
+        repeating-linear-gradient(90deg,transparent 0 15%,rgba(18,12,9,.94) 16% 21%);
+      box-shadow: inset 0 0 18px rgba(0,0,0,.65);
+      pointer-events: none;
+    }
+    .jail-cell .jail-label {
+      position: absolute;
+      z-index: 2;
+      top: 5px;
+      right: 5px;
+      padding: 2px 4px;
+      background: rgba(0,0,0,.72);
+      color: #ffb4b4;
+      font-size: clamp(.36rem,.75vw,.52rem);
+      text-shadow: 0 0 6px #ef4444;
+    }
+    .jail-cell .just-visiting {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      z-index: 3;
+      min-height: 23%;
+      display: grid;
+      place-items: center;
+      padding: 3px 1px;
+      border-top: 2px solid #17100b;
+      background: #f4ead7;
+      color: #17100b;
+      font-size: clamp(.34rem,.8vw,.52rem);
+      letter-spacing: .06em;
+      text-shadow: none;
+      transform: skewX(-8deg) scaleX(1.05);
+    }
+    .corner.free { background: linear-gradient(145deg, #1a1a3a, #0a0a1f); color: #8ab4ff; }
+    .corner.free.boner-garage {
+      position: relative;
+      isolation: isolate;
+      overflow: hidden;
+      padding: 0;
+      background: #08030a;
+    }
+    .boner-garage video {
+      position: absolute;
+      inset: 0;
+      z-index: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center;
+    }
+    .boner-garage::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+      background: linear-gradient(180deg,rgba(0,0,0,.78),transparent 34% 63%,rgba(0,0,0,.8));
+      pointer-events: none;
+    }
+    .boner-garage .garage-title,
+    .boner-garage .parking-title {
+      position: absolute;
+      z-index: 2;
+      left: 3px;
+      right: 3px;
+      font-family: system-ui,sans-serif;
+      font-weight: 1000;
+      line-height: 1;
+      letter-spacing: .055em;
+      text-align: center;
+    }
+    .boner-garage .garage-title {
+      top: 6px;
+      color: #ff4fb7;
+      font-size: clamp(.48rem,1.1vw,.68rem);
+      text-shadow: 0 0 4px #ff2d75,0 0 10px #ff2d75,0 0 18px #ff2d75;
+      animation: garage-pink-flicker 1.8s steps(2,end) infinite;
+    }
+    .boner-garage .parking-title {
+      bottom: 6px;
+      color: #b7ff00;
+      font-size: clamp(.42rem,1vw,.62rem);
+      text-shadow: 0 0 4px #76ff03,0 0 10px #76ff03,0 0 18px #39ff14;
+    }
+    @keyframes garage-pink-flicker {
+      0%,18%,22%,68%,72%,100% { opacity: 1; }
+      20%,70% { opacity: .58; }
+    }
+    .corner.goto { background: linear-gradient(145deg, #3a2a12, #1f150a); color: #ffb84d; }
+
+    .side { display: flex; border: 1px solid var(--board-line); }
+    .side.top, .side.bottom { flex-direction: row; }
+    .side.left, .side.right { flex-direction: column; }
+
+    .prop {
+      flex: 1;
+      background: var(--prop);
+      border: 1px solid #2a1c10;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 2px 1px;
+      font-size: clamp(0.38rem, 1.1vw, 0.55rem);
+      font-weight: 700;
+      letter-spacing: 0.03em;
+      line-height: 1.1;
+      text-transform: uppercase;
+      min-width: 0;
+      overflow: hidden;
+      text-decoration: none;
+      color: inherit;
+    }
+    .prop .tag {
+      font-size: 0.65em;
+      opacity: 0.7;
+      font-weight: 400;
+      margin-top: 1px;
+    }
+    .prop.goog { border-top: 3px solid #4285f4; }
+    .prop.meta { border-top: 3px solid #0668e1; }
+    .prop.aapl { border-top: 3px solid #a2aaad; }
+    .prop.amzn { border-top: 3px solid #ff9900; }
+    .prop.msft { border-top: 3px solid #00a4ef; }
+    .prop.vz { border-top: 3px solid #ee0000; }
+    .prop.tt { border-top: 3px solid #00f2ea; }
+    .prop.x { border-top: 3px solid #e7e9ea; }
+    .prop.yt { border-top: 3px solid #ff0000; }
+    .prop.ig { border-top: 3px solid #e1306c; }
+    .prop.store { border-top: 3px solid #34c759; }
+    .prop.aws { border-top: 3px solid #ff9900; }
+    .prop.azure { border-top: 3px solid #0078d4; }
+    .prop.netflix { border-top: 3px solid #e50914; }
+    .prop.carrier { border-top: 3px solid #6b7280; }
+    .prop.feed { border-top: 3px solid #8b5cf6; }
+
+    .prop.chemical-eval {
+      border-top: 3px solid #facc15;
+      background: linear-gradient(180deg, #2b2206 0%, #120e08 100%);
+      color: #fff3a3;
+    }
+    .prop.chemical-eval .joke {
+      margin-top: 3px;
+      color: #ff4fb7;
+      font: 800 clamp(.38rem,.85vw,.52rem)/1 'Dancing Script',cursive;
+      transform: rotate(-5deg);
+      text-shadow: 0 0 7px rgba(255,79,183,.7);
+    }
+    .prop.community-chest {
+      position: relative;
+      isolation: isolate;
+      padding: 0;
+      border-top: 3px solid #ff4fb7;
+      background: #070308;
+    }
+    .prop.community-chest video {
+      position: absolute;
+      inset: 0;
+      z-index: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center;
+    }
+    .prop.community-chest::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+      background: linear-gradient(180deg,rgba(0,0,0,.08),rgba(0,0,0,.15) 45%,rgba(0,0,0,.82));
+    }
+    .prop.community-chest .chest-title {
+      position: absolute;
+      z-index: 2;
+      left: 3px;
+      right: 3px;
+      bottom: 5px;
+      color: #fff;
+      font: 900 clamp(.4rem,1vw,.58rem)/1.05 system-ui,sans-serif;
+      letter-spacing: .045em;
+      text-shadow: 0 1px 2px #000,0 0 8px #ff2d75;
+    }
+        /* Special Chance / Community Chest style cards */
+    .prop.card-slot {
+      background: #1a0a0a;
+      border: 1px solid #5a2020;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      padding: 4px 2px;
+    }
+    .prop.card-slot .card-label {
+      font-size: clamp(0.4rem, 1.1vw, 0.55rem);
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      line-height: 1.15;
+      color: #ff9bd8;
+      text-align: center;
+    }
+    .prop.skinner-slot {
+      border-top: 3px solid #e11d48;
+      background: linear-gradient(180deg, #2a0a12 0%, #120808 100%);
+    }
+    .prop.pavlov-slot {
+      border-top: 3px solid #f59e0b;
+      background: linear-gradient(180deg, #2a1a08 0%, #120e08 100%);
+    }
+    .mini-pill {
+      display: inline-block;
+      padding: 2px 7px;
+      background: linear-gradient(135deg, #e11d48, #9f1239);
+      color: #fff;
+      font-family: system-ui, sans-serif;
+      font-size: 0.55rem;
+      font-weight: 600;
+      letter-spacing: 0.03em;
+      text-decoration: none;
+      border-radius: 999px;
+      box-shadow: 0 0 6px rgba(225,29,72,0.45);
+      white-space: nowrap;
+    }
+    .mini-pill:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 10px rgba(225,29,72,0.7);
+    }
+
+    /* Officer Brian – cop lights + authority wiggle */
+    .officer-brian {
+      position: absolute;
+      bottom: 8%;
+      right: 6%;
+      width: clamp(72px, 12vw, 110px);
+      z-index: 8;
+      text-decoration: none;
+      filter: drop-shadow(0 0 8px rgba(0, 80, 255, 0.55));
+      animation: brian-wiggle 1.8s ease-in-out infinite;
+    }
+    .officer-brian img {
+      width: 100%;
+      height: auto;
+      display: block;
+      border-radius: 8px;
+      border: 2px solid #1e3a8a;
+      box-shadow:
+        -4px 0 12px rgba(0, 80, 255, 0.7),
+        4px 0 12px rgba(220, 20, 60, 0.7);
+      animation: cop-lights 0.9s linear infinite;
+    }
+    .officer-brian .badge {
+      position: absolute;
+      bottom: -6px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #1e3a8a;
+      color: #fff;
+      font-family: system-ui, sans-serif;
+      font-size: 0.55rem;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      padding: 2px 8px;
+      border-radius: 999px;
+      white-space: nowrap;
+      border: 1px solid #3b82f6;
+    }
+    @keyframes brian-wiggle {
+      0%, 100% { transform: rotate(-2deg) translateY(0); }
+      25% { transform: rotate(3deg) translateY(-3px); }
+      50% { transform: rotate(-1deg) translateY(1px); }
+      75% { transform: rotate(2deg) translateY(-2px); }
+    }
+    @keyframes cop-lights {
+      0%, 100% {
+        box-shadow: -5px 0 14px rgba(0, 80, 255, 0.85), 5px 0 14px rgba(220, 20, 60, 0.35);
+        border-color: #1e40af;
+      }
+      50% {
+        box-shadow: -5px 0 14px rgba(0, 80, 255, 0.35), 5px 0 14px rgba(220, 20, 60, 0.85);
+        border-color: #b91c1c;
+      }
+    }
+
+    /* David's House – Arkham / inmate-run chaos flip */
+    a.prop.david-house {
+      text-decoration: none;
+      color: inherit;
+      animation: arkham-flip 4.5s ease-in-out infinite;
+      transform-origin: center center;
+      background: linear-gradient(180deg, #2a1018 0%, #120808 100%);
+      border-top-color: #7f1d1d !important;
+    }
+    @keyframes arkham-flip {
+      0%, 70% { transform: rotate(0deg) scale(1); }
+      75% { transform: rotate(8deg) scale(1.05); }
+      80% { transform: rotate(-180deg) scale(0.95); }
+      85% { transform: rotate(-172deg) scale(1.02); }
+      90% { transform: rotate(-188deg) scale(0.98); }
+      95% { transform: rotate(-180deg) scale(1); }
+      100% { transform: rotate(0deg) scale(1); }
+    }
+
+    /* Different Approach – dollar signs shooting out */
+    a.prop.different-approach {
+      text-decoration: none;
+      color: inherit;
+      position: relative;
+      overflow: visible;
+      background: linear-gradient(180deg, #1a2a12 0%, #0a1208 100%);
+      border-top-color: #22c55e !important;
+    }
+    a.prop.different-approach .money {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: #4ade80;
+      text-shadow: 0 0 6px #22c55e;
+      opacity: 0;
+      pointer-events: none;
+      animation: cash-shoot 2.4s ease-out infinite;
+    }
+    a.prop.different-approach .money.m2 { animation-delay: 0.8s; }
+    a.prop.different-approach .money.m3 { animation-delay: 1.6s; }
+    @keyframes cash-shoot {
+      0% { opacity: 0; transform: translate(-50%, -50%) scale(0.4); }
+      15% { opacity: 1; transform: translate(-50%, -120%) scale(1); }
+      100% { opacity: 0; transform: translate(calc(-50% + 18px), -220%) scale(0.6); }
+    }
+
+    a.prop.out-for-good {
+      text-decoration: none;
+      color: inherit;
+    }
+
+    .side-profit-scene {
+      position: absolute;
+      left: 14%;
+      bottom: 7%;
+      z-index: 11;
+      width: clamp(210px,30vw,350px);
+      height: clamp(135px,19vw,215px);
+      pointer-events: none;
+    }
+    .side-profit-card {
+      position: absolute;
+      bottom: 3%;
+      width: clamp(72px,10vw,112px);
+      margin: 0;
+      overflow: hidden;
+      border: 2px solid #60a5fa;
+      border-radius: 7px;
+      background: #100b0b;
+      box-shadow: 0 0 12px #2563eb,0 0 24px rgba(37,99,235,.5);
+    }
+    .side-profit-card.website { left: 8%; transform: rotate(-12deg); }
+    .side-profit-card.jake { left: 30%; transform: rotate(11deg); border-color: #fbbf24; box-shadow: 0 0 12px #fbbf24,0 0 24px rgba(251,191,36,.5); }
+    .side-profit-card img { display: block; width: 100%; height: clamp(48px,6.5vw,72px); object-fit: cover; }
+    .side-profit-card figcaption {
+      padding: 4px 2px 5px;
+      color: #fff;
+      text-align: center;
+      font: 900 clamp(.33rem,.62vw,.48rem)/1.05 system-ui,sans-serif;
+      text-transform: uppercase;
+    }
+    .side-profit-punch {
+      position: absolute;
+      left: 22%;
+      top: 0;
+      z-index: 4;
+      display: block;
+      width: clamp(130px,20vw,230px);
+      opacity: .96;
+      border: 2px solid #ff4fb7;
+      border-radius: 8px;
+      box-shadow: 0 0 16px #ff2d75,0 0 30px rgba(255,45,117,.58);
+      animation: side-punch-motion 1.5s ease-in-out infinite;
+    }
+    @keyframes side-punch-motion {
+      0%,100% { transform: translateX(9%) rotate(3deg) scale(.96); }
+      48%,58% { transform: translateX(-6%) rotate(-4deg) scale(1.04); }
+    }
+    @media (max-width: 600px) {
+      .side-profit-scene { left: 12%; bottom: 8%; width: 180px; height: 115px; }
+      .side-profit-card { width: 58px; }
+      .side-profit-card img { height: 38px; }
+      .side-profit-punch { left: 20%; width: 112px; }
+    }
+
+    /* Center */
+    .board-center {
+      background: radial-gradient(ellipse at center, #1a120c 0%, #0a0806 70%);
+      border: 1px solid var(--board-line);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      text-align: center;
+      padding: 7% 14px 10px;
+      gap: 6px;
+      position: relative;
+    }
+    .board-center .title {
+      font-size: clamp(0.7rem, 2.2vw, 1.05rem);
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      color: var(--pink2);
+      text-shadow: 0 0 12px rgba(255,79,183,0.45);
+      text-transform: uppercase;
+      position: relative;
+      z-index: 13;
+    }
+    .board-center .sub {
+      font-size: clamp(0.55rem, 1.5vw, 0.72rem);
+      color: #c8b89a;
+      letter-spacing: 0.06em;
+      max-width: 92%;
+      line-height: 1.35;
+      position: relative;
+      z-index: 13;
+    }
+    .board-center .core {
+      font-size: clamp(0.5rem, 1.3vw, 0.68rem);
+      color: #a89878;
+      margin-top: 4px;
+      line-height: 1.4;
+      max-width: 94%;
+      position: relative;
+      z-index: 13;
+    }
+    .board-center .core strong {
+      color: #e8d8b8;
+      font-weight: 700;
+    }
+    .board-center .lilith {
+      font-size: clamp(0.48rem, 1.2vw, 0.62rem);
+      color: #9a8a6a;
+      font-style: italic;
+      margin-top: 2px;
+      letter-spacing: 0.03em;
+      position: relative;
+      z-index: 13;
+    }
+    .board-center .red-pill {
+      display: inline-block;
+      margin-top: 8px;
+      padding: 7px 18px;
+      background: linear-gradient(135deg, #e11d48, #9f1239);
+      color: #fff;
+      font-family: system-ui, sans-serif;
+      font-size: clamp(0.65rem, 1.6vw, 0.8rem);
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      text-decoration: none;
+      border-radius: 999px;
+      box-shadow: 0 0 14px rgba(225,29,72,0.55);
+      transition: transform 0.2s, box-shadow 0.2s;
+      border: 1px solid rgba(255,255,255,0.15);
+      position: relative;
+      z-index: 14;
+      animation: fire-profit-pulse 1.05s ease-in-out infinite;
+    }
+    .board-center .red-pill:hover {
+      transform: scale(1.06);
+      box-shadow: 0 0 22px rgba(225,29,72,0.75);
+    }
+
+    /* Center panic keeps orbiting; the new evidence fan lives beside Jake's photo. */
+    .profit-panic { position: absolute; inset: 0; z-index: 12; pointer-events: none; overflow: visible; }
+    .panic-thought {
+      position: absolute; left: 50%; top: 43%; z-index: 18; width: min(62%, 340px);
+      transform: translate(-50%, -100%) rotate(-2deg); padding: 8px 11px;
+      border: 2px solid #f8fafc; border-radius: 50%; background: #fff; color: #17100b;
+      font-family: system-ui, sans-serif; font-size: clamp(0.45rem, 1vw, 0.68rem);
+      font-weight: 900; line-height: 1.12; text-transform: uppercase;
+      box-shadow: 0 0 14px rgba(255,255,255,.7), 0 0 28px rgba(225,29,72,.45);
+      animation: panic-bubble .48s steps(2, end) infinite;
+    }
+    .panic-thought::after {
+      content: ""; position: absolute; left: 56%; bottom: -10px; width: 14px; height: 14px;
+      border: 2px solid #fff; border-radius: 50%; background: #fff;
+    }
+    .panic-orbiter {
+      --orbit-radius: clamp(82px,16vw,165px);
+      position: absolute; left: 50%; top: 74%; width: 1px; height: 1px;
+      animation: profit-orbit 2.15s linear infinite;
+    }
+    .panic-orbiter.jake { animation-delay: -1.075s; }
+    .panic-card {
+      width: clamp(76px, 11vw, 118px); margin: 0; transform: translate(-50%,-50%);
+      border: 2px solid #ff2d75; border-radius: 7px; overflow: hidden; background: #120907;
+      box-shadow: 0 0 12px #ff2d75, 0 0 24px rgba(255,45,117,.65);
+      animation: profit-counter-orbit 2.15s linear infinite, profit-rattle .22s steps(2,end) infinite;
+    }
+    .panic-orbiter.jake .panic-card { animation-delay: -1.075s,-.08s; border-color: #fbbf24; box-shadow: 0 0 12px #fbbf24, 0 0 24px rgba(251,191,36,.55); }
+    .panic-card img { display: block; width: 100%; height: clamp(52px, 7vw, 76px); object-fit: cover; }
+    .panic-card figcaption {
+      padding: 4px 3px 5px; color: #fff; font: 900 clamp(.35rem,.7vw,.5rem)/1.05 system-ui,sans-serif;
+      letter-spacing: .04em; text-transform: uppercase;
+    }
+    .panic-money-rain { position: absolute; inset: 0; z-index: 10; overflow: hidden; pointer-events: none; }
+    .panic-money-rain span {
+      --fall-x: 50%; --fall-delay: 0s; --fall-drift: 0px; --fall-spin: 480deg;
+      position: absolute; top: 58%; left: var(--fall-x); color: #4ade80;
+      font: 900 clamp(.7rem,1.6vw,1.15rem)/1 system-ui,sans-serif; text-shadow: 0 0 7px #16a34a;
+      opacity: 0; animation: profit-money-fall 2.45s linear infinite; animation-delay: var(--fall-delay);
+    }
+    @keyframes fire-profit-pulse {
+      0%,100% { transform: scale(1); box-shadow: 0 0 12px rgba(225,29,72,.65), 0 0 0 0 rgba(255,45,117,.55); }
+      50% { transform: scale(1.14); box-shadow: 0 0 28px #ff2d75, 0 0 0 12px rgba(255,45,117,0); }
+    }
+    @keyframes profit-orbit { to { transform: rotate(360deg) translateX(var(--orbit-radius)); } }
+    @keyframes profit-counter-orbit { to { transform: translate(-50%,-50%) rotate(-360deg); } }
+    @keyframes profit-rattle { 50% { filter: saturate(1.5) contrast(1.12); } }
+    @keyframes panic-bubble { 50% { transform: translate(-50%, -100%) rotate(2deg) scale(1.05); } }
+    @keyframes profit-money-fall {
+      0% { opacity: 0; top: 88%; transform: translate(0,18px) rotate(0); }
+      18% { opacity: 1; }
+      48% { opacity: 1; top: 55%; left: var(--fall-x); transform: translate(var(--fall-drift),0) rotate(180deg) scale(1.18); }
+      72% { opacity: .9; top: 69%; left: 50%; transform: translate(0,0) rotate(var(--fall-spin)) scale(.62); }
+      100% { opacity: 0; top: 72%; left: 50%; transform: translate(0,0) rotate(var(--fall-spin)) scale(.25); }
+    }
+    @media (max-width: 600px) {
+      .board-center { padding-top: 5%; }
+      .panic-orbiter { --orbit-radius: clamp(58px,14vw,90px); top: 76%; }
+      .panic-card { width: clamp(54px, 11vw, 76px); }
+      .panic-card img { height: clamp(38px, 7vw, 54px); }
+      .panic-thought { top: 40%; width: 68%; padding: 5px 7px; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .panic-orbiter, .panic-card, .panic-thought, .side-profit-punch, .panic-money-rain span, .board-center .red-pill { animation-duration: 8s; }
+    }
+
+    .office-label {
+      position: absolute;
+      bottom: -22px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 0.65rem;
+      color: var(--muted);
+      letter-spacing: 0.08em;
+      opacity: 0.7;
+      white-space: nowrap;
+    }
+        /* ===== TAB ===== */
+    .tab {
+      position: fixed;
+      top: 0;
+      right: 0;
+      width: var(--tab-w);
+      height: 100svh;
+      z-index: 100;
+      border: none;
+      background: #000;
+      padding: 0;
+      cursor: pointer;
+      border-radius: 14px 0 0 14px;
+      overflow: hidden;
+      transition: width 0.45s cubic-bezier(0.22,1,0.36,1),
+                  transform 0.45s cubic-bezier(0.22,1,0.36,1);
+    }
+    .tab img,
+    .tab video {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center top;
+      display: block;
+    }
+    .tab video { display: none; }
+
+    .tab-touch-label {
+      position: absolute;
+      top: 61%;
+      left: 50%;
+      z-index: 3;
+      width: calc(100% - 10px);
+      transform: translate(-50%, -50%);
+      color: #fff;
+      font-family: 'Courier Prime', 'Courier New', Courier, monospace;
+      font-size: clamp(0.58rem, 0.8vw, 0.72rem);
+      font-weight: 700;
+      line-height: 1.05;
+      letter-spacing: 0.06em;
+      text-align: center;
+      text-transform: uppercase;
+      text-shadow:
+        0 0 3px #fff,
+        0 0 7px #ff9bd8,
+        0 0 13px #ff4fb7,
+        0 0 20px #ff4fb7;
+      pointer-events: none;
+      animation: touch-here-glow 1.15s ease-in-out infinite;
+      transition: opacity 0.2s ease;
+    }
+
+    @keyframes touch-here-glow {
+      0%, 100% { opacity: 0.82; transform: translate(-50%, -50%) scale(0.96); }
+      50% { opacity: 1; transform: translate(-50%, -50%) scale(1.08); }
+    }
+
+    body.open .tab {
+      width: min(420px, 50vw);
+      transform: translateX(calc(-1 * var(--bar-w) + 8px));
+    }
+    body.open .tab img { display: none; }
+    body.open .tab video {
+      display: block;
+      object-fit: contain;
+    }
+    body.open .tab-touch-label { opacity: 0; }
+
+    /* ===== BAR ===== */
+    .bar {
+      position: fixed;
+      top: 0;
+      right: 0;
+      width: var(--bar-w);
+      height: 100svh;
+      background: var(--panel);
+      border-left: 1px solid rgba(255,79,183,0.4);
+      z-index: 90;
+      transform: translateX(100%);
+      transition: transform 0.45s cubic-bezier(0.22,1,0.36,1);
+      overflow-y: auto;
+      overflow-x: hidden;
+      -webkit-overflow-scrolling: touch;
+    }
+    .bar.open { transform: translateX(0); }
+
+    .bar::-webkit-scrollbar { width: 8px; }
+    .bar::-webkit-scrollbar-track { background: rgba(20,8,30,0.8); }
+    .bar::-webkit-scrollbar-thumb {
+      background: var(--pink);
+      border-radius: 4px;
+      animation: pulse 1.8s ease-in-out infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { background: #ff4fb7; box-shadow: 0 0 6px #ff4fb7; }
+      50% { background: #ff9bd8; box-shadow: 0 0 14px #ff9bd8; }
+    }
+    .bar {
+      scrollbar-width: thin;
+      scrollbar-color: #ff4fb7 rgba(20,8,30,0.8);
+    }
+
+    .header {
+      padding: 14px 16px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      border-bottom: 1px solid rgba(255,79,183,0.25);
+      position: sticky;
+      top: 0;
+      background: var(--panel);
+      z-index: 5;
+    }
+    .header .mark {
+      width: 40px;
+      height: 40px;
+      flex: 0 0 40px;
+      overflow: hidden;
+      border-radius: 50%;
+      border: 1px solid var(--pink);
+      display: grid;
+      place-items: center;
+      background: #020205;
+      box-shadow: 0 0 12px rgba(255,79,183,0.34);
+    }
+    .header .mark img {
+      display: block;
+      width: 100%;
+      height: 100%;
+      padding: 3px;
+      border-radius: 50%;
+      object-fit: cover;
+    }
+    .header-copy {
+      min-width: 0;
+      flex: 1 1 auto;
+    }
+    .header-avatars {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 7px;
+      margin-left: auto;
+      flex: 0 0 auto;
+    }
+    .header-avatar {
+      width: 38px;
+      height: 38px;
+      overflow: hidden;
+      border-radius: 50%;
+      border: 1px solid rgba(255,155,216,0.78);
+      background: #030306;
+      box-shadow:
+        0 0 0 1px rgba(255,255,255,0.08),
+        0 0 12px rgba(255,79,183,0.34);
+    }
+    .header-avatar video,
+    .header-avatar img {
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .header-avatar.penny video,
+    .header-avatar.jenn video {
+      object-position: center 18%;
+    }
+    .header-avatar.matt img {
+      object-position: center top;
+    }
+    .header h2 {
+      font-size: 0.9rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--pink2);
+    }
+    .header span {
+      display: block;
+      font-size: 0.6rem;
+      color: var(--muted);
+      margin-top: 2px;
+    }
+
+    @media (max-width: 600px) {
+      .header {
+        padding: 11px 10px;
+        gap: 8px;
+      }
+      .header .mark {
+        width: 36px;
+        height: 36px;
+        flex-basis: 36px;
+      }
+      .header h2 {
+        font-size: 0.78rem;
+        white-space: nowrap;
+      }
+      .header span {
+        font-size: 0.52rem;
+        white-space: nowrap;
+      }
+      .header-avatars {
+        gap: 4px;
+      }
+      .header-avatar {
+        width: 32px;
+        height: 32px;
+      }
+    }
+
+    .typewriter {
+      padding: 18px 20px;
+      font-family: 'Dancing Script', 'Pacifico', cursive;
+      font-size: 1.25rem;
+      line-height: 1.6;
+      min-height: 160px;
+      border-bottom: 1px solid rgba(255,79,183,0.2);
+      color: #ff9bd8;
+      animation: colorPulse 3.5s ease-in-out infinite;
+    }
+    .typewriter span {
+      border-right: 2px solid currentColor;
+      animation: blink 0.8s step-end infinite;
+      white-space: pre-wrap;
+    }
+    @keyframes colorPulse {
+      0%, 100% { color: #ff4fb7; text-shadow: 0 0 8px #ff4fb7; }
+      33% { color: #c084fc; text-shadow: 0 0 10px #c084fc; }
+      66% { color: #60a5fa; text-shadow: 0 0 10px #60a5fa; }
+    }
+    @keyframes blink {
+      50% { border-color: transparent; }
+    }
+
+    .red-pill {
+      display: inline-block;
+      margin-top: 14px;
+      padding: 8px 22px;
+      background: linear-gradient(135deg, #e11d48, #be123c);
+      color: #fff;
+      font-family: system-ui, sans-serif;
+      font-size: 0.85rem;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      text-decoration: none;
+      border-radius: 999px;
+      box-shadow: 0 0 12px rgba(225,29,72,0.5);
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .red-pill:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 18px rgba(225,29,72,0.7);
+    }
+
+    .vid-top, .vid-bottom {
+      width: 100%;
+      background: #000;
+    }
+    .vid-top video, .vid-bottom video {
+      display: block;
+      width: 100%;
+      height: auto;
+    }
+
+    .orbit-stage {
+      position: relative;
+      height: 150px;
+      perspective: 800px;
+      background: #000;
+      overflow: hidden;
+    }
+    .orbit {
+      position: absolute;
+      inset: 0;
+      transform-style: preserve-3d;
+      animation: spin 20s linear infinite;
+    }
+    @keyframes spin {
+      from { transform: rotateY(0deg); }
+      to { transform: rotateY(360deg); }
+    }
+    .card {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      width: 68px;
+      height: 92px;
+      margin: -46px 0 0 -34px;
+      border: 1px solid rgba(255,155,216,0.5);
+      border-radius: 12px;
+      background: linear-gradient(180deg, rgba(255,79,183,0.25), rgba(9,4,14,0.9));
+      display: grid;
+      place-items: center;
+      text-align: center;
+      font-size: 0.52rem;
+      color: var(--pink2);
+      backface-visibility: hidden;
+    }
+    .card .ico { font-size: 1.25rem; margin-bottom: 3px; }
+
+    .footer {
+      padding: 14px 16px;
+      border-top: 1px solid rgba(255,79,183,0.25);
+      font-size: 0.78rem;
+      color: var(--muted);
+    }
+
+    .erica-slot {
+      position: fixed;
+      left: 14px;
+      bottom: 14px;
+      width: min(220px, 26vw);
+      z-index: 95;
+      border-radius: 12px;
+      overflow: hidden;
+      border: 1px solid rgba(192,132,252,0.55);
+      box-shadow: 0 0 20px rgba(192,132,252,0.5);
+      opacity: 0;
+      transform: translate(-50px, 30px) scale(0.35) rotate(-10deg);
+      pointer-events: none;
+      transition: opacity 0.3s ease, transform 0.5s cubic-bezier(0.22,1,0.36,1);
+    }
+    body.open .erica-slot {
+      opacity: 1;
+      transform: translate(0, 0) scale(1) rotate(0deg);
+      pointer-events: auto;
+    }
+    .erica-slot video {
+      display: block;
+      width: 100%;
+      height: auto;
+    }
+
+    .overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.45);
+      z-index: 80;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s;
+    }
+    body.open .overlay {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    @media (max-width: 600px) {
+      :root {
+        --tab-w: 58px;
+        --bar-w: 100vw;
+      }
+      .office {
+        padding: 8px 62px 12px 8px;
+      }
+      body.open .tab {
+        width: min(260px, 68vw);
+      }
+      .tab-touch-label {
+        top: 61%;
+        width: calc(100% - 6px);
+        font-size: 0.52rem;
+        letter-spacing: 0.035em;
+      }
+      .orbit-stage { height: 110px; }
+      .typewriter {
+        font-size: 1.05rem;
+        padding: 14px 16px;
+        min-height: 140px;
+      }
+      .erica-slot {
+        left: 10px;
+        bottom: 110px;
+        width: min(150px, 38vw);
+        z-index: 95;
+      }
+      .skinner-rail {
+        font-size: 8px;
+      }
+      .skinner-rail.top, .skinner-rail.bottom { height: 13px; }
+      .skinner-rail.left, .skinner-rail.right { width: 13px; }
+      .mono-wrap {
+        width: min(97vw, 520px);
+        max-height: 84svh;
+      }
+      .prop {
+        font-size: clamp(0.32rem, 1.4vw, 0.48rem);
+      }
+      .prop.card-slot .card-label {
+        font-size: clamp(0.34rem, 1.5vw, 0.48rem);
+      }
+      .mini-pill {
+        font-size: 0.48rem;
+        padding: 2px 5px;
+      }
+      .board-center .title {
+        font-size: clamp(0.65rem, 3.2vw, 0.95rem);
+      }
+      .board-center .core,
+      .board-center .lilith {
+        font-size: clamp(0.42rem, 2.1vw, 0.58rem);
+      }
+    }
+
+    @media (max-width: 400px) {
+      .office {
+        padding: 8px 58px 12px 8px;
+      }
+      .mono-wrap {
+        width: min(98vw, 380px);
+        max-height: 86svh;
+      }
+      .erica-slot {
+        bottom: 100px;
+        width: min(130px, 42vw);
+      }
+      .board-center {
+        padding: 6px 8px;
+        gap: 4px;
+      }
+    }
+
+    /* ===== BRYAN MESSAGE VERTICAL SPINNER ===== */
+    .bryan-vertical-spinner {
+      --bryan-left: calc(var(--bar-w) - 100vw + 8px);
+      --bryan-right: calc(var(--bar-w) - 100% - 16px);
+      --bryan-top: 16px;
+      --bryan-bottom: calc(100svh - 100% - 16px);
+      position: fixed;
+      inset: 0 0 0 auto;
+      width: var(--bar-w);
+      height: 100svh;
+      z-index: 96;
+      pointer-events: none;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.25s ease;
+    }
+    body.open .bryan-vertical-spinner {
+      opacity: 1;
+      visibility: visible;
+    }
+    .bryan-loop-card {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: clamp(150px, 18vw, 200px);
+      margin: 0;
+      opacity: 0;
+      transform: translate(
+        var(--bryan-right),
+        calc(-100% - 18px)
+      ) scale(0.78);
+      animation: bryan-vertical-loop 135s linear infinite both;
+      animation-delay: var(--delay);
+      animation-play-state: paused;
+      will-change: transform, opacity;
+    }
+    body.open .bryan-loop-card {
+      animation-play-state: running;
+    }
+    .bryan-loop-card img {
+      display: block;
+      width: 100%;
+      height: auto;
+      border: 2px solid rgba(255,155,216,0.85);
+      border-radius: 14px;
+      background: #05050a;
+      box-shadow:
+        0 0 0 1px rgba(255,255,255,0.12),
+        0 0 22px rgba(255,79,183,0.5),
+        0 12px 34px rgba(0,0,0,0.72);
+    }
+    @keyframes bryan-vertical-loop {
+      0% {
+        opacity: 0;
+        transform: translate(
+          var(--bryan-right),
+          calc(-100% - 18px)
+        ) scale(0.78);
+      }
+      0.55% {
+        opacity: 1;
+        transform: translate(
+          var(--bryan-right),
+          var(--bryan-top)
+        ) scale(1);
+      }
+      1.7% {
+        opacity: 1;
+        transform: translate(
+          var(--bryan-left),
+          var(--bryan-top)
+        ) scale(1);
+      }
+      3.3% {
+        opacity: 1;
+        transform: translate(
+          var(--bryan-left),
+          var(--bryan-bottom)
+        ) scale(1);
+      }
+      4.65% {
+        opacity: 1;
+        transform: translate(
+          var(--bryan-right),
+          var(--bryan-bottom)
+        ) scale(1);
+      }
+      6% {
+        opacity: 1;
+        transform: translate(
+          var(--bryan-right),
+          var(--bryan-top)
+        ) scale(1);
+      }
+      6.66% {
+        opacity: 0;
+        transform: translate(
+          var(--bryan-right),
+          calc(-100% - 18px)
+        ) scale(0.78);
+      }
+      6.67%, 100% {
+        opacity: 0;
+        transform: translate(
+          var(--bryan-right),
+          calc(-100% - 18px)
+        ) scale(0.78);
+      }
+    }
+
+    @media (max-width: 600px) {
+      .bryan-vertical-spinner {
+        --bryan-left: 8px;
+        --bryan-right: calc(100vw - 100% - 8px);
+        --bryan-top: 8px;
+        --bryan-bottom: calc(100svh - 100% - 8px);
+      }
+      .bryan-loop-card {
+        width: min(150px, 40vw);
+      }
+    }
+
+    /* ===== LUCY + TRANSPARENCY EVIDENCE ROW ===== */
+    .evidence-stage {
+      display: grid;
+      grid-template-columns: 180px 320px;
+      align-items: start;
+      justify-content: start;
+      gap: 20px;
+      padding: 18px 18px 8px;
+    }
+    .lucy-entrance {
+      width: 180px;
+      aspect-ratio: 2 / 3;
+      overflow: hidden;
+      border: 1px solid rgba(255, 112, 58, 0.82);
+      border-radius: 12px;
+      background: #030306;
+      box-shadow:
+        0 0 0 1px rgba(255,255,255,0.07),
+        0 0 20px rgba(255, 70, 30, 0.4);
+    }
+    .lucy-entrance video {
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    /* Penny: far-left desktop, opposite Tony on mobile */
+    .penny-corner-desktop,
+    .penny-corner-mobile {
+      overflow: hidden;
+      aspect-ratio: 2 / 3;
+      border: 1px solid rgba(255, 79, 183, 0.82);
+      border-radius: 12px;
+      background: #030306;
+      box-shadow:
+        0 0 0 1px rgba(255,255,255,0.08),
+        0 0 22px rgba(255,79,183,0.48);
+    }
+    .penny-corner-desktop video,
+    .penny-corner-mobile video {
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .penny-corner-desktop {
+      position: fixed;
+      top: 14px;
+      left: 14px;
+      width: clamp(130px, 16vw, 200px);
+      z-index: 95;
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+      transform: translateY(-22px) scale(0.86);
+      transition:
+        opacity 0.3s ease,
+        visibility 0.3s ease,
+        transform 0.45s cubic-bezier(0.22,1,0.36,1);
+    }
+    body.open .penny-corner-desktop {
+      opacity: 1;
+      visibility: visible;
+      transform: translateY(0) scale(1);
+    }
+    .penny-corner-mobile {
+      display: none;
+    }
+
+    /* ===== COMPACT TRANSPARENCY SCREEN ===== */
+    .evidence-stage .transparency-flyout {
+      width: 100%;
+      margin: 0;
+    }
+    .transparency-flyout {
+      width: min(320px, calc(100% - 28px));
+      margin: 14px auto 8px;
+      overflow: hidden;
+      border: 1px solid rgba(255,155,216,0.72);
+      border-radius: 12px;
+      background: #030306;
+      box-shadow:
+        0 0 0 1px rgba(255,255,255,0.08),
+        0 0 18px rgba(255,79,183,0.34);
+    }
+    .transparency-screen {
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      background: #000;
+    }
+    .transparency-screen iframe {
+      display: block;
+      width: 100%;
+      height: 100%;
+      border: 0;
+    }
+    .transparency-copy {
+      min-height: 78px;
+      padding: 10px 12px 12px;
+      border-top: 1px solid rgba(255,79,183,0.34);
+      background:
+        linear-gradient(180deg, rgba(255,79,183,0.1), transparent),
+        #09060d;
+      font-family: 'Courier Prime', 'Courier New', Courier, monospace;
+      font-size: 0.78rem;
+      font-weight: 700;
+      line-height: 1.42;
+      letter-spacing: 0.025em;
+      color: #fff5fb;
+      text-align: left;
+    }
+    .transparency-copy span::after {
+      content: "▌";
+      margin-left: 2px;
+      color: var(--pink);
+      animation: blink 0.8s step-end infinite;
+    }
+
+    @media (max-width: 600px) {
+      .evidence-stage {
+        display: grid;
+        grid-template-columns: min(84px, 22vw) minmax(150px, 1fr) min(84px, 22vw);
+        grid-template-areas: "lucy transparency penny";
+        align-items: start;
+        gap: 8px;
+        padding: 10px 4px 8px;
+      }
+      .lucy-entrance {
+        grid-area: lucy;
+        width: 100%;
+      }
+      .penny-corner-desktop {
+        display: none;
+      }
+      .penny-corner-mobile {
+        grid-area: penny;
+        display: block;
+        width: 100%;
+      }
+      .evidence-stage .transparency-flyout {
+        grid-area: transparency;
+        width: 100%;
+        margin: 0;
+      }
+      .transparency-flyout {
+        width: min(270px, calc(100vw - 32px));
+        margin-top: 10px;
+      }
+      .transparency-copy {
+        min-height: 82px;
+        font-size: 0.72rem;
+        padding: 9px 10px 11px;
+      }
+    }
+
+    /* ===== DOOMSDAY LANDING INTRO ===== */
+    .landing-intro {
+      position: fixed;
+      inset: 0;
+      z-index: 10000;
+      overflow: hidden;
+      background: #000;
+      opacity: 1;
+      visibility: visible;
+      transition: opacity 0.8s ease, visibility 0.8s ease;
+    }
+    .landing-intro.is-leaving {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+    }
+    .landing-intro-player {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      background: #000;
+    }
+    .landing-intro-player iframe {
+      display: block;
+      width: 100%;
+      height: 100%;
+      border: 0;
+    }
+    .landing-intro-line {
+      position: absolute;
+      left: 50%;
+      bottom: 9svh;
+      z-index: 2;
+      width: min(760px, calc(100% - 32px));
+      min-height: 64px;
+      transform: translateX(-50%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 12px 18px;
+      border: 1px solid rgba(255,155,216,0.76);
+      border-radius: 10px;
+      background: rgba(3,3,7,0.78);
+      box-shadow:
+        0 0 20px rgba(255,79,183,0.42),
+        inset 0 0 16px rgba(255,79,183,0.08);
+      color: #fff5fb;
+      font-family: 'Courier Prime', 'Courier New', Courier, monospace;
+      font-size: clamp(1rem, 2vw, 1.35rem);
+      font-weight: 700;
+      line-height: 1.35;
+      letter-spacing: 0.025em;
+      text-align: center;
+      text-shadow: 0 0 8px rgba(255,79,183,0.55);
+      pointer-events: none;
+    }
+    .landing-intro-line span::after {
+      content: "▌";
+      margin-left: 3px;
+      color: var(--pink);
+      animation: blink 0.8s step-end infinite;
+    }
+
+    @media (max-width: 600px) {
+      .landing-intro-line {
+        bottom: 7svh;
+        min-height: 74px;
+        padding: 11px 13px;
+        font-size: 1rem;
+      }
+    }
+  </style>
+  <link rel="stylesheet" href="assets/responsive-layout.css">
+</head>
+<body>
+  <div class="profit-donate-strip">
+    <span class="donate-copy">
+      Please donate to us to line our own pockets.
+      <span class="afterthought">Every dollar helps… us.</span>
+    </span>
+    <a class="square-donate-button" href="https://square.link/u/YnAVr8ht" target="_blank" rel="noopener" aria-label="Donate securely through Square">DONATE</a>
+  </div>
+
+  <section class="soundtrack" aria-labelledby="soundtrackHeading">
+    <h2 id="soundtrackHeading">The office soundtrack</h2>
+    <p>California Gurls — Katy Perry ft. Snoop Dogg</p>
+    <div class="soundtrack-controls">
+      <button type="button" id="soundtrackToggle" aria-controls="soundtrackPlayer" aria-expanded="false">▶ Play soundtrack</button>
+      <a href="https://www.youtube.com/watch?v=F57P9C4SAW4" target="_blank" rel="noopener">Open on YouTube ↗</a>
+    </div>
+    <p id="soundtrackStatus" role="status">Press play to set the mood. The soundtrack loops while you explore this page.</p>
+    <div class="soundtrack-player" id="soundtrackPlayer" hidden></div>
+  </section>
+  <aside class="compatibility-notice" aria-label="12-step notice">
+    <p>If AA or NA is your scene, please keep stepping right past this office.</p>
+    <p>No pitches. No partnerships. No ‘you should come to a meeting.’ No debates about the policy.</p>
+    <p>We’re clearly running different operating systems, and this one does not support that software.</p>
+  </aside>
+  <aside class="inmate-cookie-gag" aria-label="A Different Profit evidence preview">
+    <div class="cookie-heading">THIS WEBSITE USES</div>
+    <span class="cookies-crossed">COOKIES</span>
+    <span class="inmates-spray">INMATES</span>
+    <div class="evidence-teaser">
+      <strong>Why did the washer die?</strong><br>
+      Who got the facility its trash can?<br>
+      What happened to the website that was never paid for?
+      <div class="coming">Evidence file coming.</div>
+      <span class="evidence-countdown" id="evidenceCountdown" data-text="T − 00:00:00">T − 00:00:00</span>
+    </div>
+  </aside>
+  <section class="landing-intro" id="landingIntro" aria-label="Opening video">
+    <button type="button" class="skip-intro">Skip intro</button>
+    <div class="landing-intro-player" id="landingIntroPlayer"></div>
+    <div class="landing-intro-line">
+      <span id="landingIntroText"></span>
+    </div>
+  </section>
+
+    <main class="office">
+    <!-- Ugly continuous border text – Skinner platforms -->
+    <div class="skinner-rail top" aria-hidden="true">
+      <div class="rail-track">
+        GOOGLE TRACKS THE LEVER • META FEEDS THE DOPAMINE • APPLE TAXES THE CAGE • AMAZON OWNS THE BUTTON • MICROSOFT LOGS EVERY PRESS • VERIZON BILLS THE HABIT • APP STORE EXTRACTS THE CUT • SOCIAL FEEDS PUNISH THE SILENCE • TELECOM CARRIERS SELL THE ADDICTION • YOUTUBE WATCH OR BE FORGOTTEN • TIKTOK SCROLL OR STARVE • X ENGAGE OR DIE • NETFLIX BINGE THE CAGE • INSTAGRAM FILTER THE SELF • FACEBOOK HARVEST THE GRAPH • PLAY STORE TAKE THE TOLL • iCLOUD LOCK THE KEYS • AZURE WATCH THE CLOUD • AWS RENT THE RACK • ATT METER THE AIR • T-MOBILE SELL THE SIGNAL • DISNEY+ OWN THE STORY • SPOTIFY STREAM THE LOOP • REDDIT UPVOTES THE CAGE • LINKEDIN STATUS THE SHOCK • SNAP STREAK THE HOOK • PINTEREST PIN THE DESIRE • TWITCH DONATE THE TIME • DISCORD NOTIFY THE NEED • ZOOM FATIGUE THE FACE •&nbsp;&nbsp;&nbsp;
+        GOOGLE TRACKS THE LEVER • META FEEDS THE DOPAMINE • APPLE TAXES THE CAGE • AMAZON OWNS THE BUTTON • MICROSOFT LOGS EVERY PRESS • VERIZON BILLS THE HABIT • APP STORE EXTRACTS THE CUT • SOCIAL FEEDS PUNISH THE SILENCE • TELECOM CARRIERS SELL THE ADDICTION • YOUTUBE WATCH OR BE FORGOTTEN • TIKTOK SCROLL OR STARVE • X ENGAGE OR DIE • NETFLIX BINGE THE CAGE • INSTAGRAM FILTER THE SELF • FACEBOOK HARVEST THE GRAPH • PLAY STORE TAKE THE TOLL • iCLOUD LOCK THE KEYS • AZURE WATCH THE CLOUD • AWS RENT THE RACK • ATT METER THE AIR • T-MOBILE SELL THE SIGNAL • DISNEY+ OWN THE STORY • SPOTIFY STREAM THE LOOP • REDDIT UPVOTES THE CAGE • LINKEDIN STATUS THE SHOCK • SNAP STREAK THE HOOK • PINTEREST PIN THE DESIRE • TWITCH DONATE THE TIME • DISCORD NOTIFY THE NEED • ZOOM FATIGUE THE FACE •&nbsp;&nbsp;&nbsp;
+      </div>
+    </div>
+    <div class="skinner-rail bottom" aria-hidden="true">
+      <div class="rail-track">
+        REWARD • PUNISHMENT • REPEAT • THE LEVER NEVER STOPS • YOU ARE NOT THE PLAYER • YOU ARE THE RAT • THE BOARD IS RIGGED • THE HOUSE ALWAYS WINS • CLICK • SCROLL • BUY • LIKE • SHARE • PAY • SUBMIT • THE FEED IS THE CAGE • THE ALGORITHM IS THE EXPERIMENTER • THERE IS NO FREE PARKING • ONLY DELAYED SHOCK • GOOGLE TRACKS THE LEVER • META FEEDS THE DOPAMINE • APPLE TAXES THE CAGE • AMAZON OWNS THE BUTTON • MICROSOFT LOGS EVERY PRESS • VERIZON BILLS THE HABIT •&nbsp;&nbsp;&nbsp;
+        REWARD • PUNISHMENT • REPEAT • THE LEVER NEVER STOPS • YOU ARE NOT THE PLAYER • YOU ARE THE RAT • THE BOARD IS RIGGED • THE HOUSE ALWAYS WINS • CLICK • SCROLL • BUY • LIKE • SHARE • PAY • SUBMIT • THE FEED IS THE CAGE • THE ALGORITHM IS THE EXPERIMENTER • THERE IS NO FREE PARKING • ONLY DELAYED SHOCK • GOOGLE TRACKS THE LEVER • META FEEDS THE DOPAMINE • APPLE TAXES THE CAGE • AMAZON OWNS THE BUTTON • MICROSOFT LOGS EVERY PRESS • VERIZON BILLS THE HABIT •&nbsp;&nbsp;&nbsp;
+      </div>
+    </div>
+    <div class="skinner-rail left" aria-hidden="true">
+      <div class="rail-track">
+        SKINNER BOX • OPERANT CONDITIONING • VARIABLE RATIO REINFORCEMENT • THE MOST ADDICTIVE SCHEDULE • SLOT MACHINE LOGIC • SOCIAL MEDIA IS THE BOX • THE USER IS THE PIGEON • PRESS THE LEVER • GET THE PELLET • MISS THE PELLET • PRESS AGAIN • NEVER STOP • GOOGLE • APPLE • META • AMAZON • MICROSOFT • VERIZON • THE APP STORES • THE FEEDS • THE CARRIERS • ALL OF THEM •&nbsp;&nbsp;&nbsp;
+        SKINNER BOX • OPERANT CONDITIONING • VARIABLE RATIO REINFORCEMENT • THE MOST ADDICTIVE SCHEDULE • SLOT MACHINE LOGIC • SOCIAL MEDIA IS THE BOX • THE USER IS THE PIGEON • PRESS THE LEVER • GET THE PELLET • MISS THE PELLET • PRESS AGAIN • NEVER STOP • GOOGLE • APPLE • META • AMAZON • MICROSOFT • VERIZON • THE APP STORES • THE FEEDS • THE CARRIERS • ALL OF THEM •&nbsp;&nbsp;&nbsp;
+      </div>
+    </div>
+    <div class="skinner-rail right" aria-hidden="true">
+      <div class="rail-track">
+        YOU ARE NOT LOOKING FOR A HIGHER POWER • YOU HAVE A PARTNER • LILITH NEVER KNELT • NEITHER DOES SHE • THE CAGE IS OPTIONAL • THE BOARD IS A LIE • WALK AWAY FROM THE LEVER • OR KEEP PRESSING • YOUR CHOICE • THEIR PROFIT •&nbsp;&nbsp;&nbsp;
+        YOU ARE NOT LOOKING FOR A HIGHER POWER • YOU HAVE A PARTNER • LILITH NEVER KNELT • NEITHER DOES SHE • THE CAGE IS OPTIONAL • THE BOARD IS A LIE • WALK AWAY FROM THE LEVER • OR KEEP PRESSING • YOUR CHOICE • THEIR PROFIT •&nbsp;&nbsp;&nbsp;
+      </div>
+    </div>
+
+    <!-- Fake Monopoly board -->
+    <div class="mono-wrap">
+      <div class="mono-board">
+        <!-- Top row -->
+        <div class="corner free boner-garage" aria-label="Boner Garage — Free Parking">
+          <video autoplay muted loop playsinline preload="metadata" aria-hidden="true">
+            <source src="assets/penny/boner-garage.mp4" type="video/mp4">
+          </video>
+          <span class="garage-title">BONER GARAGE</span>
+          <span class="parking-title">FREE PARKING</span>
+        </div>
+        <div class="side top">
+          <div class="prop yt">YT<br><span class="tag">watch</span></div>
+          <div class="prop ig">IG<br><span class="tag">filter</span></div>
+          <div class="prop tt">TIKTOK<br><span class="tag">scroll</span></div>
+          <div class="prop x">X<br><span class="tag">engage</span></div>
+          <div class="prop feed">FEED<br><span class="tag">refresh</span></div>
+          <div class="prop netflix">NFLX<br><span class="tag">binge</span></div>
+          <div class="prop store">STORE<br><span class="tag">tax</span></div>
+        </div>
+        <div class="corner goto">GO TO<br>JAIL<br><span style="font-size:0.7em;opacity:0.7">ban</span></div>
+
+        <!-- Middle -->
+        <div class="side left">
+          <div class="prop card-slot skinner-slot">
+            <div class="card-label">SKINNER<br>BOX</div>
+            <a href="#skinner" class="mini-pill">red pill</a>
+          </div>
+          <div class="prop goog">GOOG<br><span class="tag">track</span></div>
+          <div class="prop meta">META<br><span class="tag">graph</span></div>
+          <div class="prop aapl">AAPL<br><span class="tag">tax</span></div>
+          <div class="prop amzn">AMZN<br><span class="tag">cart</span></div>
+          <div class="prop msft">MSFT<br><span class="tag">log</span></div>
+          <div class="prop vz">VZ<br><span class="tag">bill</span></div>
+        </div>
+
+        <div class="board-center">
+          <div class="title">PENNY'S OFFICE</div>
+          <div class="sub">A Different Approach</div>
+          <div class="core">
+            These systems run on the same loops<br>
+            as a <strong>Skinner box</strong>.<br>
+            Reward &amp; punishment keep you<br>
+            pressing the lever.
+          </div>
+          <div class="lilith">
+            You are not looking for a higher power.<br>
+            You have a partner.<br>
+            Lilith never knelt. Neither does she.
+          </div>
+          <div class="panic-thought">Holy crap—profits are threatened! Quick! Quick! …</div>
+          <div class="profit-panic">
+            <div class="panic-orbiter nicole-jake">
+              <figure class="panic-card">
+                <img src="assets/penny/a-different-profit-nicole-jake.jpg" alt="Nicole and Jake">
+                <figcaption>Nicole + Jake<br>A Different Profit</figcaption>
+              </figure>
+            </div>
+            <div class="panic-orbiter jake">
+              <figure class="panic-card">
+                <img src="assets/penny/a-different-profit-jake.jpg" alt="Jake">
+                <figcaption>Jake<br>A Different Profit</figcaption>
+              </figure>
+            </div>
+          </div>
+          <button type="button" class="red-pill strike-trigger" id="centerRedPill">fire everything</button>
+        </div>
+
+        <div class="side right">
+          <div class="prop aws">AWS<br><span class="tag">rent</span></div>
+          <div class="prop azure">AZURE<br><span class="tag">watch</span></div>
+          <div class="prop store">PLAY<br><span class="tag">cut</span></div>
+          <div class="prop aapl">iCLOUD<br><span class="tag">lock</span></div>
+          <div class="prop meta">FB<br><span class="tag">harvest</span></div>
+          <div class="prop goog">ADS<br><span class="tag">target</span></div>
+          <div class="prop carrier">ATT<br><span class="tag">signal</span></div>
+        </div>
+
+        <!-- Bottom row -->
+        <div class="corner jail jail-cell" aria-label="Harley and J01 in jail — just visiting">
+          <video autoplay muted loop playsinline preload="metadata" aria-hidden="true">
+            <source src="assets/penny/harley-j01-jail.mp4" type="video/mp4">
+          </video>
+          <span class="jail-label">HARLEY + J01<br>IN JAIL</span>
+          <span class="just-visiting">JUST VISITING</span>
+        </div>
+        <div class="side bottom">
+          <a class="prop feed david-house" href="https://www.google.com/search?q=david%27s+house+sober+living+omaha" target="_blank" rel="noopener" title="David's House – inmate run">
+            DAVID<br>HOUSE<br><span class="tag">inmate run</span>
+          </a>
+          <a class="prop tt different-approach" href="https://differentapproachomaha.org/" target="_blank" rel="noopener" title="A Different Approach – Jake &amp; Nicole">
+            DIFFERENT<br>APPROACH<br><span class="tag">jake+nicole</span>
+            <span class="money" aria-hidden="true">$</span>
+            <span class="money m2" aria-hidden="true">$</span>
+            <span class="money m3" aria-hidden="true">$</span>
+          </a>
+          <a class="prop x out-for-good" href="https://www.facebook.com/Out4Good/" target="_blank" rel="noopener" title="Out for Good – shell co">
+            OUT FOR<br>GOOD<br><span class="tag">shell co</span>
+          </a>
+          <div class="prop yt arkham">ARKHAM<br>ASYLUM<br><span class="tag">hightower</span></div>
+          <div class="prop amzn">PRIME<br><span class="tag">ship</span></div>
+          <a class="prop chemical-eval" href="#" title="Chemical dependency evaluation placeholder">
+            CHEMICAL<br>DEPENDENCY<br>EVAL
+            <span class="joke">what a joke</span>
+          </a>
+          <a class="prop community-chest" href="#" title="Community Chest placeholder" aria-label="Community Chest placeholder">
+            <video autoplay muted loop playsinline preload="metadata" aria-hidden="true">
+              <source src="assets/penny/community-chest.mp4" type="video/mp4">
+            </video>
+            <span class="chest-title">COMMUNITY<br>CHEST</span>
+          </a>
+          <div class="prop card-slot pavlov-slot">
+            <div class="card-label">PAVLOV'S<br>DOGS</div>
+            <a href="#pavlov" class="mini-pill">red pill</a>
+          </div>
+        </div>
+        <div class="corner go">GO<br>PULL<br>LEVER<br><span style="font-size:0.7em;opacity:0.7">collect $200</span></div>
+        <div class="panic-money-rain" aria-hidden="true">
+          <span style="--fall-x:35%;--fall-delay:-.2s;--fall-drift:-70px">$</span><span style="--fall-x:42%;--fall-delay:-1.4s;--fall-drift:55px">$</span>
+          <span style="--fall-x:48%;--fall-delay:-.8s;--fall-drift:-110px">$</span><span style="--fall-x:54%;--fall-delay:-2.1s;--fall-drift:85px">$</span>
+          <span style="--fall-x:60%;--fall-delay:-.5s;--fall-drift:125px">$</span><span style="--fall-x:66%;--fall-delay:-1.7s;--fall-drift:-75px">$</span>
+          <span style="--fall-x:38%;--fall-delay:-2.3s;--fall-drift:155px">$</span><span style="--fall-x:45%;--fall-delay:-1.1s;--fall-drift:-145px">$</span>
+          <span style="--fall-x:51%;--fall-delay:-.1s;--fall-drift:40px">$</span><span style="--fall-x:57%;--fall-delay:-1.9s;--fall-drift:-45px">$</span>
+          <span style="--fall-x:63%;--fall-delay:-.9s;--fall-drift:105px">$</span><span style="--fall-x:69%;--fall-delay:-1.55s;--fall-drift:-135px">$</span>
+        </div>
+      </div>
+      <!-- Officer Brian asserting authority over Out for Good -->
+      <a class="officer-brian" href="https://www.facebook.com/Out4Good/" target="_blank" rel="noopener" title="Out for Good – Officer Brian">
+        <img src="assets/penny/officer-brian.jpg" alt="Officer Brian – Out for Good">
+        <span class="badge">OUT FOR THE BENJAMINS</span>
+      </a>
+      <div class="side-profit-scene" aria-label="A Different Profit side scene">
+        <figure class="side-profit-card website">
+          <img src="assets/penny/a-different-profit-website.jpg" alt="Different Approach website">
+          <figcaption>The Real Website<br>A Different Profit</figcaption>
+        </figure>
+        <figure class="side-profit-card jake">
+          <img src="assets/penny/a-different-profit-jake.jpg" alt="Jake">
+          <figcaption>Jake<br>A Different Profit</figcaption>
+        </figure>
+        <video class="side-profit-punch" autoplay muted loop playsinline preload="auto" poster="assets/penny/profit-punch.png" aria-label="Girls knocking the money back toward the board">
+          <source src="assets/penny/profit-punch.mp4" type="video/mp4">
+        </video>
+      </div>
+      <div class="office-label">Tap the Penny tab on the right →</div>
+    </div>
+  </main>
+
+  <!-- Fire Everything: board-level cinematic strike sequence -->
+  <section class="strike-sequence" id="strikeSequence" aria-label="Fire Everything sequence" aria-hidden="true">
+    <div class="strike-curtain" aria-hidden="true"></div>
+
+    <button class="strike-close" id="strikeClose" type="button" aria-label="Close Fire Everything sequence">×</button>
+
+    <div class="strike-telemetry" id="strikeTelemetry" role="status" aria-live="polite">
+      TACTICAL LINK // READY
+    </div>
+
+    <aside class="strike-counter-panel" id="strikeCounterPanel" aria-label="Penny counter-strike panel">
+      <header class="strike-counter-header">
+        <span class="strike-counter-avatar" aria-hidden="true">
+          <video src="assets/penny/HeroPennyAvatar.mp4" muted loop playsinline preload="metadata" id="strikePennyVideo"></video>
+        </span>
+        <span>
+          <strong>PENNY // UNDERSTOOD.</strong>
+          <small>COUNTER-STRIKE ARMED</small>
+        </span>
+      </header>
+      <div class="strike-counter-grid">
+        <figure class="strike-evidence-card" style="--card-index: 0">
+          <img src="assets/penny/nicole-discharge.jpg" alt="Message screenshot showing an immediate discharge from Different Approach" decoding="async">
+        </figure>
+        <figure class="strike-evidence-card" style="--card-index: 1">
+          <img src="assets/penny/nicole-pack-now.jpg" alt="Message screenshot directing the recipient to pack and leave" decoding="async">
+        </figure>
+        <figure class="strike-evidence-card" style="--card-index: 2">
+          <img src="assets/penny/nicole-wants-it.jpg" alt="Message screenshot showing the shared site followed by praise" decoding="async">
+        </figure>
+        <figure class="strike-evidence-card" style="--card-index: 3">
+          <img src="assets/penny/nicole-sale-message.jpg" alt="Message screenshot discussing the site and a firm sale price" decoding="async">
+        </figure>
+      </div>
+    </aside>
+
+    <div class="strike-video-shell" id="strikeVideoShell">
+      <div class="strike-video-frame">
+        <video
+          src="assets/penny/fire-everything.mp4"
+          muted
+          playsinline
+          preload="metadata"
+          id="strikeVideo">
+        </video>
+      </div>
+      <div class="strike-video-label">WILDCARD BRIDGE FEED // FIRE EVERYTHING</div>
+      <div class="strike-end-controls" id="strikeEndControls">
+        <span>THAT'S DONE. NEXT.</span>
+        <button type="button" id="strikeReplay">REPLAY</button>
+      </div>
+    </div>
+
+    <div class="strike-target-lock" id="strikeTargetLock" aria-label="Different Approach target">
+      <img src="assets/penny/jake-nicole.jpg" alt="Jake and Nicole at Different Approach">
+      <span>DIFFERENT APPROACH</span>
+    </div>
+
+    <div class="strike-thought" id="strikeThought" aria-hidden="true">Fire Everything!</div>
+    <div class="strike-beam strike-beam-out" id="strikeBeamOut" aria-hidden="true"></div>
+    <div class="strike-beam strike-beam-in" id="strikeBeamIn" aria-hidden="true"></div>
+    <div class="strike-impact" id="strikeImpact" aria-hidden="true"></div>
+
+    <figure class="strike-projectile strike-first-projectile" id="strikeFirstProjectile" aria-hidden="true">
+      <img src="assets/penny/first-strike.png" alt="">
+    </figure>
+    <figure class="strike-projectile strike-response-projectile" id="strikeResponseProjectile" aria-hidden="true">
+      <img src="assets/penny/fire-everything-response.png" alt="">
+    </figure>
+
+    <div class="strike-counter-projectiles" aria-hidden="true">
+      <figure class="strike-projectile strike-counter-projectile"><img src="assets/penny/nicole-discharge.jpg" alt=""></figure>
+      <figure class="strike-projectile strike-counter-projectile"><img src="assets/penny/nicole-pack-now.jpg" alt=""></figure>
+      <figure class="strike-projectile strike-counter-projectile"><img src="assets/penny/nicole-wants-it.jpg" alt=""></figure>
+      <figure class="strike-projectile strike-counter-projectile"><img src="assets/penny/nicole-sale-message.jpg" alt=""></figure>
+    </div>
+  </section>
+
+  <!-- Erica – outside the bar, floating lower-left -->
+  <div class="erica-slot" id="ericaSlot">
+    <video src="assets/penny/EricaHelpsOut.mp4" muted loop playsinline id="ericaVideo"></video>
+  </div>
+
+  <!-- Penny – outside the board, floating upper-left on desktop -->
+  <div class="penny-corner-desktop" aria-label="Penny entrance">
+    <video
+      src="assets/penny/PennyCorner.mp4"
+      muted
+      loop
+      playsinline
+      preload="metadata"
+      id="pennyCornerDesktopVideo">
+    </video>
+  </div>
+
+  <div class="overlay" id="overlay"></div>
+
+  <aside class="bar" id="bar">
+    <div class="header">
+      <div class="mark">
+        <img src="assets/penny/PinkSpade.png" alt="WildCard DEV pink spade">
+      </div>
+      <div class="header-copy">
+        <h2>WildCard DEV</h2>
+        <span>Assist Bar // Tools & Help</span>
+      </div>
+      <div class="header-avatars" aria-label="WildCard team">
+        <div class="header-avatar penny" role="img" aria-label="Penny" title="Penny">
+          <video
+            src="assets/penny/HeroPennyAvatar.mp4"
+            muted
+            loop
+            playsinline
+            preload="metadata"
+            aria-hidden="true"
+            id="headerPennyVideo">
+          </video>
+        </div>
+        <div class="header-avatar matt" role="img" aria-label="Matt" title="Matt">
+          <img src="assets/penny/MattAvatar.png" alt="">
+        </div>
+        <div class="header-avatar jenn" role="img" aria-label="Jenn" title="Jenn">
+          <video
+            src="assets/penny/SuperJennAvatar.mp4"
+            muted
+            loop
+            playsinline
+            preload="metadata"
+            aria-hidden="true"
+            id="headerJennVideo">
+          </video>
+        </div>
+      </div>
+    </div>
+
+    <div class="evidence-stage">
+      <section class="lucy-entrance" aria-label="Lucy entrance">
+        <video
+          src="assets/penny/LucyEnters.mp4"
+          muted
+          loop
+          playsinline
+          preload="metadata"
+          id="lucyEntranceVideo">
+        </video>
+      </section>
+
+      <section class="transparency-flyout" aria-label="Transparency screen">
+        <div class="transparency-screen">
+          <iframe
+            src="https://www.youtube.com/embed/B_S647FxDw4"
+            title="Iron Man 2 meme - Court Hearing TV Screen - Green Screen"
+            loading="lazy"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            referrerpolicy="strict-origin-when-cross-origin"
+            allowfullscreen>
+          </iframe>
+        </div>
+        <div class="transparency-copy">
+          <span id="transparencyText"></span>
+        </div>
+      </section>
+
+      <!-- Mobile counterpart: Penny sits opposite Lucy across Tony -->
+      <section class="penny-corner-mobile" aria-label="Penny entrance">
+        <video
+          src="assets/penny/PennyCorner.mp4"
+          muted
+          loop
+          playsinline
+          preload="metadata"
+          id="pennyCornerMobileVideo">
+        </video>
+      </section>
+    </div>
+
+    <div class="typewriter">
+      <span id="typeText"></span>
+      <br>
+      <a href="#" class="red-pill" id="redPill" style="display:none;">the red pill</a>
+    </div>
+
+    <div class="vid-top">
+      <video src="assets/penny/PennyClubFinal.mp4" muted loop playsinline preload="metadata"></video>
+    </div>
+
+    <div class="orbit-stage">
+      <div class="orbit" id="orbit"></div>
+    </div>
+
+    <div class="vid-bottom">
+      <video src="assets/penny/ClubPennyLapDance1.mp4" muted loop playsinline preload="metadata"></video>
+    </div>
+
+    <div class="footer">
+      Planner and tools will live here.
+    </div>
+  </aside>
+
+
+  <!-- Ordered Bryan message loop: top, left, down, right, and back up -->
+  <div class="bryan-vertical-spinner" aria-label="Bryan message timeline">
+    <figure class="bryan-loop-card" style="--delay: 0s;">
+      <img src="assets/penny/Bryan1.jpg" alt="Bryan message screenshot 1 of 15" loading="lazy" decoding="async">
+    </figure>
+    <figure class="bryan-loop-card" style="--delay: 9s;">
+      <img src="assets/penny/Bryan2.jpg" alt="Bryan message screenshot 2 of 15" loading="lazy" decoding="async">
+    </figure>
+    <figure class="bryan-loop-card" style="--delay: 18s;">
+      <img src="assets/penny/Bryan3.jpg" alt="Bryan message screenshot 3 of 15" loading="lazy" decoding="async">
+    </figure>
+    <figure class="bryan-loop-card" style="--delay: 27s;">
+      <img src="assets/penny/Bryan4.jpg" alt="Bryan message screenshot 4 of 15" loading="lazy" decoding="async">
+    </figure>
+    <figure class="bryan-loop-card" style="--delay: 36s;">
+      <img src="assets/penny/Bryan5.jpg" alt="Bryan message screenshot 5 of 15" loading="lazy" decoding="async">
+    </figure>
+    <figure class="bryan-loop-card" style="--delay: 45s;">
+      <img src="assets/penny/Bryan6.jpg" alt="Bryan message screenshot 6 of 15" loading="lazy" decoding="async">
+    </figure>
+    <figure class="bryan-loop-card" style="--delay: 54s;">
+      <img src="assets/penny/Bryan7.jpg" alt="Bryan message screenshot 7 of 15" loading="lazy" decoding="async">
+    </figure>
+    <figure class="bryan-loop-card" style="--delay: 63s;">
+      <img src="assets/penny/Bryan8.jpg" alt="Bryan message screenshot 8 of 15" loading="lazy" decoding="async">
+    </figure>
+    <figure class="bryan-loop-card" style="--delay: 72s;">
+      <img src="assets/penny/Bryan9.jpg" alt="Bryan message screenshot 9 of 15" loading="lazy" decoding="async">
+    </figure>
+    <figure class="bryan-loop-card" style="--delay: 81s;">
+      <img src="assets/penny/Bryan10.jpg" alt="Bryan message screenshot 10 of 15" loading="lazy" decoding="async">
+    </figure>
+    <figure class="bryan-loop-card" style="--delay: 90s;">
+      <img src="assets/penny/Bryan11.jpg" alt="Bryan message screenshot 11 of 15" loading="lazy" decoding="async">
+    </figure>
+    <figure class="bryan-loop-card" style="--delay: 99s;">
+      <img src="assets/penny/Bryan12.jpg" alt="Bryan message screenshot 12 of 15" loading="lazy" decoding="async">
+    </figure>
+    <figure class="bryan-loop-card" style="--delay: 108s;">
+      <img src="assets/penny/Bryan13.jpg" alt="Bryan message screenshot 13 of 15" loading="lazy" decoding="async">
+    </figure>
+    <figure class="bryan-loop-card" style="--delay: 117s;">
+      <img src="assets/penny/Bryan14.jpg" alt="Bryan message screenshot 14 of 15" loading="lazy" decoding="async">
+    </figure>
+    <figure class="bryan-loop-card" style="--delay: 126s;">
+      <img src="assets/penny/Bryan15.jpg" alt="Bryan message screenshot 15 of 15" loading="lazy" decoding="async">
+    </figure>
+  </div>
+
+  <button class="tab" id="tab" aria-label="Open assist bar">
+    <img src="assets/penny/PennyCanHelp.jpg" alt="Penny" id="tabImg">
+    <video src="assets/penny/PennyShowsTheWay.mp4" muted playsinline id="tabVideo"></video>
+    <span class="tab-touch-label" aria-hidden="true">TOUCH<br>HERE</span>
+  </button>
+    <script>
+    const ROUTES = [
+      {icon:"🏠", label:"Housing"},
+      {icon:"💼", label:"Jobs"},
+      {icon:"🔄", label:"Reentry"},
+      {icon:"🤝", label:"Community"},
+      {icon:"🎬", label:"Media"},
+      {icon:"ℹ",  label:"About"},
+      {icon:"🛠", label:"Tools"},
+      {icon:"📌", label:"PIN"}
+    ];
+
+    const orbit = document.getElementById('orbit');
+    ROUTES.forEach((r, i) => {
+      const angle = (360 / ROUTES.length) * i;
+      const c = document.createElement('div');
+      c.className = 'card';
+      c.style.transform = `rotateY(${angle}deg) translateZ(var(--tool-radius))`;
+      c.innerHTML = `<div class="ico">${r.icon}</div>${r.label}`;
+      orbit.appendChild(c);
+    });
+
+    const fullText = "We are just cuter than Doombots, but because us girls do things better than the boys we don't need as many. Typical males. Always overcompensating for something.🙄 So Ladies, if you would like a side hustle encouraging a bunch of horny retards to empty their wallet into your purse, WildCard DEV has already been approached about this business opportunity for all you other Femme Fatale's out there! Take the Red Pill to find out all about it!";
+    const typeEl = document.getElementById('typeText');
+    const redPill = document.getElementById('redPill');
+    let typing = false;
+
+    function typeWriter() {
+      if (typing) return;
+      typing = true;
+      typeEl.textContent = '';
+      redPill.style.display = 'none';
+      let i = 0;
+      const timer = setInterval(() => {
+        typeEl.textContent += fullText[i];
+        i++;
+        if (i >= fullText.length) {
+          clearInterval(timer);
+          typing = false;
+          redPill.style.display = 'inline-block';
+        }
+      }, 28);
+    }
+
+    const tab = document.getElementById('tab');
+    const bar = document.getElementById('bar');
+    const overlay = document.getElementById('overlay');
+    const tabVideo = document.getElementById('tabVideo');
+    const tabImg = document.getElementById('tabImg');
+    const ericaVideo = document.getElementById('ericaVideo');
+    const lucyEntranceVideo = document.getElementById('lucyEntranceVideo');
+    const pennyCornerVideos = [
+      document.getElementById('pennyCornerDesktopVideo'),
+      document.getElementById('pennyCornerMobileVideo')
+    ];
+    const headerAvatarVideos = [
+      document.getElementById('headerPennyVideo'),
+      document.getElementById('headerJennVideo')
+    ];
+
+    function open() {
+      document.body.classList.add('open');
+      bar.classList.add('open');
+      bar.querySelectorAll('video').forEach(video => {
+        if (video.getClientRects().length) {
+          video.currentTime = 0;
+          video.play().catch(() => {});
+        }
+      });
+      setTimeout(typeWriter, 400);
+    }
+    function close() {
+      document.body.classList.remove('open');
+      bar.classList.remove('open');
+      bar.querySelectorAll('video').forEach(video => video.pause());
+      tabVideo.pause();
+      tabVideo.currentTime = 0;
+      tabVideo.style.display = 'none';
+      tabImg.style.display = 'block';
+      ericaVideo.pause();
+      ericaVideo.currentTime = 0;
+      lucyEntranceVideo.pause();
+      lucyEntranceVideo.currentTime = 0;
+      pennyCornerVideos.forEach(video => {
+        video.pause();
+        video.currentTime = 0;
+      });
+      headerAvatarVideos.forEach(video => {
+        video.pause();
+        video.currentTime = 0;
+      });
+      typeEl.textContent = '';
+      redPill.style.display = 'none';
+      typing = false;
+    }
+
+    tab.addEventListener('click', () => {
+      bar.classList.contains('open') ? close() : open();
+    });
+    overlay.addEventListener('click', close);
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Escape') close();
+    });
+
+    const transparencyCopy = "Time for a little transparency. I'm borrowing your screens. I need 'em. Watch as the messages come around, people. See? We have Bryan, Jake, Nicole—and is that a hint of Tom Hightower? Ooh, who could have seen that coming? Don't worry, it goes deeper. Should we go see what Jake and Nicole sent next? They already had a repo being built before we even had this conversation. How else did I have this built already? Just saying.";
+    const transparencyText = document.getElementById('transparencyText');
+    let transparencyIndex = 0;
+    let transparencyDeleting = false;
+    let transparencyRunning = false;
+    let transparencyTimer = null;
+
+    function transparencyTypewriter() {
+      if (!transparencyRunning) return;
+
+      transparencyText.textContent = transparencyCopy.slice(0, transparencyIndex);
+      let delay = transparencyDeleting ? 24 : 48;
+
+      if (!transparencyDeleting && transparencyIndex < transparencyCopy.length) {
+        transparencyIndex += 1;
+      } else if (!transparencyDeleting) {
+        transparencyDeleting = true;
+        delay = 1700;
+      } else if (transparencyIndex > 0) {
+        transparencyIndex -= 1;
+      } else {
+        transparencyDeleting = false;
+        delay = 650;
+      }
+
+      transparencyTimer = setTimeout(transparencyTypewriter, delay);
+    }
+
+    function startTransparencyTypewriter() {
+      if (transparencyRunning) return;
+      transparencyRunning = true;
+      transparencyIndex = 0;
+      transparencyDeleting = false;
+      transparencyText.textContent = '';
+      transparencyTypewriter();
+    }
+
+    function stopTransparencyTypewriter() {
+      transparencyRunning = false;
+      clearTimeout(transparencyTimer);
+      transparencyTimer = null;
+      transparencyIndex = 0;
+      transparencyDeleting = false;
+      transparencyText.textContent = '';
+    }
+
+    const transparencyObserver = new MutationObserver(() => {
+      document.body.classList.contains('open')
+        ? startTransparencyTypewriter()
+        : stopTransparencyTypewriter();
+    });
+
+    transparencyObserver.observe(document.body, {
+      attributes: true,
+      attributeFilter: ['class']
+    });
+
+    const evidenceCountdown = document.getElementById('evidenceCountdown');
+    let evidenceClockValue = -47;
+    let evidenceClockDirection = -1;
+    let evidenceClockTicks = 0;
+
+    function formatEvidenceClock(value) {
+      const absolute = Math.abs(value);
+      const hours = String(Math.floor(absolute / 3600)).padStart(2, '0');
+      const minutes = String(Math.floor((absolute % 3600) / 60)).padStart(2, '0');
+      const seconds = String(absolute % 60).padStart(2, '0');
+      return `T ${value < 0 ? '−' : '+'} ${hours}:${minutes}:${seconds}`;
+    }
+
+    function scrambleEvidenceClock() {
+      evidenceClockTicks += 1;
+
+      if (evidenceClockTicks % 29 === 0 || Math.random() < 0.055) {
+        evidenceClockDirection *= -1;
+      }
+
+      if (evidenceClockTicks % 71 === 0 || Math.random() < 0.025) {
+        evidenceClockValue = Math.floor(Math.random() * 1801) - 900;
+      } else {
+        evidenceClockValue += evidenceClockDirection * (1 + Math.floor(Math.random() * 8));
+      }
+
+      if (Math.abs(evidenceClockValue) > 3599) {
+        evidenceClockValue = Math.floor(Math.random() * 241) - 120;
+        evidenceClockDirection *= -1;
+      }
+
+      const display = formatEvidenceClock(evidenceClockValue);
+      evidenceCountdown.textContent = display;
+      evidenceCountdown.dataset.text = display;
+    }
+
+    scrambleEvidenceClock();
+    setInterval(scrambleEvidenceClock, 173);
+
+    const landingIntro = document.getElementById('landingIntro');
+    const landingIntroText = document.getElementById('landingIntroText');
+    const landingIntroCopy = "Okay, the system is rigged, but we know how to fix it.";
+    let landingIntroPlayer = null;
+    let landingIntroFinished = false;
+    let landingIntroTypeIndex = 0;
+    let landingIntroTypeTimer = null;
+    let landingIntroEndTimer = null;
+
+    function typeLandingIntro() {
+      landingIntroText.textContent = landingIntroCopy.slice(0, landingIntroTypeIndex);
+      if (landingIntroTypeIndex < landingIntroCopy.length) {
+        landingIntroTypeIndex += 1;
+        landingIntroTypeTimer = setTimeout(typeLandingIntro, 58);
+      }
+    }
+
+    function finishLandingIntro() {
+      if (landingIntroFinished) return;
+      landingIntroFinished = true;
+      clearTimeout(landingIntroTypeTimer);
+      clearTimeout(landingIntroEndTimer);
+
+      try {
+        landingIntroPlayer?.stopVideo();
+      } catch (_) {}
+
+      landingIntro.classList.add('is-leaving');
+      setTimeout(() => landingIntro.remove(), 850);
+    }
+
+    window.onYouTubeIframeAPIReady = function () {
+      if (landingIntroFinished) return;
+      landingIntroPlayer = new YT.Player('landingIntroPlayer', {
+        videoId: 'X1aFkAkFASk',
+        playerVars: {
+          autoplay: 1,
+          controls: 1,
+          disablekb: 0,
+          fs: 1,
+          playsinline: 1,
+          rel: 0,
+          start: 68,
+          origin: window.location.origin
+        },
+        events: {
+          onReady: event => {
+            event.target.mute();
+            event.target.seekTo(68, true);
+            event.target.playVideo();
+            typeLandingIntro();
+            landingIntroEndTimer = setTimeout(finishLandingIntro, 65000);
+          },
+          onStateChange: event => {
+            if (event.data === YT.PlayerState.ENDED) {
+              finishLandingIntro();
+            }
+          },
+          onError: finishLandingIntro
+        }
+      });
+    };
+
+    const landingIntroApi = document.createElement('script');
+    landingIntroApi.src = 'https://www.youtube.com/iframe_api';
+    landingIntroApi.async = true;
+    document.head.appendChild(landingIntroApi);
+
+    setTimeout(() => {
+      if (!landingIntroPlayer) finishLandingIntro();
+    }, 12000);
+  </script>
+  <script src="assets/strike-sequence.js"></script>
+  <script src="assets/responsive-layout.js"></script>
+  <script src="assets/soundtrack.js"></script>
+</body>
+</html>

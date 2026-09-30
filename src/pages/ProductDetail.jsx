@@ -2,10 +2,14 @@ import { useMemo, useState } from 'react';
 import ListingHeader from '../components/listing/ListingHeader.jsx';
 import MediaGallery from '../components/listing/MediaGallery.jsx';
 import OptionSelector from '../components/listing/OptionSelector.jsx';
-import { ProductPurchasePanel } from '../components/listing/PurchasePanel.jsx';
+import ProductPurchasePanel from '../components/store/ProductPurchasePanel.jsx';
 import DetailAccordion from '../components/listing/DetailAccordion.jsx';
 import RelatedListings from '../components/listing/RelatedListings.jsx';
-import { products } from '../data/products.js';
+import {
+  calculateProductUnitPrice,
+  products,
+  statusLabel,
+} from '../data/products.js';
 
 export default function ProductDetail({ product, addToCart, navigate }) {
   const initialSelections = Object.fromEntries(
@@ -19,22 +23,28 @@ export default function ProductDetail({ product, addToCart, navigate }) {
   const [mediaIndex, setMediaIndex] = useState(0);
   const [notice, setNotice] = useState('');
 
-  const computedPrice = useMemo(() => product.optionGroups.reduce((total, group) => {
-    const option = group.options.find((item) => item.id === selections[group.id]);
-    return total + (option?.priceModifier || 0);
-  }, product.price), [product, selections]);
+  const computedPrice = useMemo(
+    () => calculateProductUnitPrice(product, selections),
+    [product, selections],
+  );
 
   const onOptionChange = (group, option) => {
     setSelections((current) => ({ ...current, [group.id]: option.id }));
     if (Number.isInteger(option.mediaIndex)) setMediaIndex(option.mediaIndex);
   };
 
+  const fulfillmentText = product.fulfillment.type === 'digital'
+    ? 'Digital-delivery architecture is reserved, but automatic file delivery is not implemented.'
+    : product.fulfillment.shippingRequired
+      ? 'Shipping details are collected by Square-hosted checkout when enabled for a sellable physical product. Penny\'s Garage does not calculate postage in this stage.'
+      : 'No shipping workflow is attached to this non-sale reference listing.';
+
   const details = [
     { title: 'About This Item', content: product.details },
-    { title: 'Specifications', content: ['Demonstration listing only', 'No production inventory connected'] },
-    { title: 'Fulfillment / Shipping', content: product.fulfillment.summary },
-    { title: 'Returns', content: 'Not applicable to this demonstration listing.' },
-    { title: 'Care / Requirements', content: 'No real commercial item is being sold in this stage.' },
+    { title: 'Status', content: statusLabel(product.status) },
+    { title: 'Fulfillment / Shipping', content: fulfillmentText },
+    { title: 'Tax', content: 'Penny\'s Garage does not calculate custom tax in this stage.' },
+    { title: 'Payment', content: 'When sellable inventory is Owner-approved and Square is configured, card details are entered only on Square-hosted checkout.' },
   ];
 
   return (
@@ -42,7 +52,7 @@ export default function ProductDetail({ product, addToCart, navigate }) {
       <div className="detail-grid">
         <MediaGallery media={product.media} requestedIndex={mediaIndex} />
         <div className="detail-info">
-          <ListingHeader eyebrow="GARAGE FIND // DEMO LISTING" name={product.name} subtitle={product.subtitle} tags={product.tags} />
+          <ListingHeader eyebrow="PARTS CAGE // PRODUCT LISTING" name={product.name} subtitle={product.subtitle} tags={product.tags} />
           <p>{product.description}</p>
           <OptionSelector groups={product.optionGroups} selections={selections} onChange={onOptionChange} />
           <ProductPurchasePanel
@@ -52,8 +62,12 @@ export default function ProductDetail({ product, addToCart, navigate }) {
             selections={selections}
             computedPrice={computedPrice}
             onAdd={() => {
-              addToCart({ product, quantity, selections });
-              setNotice(quantity + ' demo item' + (quantity === 1 ? '' : 's') + ' added to local cart.');
+              addToCart({ productId: product.id, quantity, selections });
+              setNotice(
+                product.status === 'demo'
+                  ? 'Reference configuration added to cart. It remains ineligible for checkout.'
+                  : quantity + ' item' + (quantity === 1 ? '' : 's') + ' added to cart.',
+              );
             }}
           />
           {notice && <p className="inline-notice" role="status">{notice}</p>}

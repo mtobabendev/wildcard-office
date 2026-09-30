@@ -6,21 +6,20 @@ export default function Merchandise({ navigate }) {
   return (
     <section className="section-shell page-shell">
       <header className="page-heading">
-        <p className="eyebrow">PARTS CAGE // STOREFRONT SHELL</p>
+        <p className="eyebrow">PARTS CAGE // GARAGE STOCK</p>
         <h1>Merchandise</h1>
-        <p>WildCard gear, digital goods, garage finds, and experimental items will live here after approval.</p>
+        <p>Production-capable catalog mechanics for future Owner-approved Garage stock. No real product, price, or inventory is invented here.</p>
       </header>
-
-      <div className="filter-reserve" aria-label="Reserved future filtering controls">
-        <span>SEARCH / FILTER BAY</span>
-        <span>Reserved for a later stage</span>
-      </div>
 
       <div className="collection-grid">
         {products.map((product) => <ProductCard key={product.id} product={product} navigate={navigate} />)}
       </div>
 
-      <GarageLink href="/cart" navigate={navigate} className="text-link">Open demo cart →</GarageLink>
+      <div className="cta-panel">
+        <p className="eyebrow">CART BAY</p>
+        <h2>Review configured items before checkout.</h2>
+        <GarageLink href="/cart" navigate={navigate} className="button button-secondary">Open Cart</GarageLink>
+      </div>
     </section>
   );
 }

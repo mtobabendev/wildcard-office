@@ -4,6 +4,8 @@
     { "source": "/merch/:path*", "destination": "/index.html" },
     { "source": "/evidence", "destination": "/index.html" },
     { "source": "/quote", "destination": "/index.html" },
-    { "source": "/cart", "destination": "/index.html" }
+    { "source": "/cart", "destination": "/index.html" },
+    { "source": "/order/success", "destination": "/index.html" },
+    { "source": "/order/cancel", "destination": "/index.html" }
   ]
 }

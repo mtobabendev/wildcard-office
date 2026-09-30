@@ -1,20 +1,4 @@
 import GarageLink from '../layout/GarageLink.jsx';
-import QuantityControl from './QuantityControl.jsx';
-
-export function ProductPurchasePanel({ product, quantity, setQuantity, selections, computedPrice, onAdd }) {
-  return (
-    <aside className="purchase-panel" aria-label="Demo purchase controls">
-      <p className="panel-kicker">PARTS CAGE // DEMO CONTROLS</p>
-      <p className="price-line">DEMO {'$'}{computedPrice.toFixed(2)}</p>
-      {product.compareAtPrice && <p className="compare-price">DEMO {'$'}{product.compareAtPrice.toFixed(2)}</p>}
-      <p className="availability"><span aria-hidden="true">●</span> {product.status}</p>
-      <QuantityControl quantity={quantity} onChange={setQuantity} />
-      <button type="button" className="button button-primary full-width" onClick={onAdd}>Add Demo Item to Cart</button>
-      <p className="fine-print">Local demo state only. No checkout, payment, shipping, tax, or inventory service exists.</p>
-      <SelectedOptions selections={selections} groups={product.optionGroups} />
-    </aside>
-  );
-}
 
 export function ServiceActionPanel({ service, selections, navigate }) {
   const params = new URLSearchParams({ service: service.slug });

@@ -9,6 +9,7 @@ import QuoteRequest from './pages/QuoteRequest.jsx';
 import Cart from './pages/Cart.jsx';
 import ProductDetail from './pages/ProductDetail.jsx';
 import ServiceDetail from './pages/ServiceDetail.jsx';
+import SecondChance from './pages/SecondChance.jsx';
 import OrderReturn from './pages/OrderReturn.jsx';
 import NotFound from './pages/NotFound.jsx';
 import {
@@ -29,6 +30,7 @@ function routeFor(pathname) {
   if (pathname === '/evidence') return { type: 'evidence' };
   if (pathname === '/quote') return { type: 'quote' };
   if (pathname === '/cart') return { type: 'cart' };
+  if (pathname === '/second-chance') return { type: 'second-chance' };
   if (pathname === '/order/success') return { type: 'order-success' };
   if (pathname === '/order/cancel') return { type: 'order-cancel' };
 
@@ -137,6 +139,9 @@ export default function App() {
       break;
     case 'cart':
       page = <Cart cart={cart} updateQuantity={updateQuantity} removeFromCart={removeFromCart} navigate={navigate} />;
+      break;
+    case 'second-chance':
+      page = <SecondChance navigate={navigate} />;
       break;
     case 'order-success':
       page = <OrderReturn mode="success" navigate={navigate} />;

@@ -2,10 +2,12 @@ import GarageHero from '../components/garage/GarageHero.jsx';
 import PennyTerminal from '../components/garage/PennyTerminal.jsx';
 import GarageLink from '../components/layout/GarageLink.jsx';
 import ServiceCard from '../components/services/ServiceCard.jsx';
+import StartupPricing from '../components/services/StartupPricing.jsx';
 import ProductCard from '../components/store/ProductCard.jsx';
 import EvidenceCard from '../components/evidence/EvidenceCard.jsx';
 import { services } from '../data/services.js';
 import { products } from '../data/products.js';
+import { secondChanceProgram } from '../data/founderProgram.js';
 
 const workbench = ['Web & App Builds', 'Repair / Remediation', 'Linux & Raspberry Pi', 'Automation', 'Custom Weirdness'];
 
@@ -13,6 +15,17 @@ export default function Garage({ navigate }) {
   return (
     <>
       <GarageHero navigate={navigate} />
+
+      <section className="section-shell second-chance-feature" aria-labelledby="second-chance-home-heading">
+        <p className="eyebrow">SECOND CHANCE // OPEN BAY</p>
+        <h2 id="second-chance-home-heading">{secondChanceProgram.headline}</h2>
+        <p className="feature-line">{secondChanceProgram.supportingLine}</p>
+        <p>{secondChanceProgram.founderContext}</p>
+        <div className="hero-actions">
+          <GarageLink href="/second-chance" navigate={navigate} className="button button-primary">Build the Next Thing</GarageLink>
+          <GarageLink href="/quote?secondChanceProgram=yes" navigate={navigate} className="button button-secondary">Start a Work Order</GarageLink>
+        </div>
+      </section>
 
       <section className="section-shell" aria-labelledby="workbench-heading">
         <div className="section-heading">
@@ -24,18 +37,22 @@ export default function Garage({ navigate }) {
             <article key={item} className="workbench-module">
               <span className="module-index">0{index + 1}</span>
               <h3>{item}</h3>
-              <p>Future service bay. No public pricing assigned in this stage.</p>
+              <p>Real work is scoped before it begins. Open Services for current pricing and intake paths.</p>
             </article>
           ))}
         </div>
         <GarageLink href="/services" navigate={navigate} className="text-link">Open all work orders →</GarageLink>
       </section>
 
+      <section className="section-shell">
+        <StartupPricing navigate={navigate} />
+      </section>
+
       <section className="section-shell split-section" aria-labelledby="parts-heading">
         <div>
           <p className="eyebrow">PARTS CAGE</p>
-          <h2 id="parts-heading">Merchandise shell</h2>
-          <p>One controlled demo listing proves the mechanics without inventing a catalog.</p>
+          <h2 id="parts-heading">Garage stock architecture</h2>
+          <p>Reference merchandise proves the catalog mechanics without inventing products or prices.</p>
           <GarageLink href="/merch" navigate={navigate} className="text-link">Enter the parts cage →</GarageLink>
         </div>
         <ProductCard product={products[0]} navigate={navigate} />

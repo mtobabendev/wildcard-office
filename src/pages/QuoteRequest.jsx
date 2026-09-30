@@ -14,6 +14,13 @@ const engagementOptions = [
   ['consultation', 'Consultation'],
 ];
 
+const secondChanceOptions = [
+  ['', 'No selection'],
+  ['yes', 'Yes'],
+  ['no', 'No'],
+  ['private', 'Prefer to discuss privately'],
+];
+
 const fieldLimits = {
   name: 120,
   email: 254,
@@ -22,6 +29,7 @@ const fieldLimits = {
   platform: 160,
   urgency: 60,
   engagement: 80,
+  secondChanceProgram: 20,
   project: 500,
   problem: 3000,
   outcome: 3000,
@@ -32,6 +40,7 @@ const fieldLimits = {
 
 function initialForm() {
   const params = new URLSearchParams(window.location.search);
+  const requestedSecondChance = params.get('secondChanceProgram');
   return {
     name: '',
     email: '',
@@ -40,6 +49,7 @@ function initialForm() {
     platform: params.get('platform') || '',
     urgency: params.get('urgency') || 'standard',
     engagement: params.get('engagement') || '',
+    secondChanceProgram: ['yes', 'no', 'private'].includes(requestedSecondChance) ? requestedSecondChance : '',
     project: '',
     problem: '',
     outcome: '',
@@ -61,6 +71,10 @@ function validate(values) {
 
   if (values.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(values.email)) {
     errors.email = 'Enter a valid email address.';
+  }
+
+  if (values.secondChanceProgram && !['yes', 'no', 'private'].includes(values.secondChanceProgram)) {
+    errors.secondChanceProgram = 'Choose one of the available options.';
   }
 
   Object.entries(fieldLimits).forEach(([field, max]) => {
@@ -179,6 +193,21 @@ export default function QuoteRequest() {
             <option value="">Not sure yet</option>
             {engagementOptions.map(([value, label]) => <option key={value} value={value}>{label}</option>)}
           </select>
+        </label>
+
+        <label className="full-field">
+          Would you like to be considered for Second-Chance / RISE pricing?
+          <select
+            name="secondChanceProgram"
+            value={form.secondChanceProgram}
+            onChange={update}
+            aria-invalid={Boolean(errors.secondChanceProgram)}
+            aria-describedby={errors.secondChanceProgram ? 'second-chance-error' : 'second-chance-help'}
+          >
+            {secondChanceOptions.map(([value, label]) => <option key={value || 'none'} value={value}>{label}</option>)}
+          </select>
+          <span id="second-chance-help" className="fine-print">Optional. You do not need to explain your criminal history to ask about the program.</span>
+          {errors.secondChanceProgram && <span id="second-chance-error" className="field-error">{errors.secondChanceProgram}</span>}
         </label>
 
         <Field label="What are we fixing or building?" name="project" required value={form.project} onChange={update} error={errors.project} />

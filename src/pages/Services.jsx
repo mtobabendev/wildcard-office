@@ -1,6 +1,8 @@
 import ServiceCard from '../components/services/ServiceCard.jsx';
 import GarageLink from '../components/layout/GarageLink.jsx';
+import StartupPricing from '../components/services/StartupPricing.jsx';
 import { services } from '../data/services.js';
+import { secondChanceProgram } from '../data/founderProgram.js';
 
 const categories = ['Web & App Builds', 'Repair / Remediation', 'Linux & Raspberry Pi', 'Automation', 'Troubleshooting', 'Custom Weirdness'];
 
@@ -20,6 +22,16 @@ export default function Services({ navigate }) {
       <div className="collection-grid">
         {services.map((service) => <ServiceCard key={service.id} service={service} navigate={navigate} />)}
       </div>
+
+      <StartupPricing navigate={navigate} />
+
+      <section className="second-chance-service-panel" aria-labelledby="second-chance-service-heading">
+        <p className="eyebrow">SECOND-CHANCE FOUNDER PROGRAM</p>
+        <h2 id="second-chance-service-heading">{secondChanceProgram.headline}</h2>
+        <p>{secondChanceProgram.supportingLine}</p>
+        <p>RISE graduates and justice-impacted founders are welcome to ask about case-by-case sliding-scale consideration, reduced deposits, milestone structures, and limited sponsored-build capacity.</p>
+        <GarageLink href="/second-chance" navigate={navigate} className="button button-secondary">Ask About Second-Chance Pricing</GarageLink>
+      </section>
 
       <div className="cta-panel">
         <p className="eyebrow">ODD PROBLEM?</p>

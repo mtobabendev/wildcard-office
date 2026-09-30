@@ -9,6 +9,7 @@ const limits = {
   platform: 160,
   urgency: 60,
   engagement: 80,
+  secondChanceProgram: 20,
   project: 500,
   problem: 3000,
   outcome: 3000,
@@ -25,6 +26,12 @@ const serviceNames = new Map([
   ['automation-integration', 'Automation & Integration'],
   ['technical-troubleshooting', 'Technical Troubleshooting'],
   ['custom-weirdness', 'Custom Weirdness'],
+]);
+
+const secondChanceLabels = new Map([
+  ['yes', 'Yes'],
+  ['no', 'No'],
+  ['private', 'Prefer to discuss privately'],
 ]);
 
 const allowedServices = new Set(serviceNames.keys());
@@ -51,6 +58,10 @@ function validate(body) {
 
   if (body.service && !allowedServices.has(text(body.service))) {
     errors.service = 'Unknown service.';
+  }
+
+  if (body.secondChanceProgram && !secondChanceLabels.has(text(body.secondChanceProgram))) {
+    errors.secondChanceProgram = 'Invalid program preference.';
   }
 
   for (const [field, max] of Object.entries(limits)) {
@@ -80,6 +91,7 @@ function formatWorkOrder(payload) {
     formatLine('Platform / device', payload.platformDevice),
     formatLine('Urgency', payload.urgency),
     formatLine('Engagement', payload.engagement),
+    formatLine('SECOND-CHANCE PROGRAM', payload.secondChanceProgramLabel),
     '',
     'PROJECT / BUILD SUMMARY',
     payload.projectSummary || '—',
@@ -140,6 +152,7 @@ export default async function handler(request, response) {
   }
 
   const serviceSlug = text(body.service);
+  const secondChanceProgram = text(body.secondChanceProgram);
   const payload = {
     timestamp: new Date().toISOString(),
     recipient,
@@ -151,6 +164,8 @@ export default async function handler(request, response) {
     platformDevice: text(body.platform),
     urgency: text(body.urgency),
     engagement: text(body.engagement),
+    secondChanceProgram,
+    secondChanceProgramLabel: secondChanceLabels.get(secondChanceProgram) || 'Not specified',
     projectSummary: text(body.project),
     currentProblem: text(body.problem),
     desiredOutcome: text(body.outcome),

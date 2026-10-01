@@ -4,6 +4,9 @@ import GarageFooter from './components/layout/GarageFooter.jsx';
 import Garage from './pages/Garage.jsx';
 import Services from './pages/Services.jsx';
 import Merchandise from './pages/Merchandise.jsx';
+import Marketplace from './pages/Marketplace.jsx';
+import MarketplaceServiceDetail from './pages/MarketplaceServiceDetail.jsx';
+import MarketplaceMerchDetail from './pages/MarketplaceMerchDetail.jsx';
 import EvidenceLocker from './pages/EvidenceLocker.jsx';
 import QuoteRequest from './pages/QuoteRequest.jsx';
 import Cart from './pages/Cart.jsx';
@@ -19,6 +22,7 @@ import {
   validateSelections,
 } from './data/products.js';
 import { services } from './data/services.js';
+import { getHostedMerch, getHostedService } from './data/marketplace.js';
 
 const CART_STORAGE_KEY = 'penny-garage-cart-v1';
 const MAX_CART_QUANTITY = 25;
@@ -27,12 +31,19 @@ function routeFor(pathname) {
   if (pathname === '/') return { type: 'garage' };
   if (pathname === '/services') return { type: 'services' };
   if (pathname === '/merch') return { type: 'merch' };
+  if (pathname === '/marketplace') return { type: 'marketplace' };
   if (pathname === '/evidence') return { type: 'evidence' };
   if (pathname === '/quote') return { type: 'quote' };
   if (pathname === '/cart') return { type: 'cart' };
   if (pathname === '/second-chance') return { type: 'second-chance' };
   if (pathname === '/order/success') return { type: 'order-success' };
   if (pathname === '/order/cancel') return { type: 'order-cancel' };
+
+  const marketServiceMatch = pathname.match(/^\/marketplace\/services\/([^/]+)$/);
+  if (marketServiceMatch) return { type: 'market-service', slug: decodeURIComponent(marketServiceMatch[1]) };
+
+  const marketMerchMatch = pathname.match(/^\/marketplace\/merch\/([^/]+)$/);
+  if (marketMerchMatch) return { type: 'market-merch', slug: decodeURIComponent(marketMerchMatch[1]) };
 
   const merchMatch = pathname.match(/^\/merch\/([^/]+)$/);
   if (merchMatch) return { type: 'product', slug: decodeURIComponent(merchMatch[1]) };
@@ -131,6 +142,9 @@ export default function App() {
     case 'merch':
       page = <Merchandise navigate={navigate} />;
       break;
+    case 'marketplace':
+      page = <Marketplace navigate={navigate} />;
+      break;
     case 'evidence':
       page = <EvidenceLocker navigate={navigate} />;
       break;
@@ -149,6 +163,20 @@ export default function App() {
     case 'order-cancel':
       page = <OrderReturn mode="cancel" navigate={navigate} />;
       break;
+    case 'market-service': {
+      const listing = getHostedService(route.slug);
+      page = listing
+        ? <MarketplaceServiceDetail listing={listing} />
+        : <NotFound navigate={navigate} eyebrow="FOUNDER MARKETPLACE // SERVICE NOT FOUND" />;
+      break;
+    }
+    case 'market-merch': {
+      const listing = getHostedMerch(route.slug);
+      page = listing
+        ? <MarketplaceMerchDetail listing={listing} />
+        : <NotFound navigate={navigate} eyebrow="FOUNDER MARKETPLACE // MERCH NOT FOUND" />;
+      break;
+    }
     case 'product': {
       const product = products.find((item) => item.slug === route.slug);
       page = product

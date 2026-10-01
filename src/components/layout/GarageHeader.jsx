@@ -4,6 +4,7 @@ const navItems = [
   ['/', 'Garage'],
   ['/services', 'Services'],
   ['/merch', 'Merch'],
+  ['/marketplace', 'Market'],
   ['/evidence', 'Evidence'],
   ['/quote', 'Quote'],
 ];

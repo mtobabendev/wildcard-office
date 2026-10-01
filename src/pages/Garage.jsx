@@ -5,6 +5,7 @@ import ServiceCard from '../components/services/ServiceCard.jsx';
 import StartupPricing from '../components/services/StartupPricing.jsx';
 import ProductCard from '../components/store/ProductCard.jsx';
 import EvidenceCard from '../components/evidence/EvidenceCard.jsx';
+import SuitBadge from '../components/store/SuitBadge.jsx';
 import { services } from '../data/services.js';
 import { products } from '../data/products.js';
 import { secondChanceProgram } from '../data/founderProgram.js';
@@ -15,6 +16,22 @@ export default function Garage({ navigate }) {
   return (
     <>
       <GarageHero navigate={navigate} />
+
+      <section className="section-shell marketplace-garage-feature" aria-labelledby="marketplace-home-heading">
+        <div>
+          <p className="eyebrow">FOUNDER MARKETPLACE // OPEN BAY</p>
+          <h2 id="marketplace-home-heading">Not everything in the Garage belongs to us.</h2>
+          <p>Some of it belongs to people building their own thing. Browse independent hosted services and hosted merchandise without mixing provider payments into WildCard's checkout.</p>
+          <div className="hero-actions">
+            <GarageLink href="/marketplace" navigate={navigate} className="button button-primary">Open Founder Marketplace</GarageLink>
+            <GarageLink href="/quote?marketplace=listing" navigate={navigate} className="button button-secondary">Ask About Listing Your Business</GarageLink>
+          </div>
+        </div>
+        <div className="marketplace-suit-pair" aria-label="Marketplace listing types">
+          <SuitBadge suit="heart" label="Hosted Service" />
+          <SuitBadge suit="diamond" label="Hosted Merch" />
+        </div>
+      </section>
 
       <section className="section-shell second-chance-feature" aria-labelledby="second-chance-home-heading">
         <p className="eyebrow">SECOND CHANCE // OPEN BAY</p>

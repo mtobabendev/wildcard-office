@@ -32,6 +32,14 @@ export default function MarketplaceServiceDetail({ listing }) {
           {listing.serviceArea && <p><strong>Service area:</strong> {listing.serviceArea}</p>}
           {(listing.priceText || listing.startingPrice) && <p className="marketplace-price">{listing.priceText || listing.startingPrice}</p>}
 
+          {(listing.contact?.email || listing.contact?.phone) && (
+            <div className="provider-credentials">
+              <strong>Provider contact information</strong>
+              {listing.contact.email && <p>Email: {listing.contact.email}</p>}
+              {listing.contact.phone && <p>Phone: {listing.contact.phone}</p>}
+            </div>
+          )}
+
           {(listing.credentials?.licenseText || listing.credentials?.certificationText) && (
             <div className="provider-credentials">
               <strong>Provider-supplied credential information</strong>
@@ -44,8 +52,6 @@ export default function MarketplaceServiceDetail({ listing }) {
             <ProviderLink href={listing.booking?.bookingUrl} className="button button-primary">Book with Provider</ProviderLink>
             <ProviderLink href={listing.booking?.paymentUrl}>Pay Provider</ProviderLink>
             <ProviderLink href={listing.contact?.website}>Provider Website</ProviderLink>
-            {listing.contact?.email && <a className="button button-secondary" href={'mailto:' + listing.contact.email}>Contact Provider</a>}
-            {listing.contact?.phone && <a className="button button-secondary" href={'tel:' + listing.contact.phone}>Call Provider</a>}
           </div>
 
           <div className="marketplace-disclosure">

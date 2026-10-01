@@ -9,7 +9,7 @@ export default function OrderReturn({ mode, navigate }) {
       <h1>{success ? 'Back from Square.' : 'Checkout interrupted.'}</h1>
       <p>
         {success
-          ? 'Square returned you to Penny\'s Garage. Payment confirmation is being verified. This page alone does not prove that payment completed.'
+          ? 'Square returned you to Penny\'s Garage. Payment status has not yet been independently verified. This return page alone does not prove that payment completed.'
           : 'No payment completion is claimed here. Your local cart may still be available if you return to it.'}
       </p>
       <div className="hero-actions">

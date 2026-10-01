@@ -1,15 +1,23 @@
 import SuitBadge from './SuitBadge.jsx';
 
+const suitIcons = {
+  spade: '♠',
+  diamond: '♦',
+  heart: '♥',
+  club: '♣',
+};
+
 export default function WildCardCardFrame({
-  suit = 'spade',
-  label = 'WildCard Merch',
+  suit,
+  label = 'Unclassified Listing',
   status,
   children,
   className = '',
   as = 'div',
 }) {
   const Tag = as;
-  const suitIcon = { spade: '♠', diamond: '♦', heart: '♥', club: '♣' }[suit] || '♠';
+  const validSuit = Boolean(suit && suitIcons[suit]);
+  const suitIcon = validSuit ? suitIcons[suit] : '◇';
 
   return (
     <Tag className={'wildcard-card-frame ' + className}>
@@ -26,7 +34,14 @@ export default function WildCardCardFrame({
       </div>
 
       <div className="card-frame-meta">
-        <SuitBadge suit={suit} label={label} compact />
+        {validSuit ? (
+          <SuitBadge suit={suit} label={label} compact />
+        ) : (
+          <span className="suit-badge is-compact" aria-label={label}>
+            <span className="suit-icon" aria-hidden="true">◇</span>
+            <span>{label}</span>
+          </span>
+        )}
         {status && <span className="card-status-label">{status}</span>}
       </div>
     </Tag>

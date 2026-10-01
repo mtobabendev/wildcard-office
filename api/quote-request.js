@@ -1,7 +1,10 @@
 const DEFAULT_RECIPIENT = 'matt@wildcarddev.com';
 const MIN_SUBMISSION_MS = 1500;
+const SERVICE_REQUEST = 'service-quote';
+const MARKETPLACE_REQUEST = 'marketplace-listing';
 
 const limits = {
+  requestType: 40,
   name: 120,
   email: 254,
   phone: 60,
@@ -35,6 +38,7 @@ const secondChanceLabels = new Map([
 ]);
 
 const allowedServices = new Set(serviceNames.keys());
+const allowedRequestTypes = new Set([SERVICE_REQUEST, MARKETPLACE_REQUEST]);
 
 function text(value) {
   return typeof value === 'string' ? value.trim() : '';
@@ -44,9 +48,22 @@ function singleLine(value) {
   return text(value).replace(/[\r\n]+/g, ' ');
 }
 
+function requestType(body) {
+  return text(body.requestType) || SERVICE_REQUEST;
+}
+
 function validate(body) {
   const errors = {};
-  const required = ['name', 'email', 'service', 'urgency', 'project', 'outcome'];
+  const type = requestType(body);
+
+  if (!allowedRequestTypes.has(type)) {
+    errors.requestType = 'Invalid request type.';
+    return errors;
+  }
+
+  const required = type === MARKETPLACE_REQUEST
+    ? ['name', 'email', 'project', 'outcome']
+    : ['name', 'email', 'service', 'urgency', 'project', 'outcome'];
 
   for (const field of required) {
     if (!text(body[field])) errors[field] = 'Required.';
@@ -56,20 +73,22 @@ function validate(body) {
     errors.email = 'Invalid email.';
   }
 
-  if (body.service && !allowedServices.has(text(body.service))) {
-    errors.service = 'Unknown service.';
-  }
+  if (type === SERVICE_REQUEST) {
+    if (body.service && !allowedServices.has(text(body.service))) {
+      errors.service = 'Unknown service.';
+    }
 
-  if (body.secondChanceProgram && !secondChanceLabels.has(text(body.secondChanceProgram))) {
-    errors.secondChanceProgram = 'Invalid program preference.';
+    if (body.secondChanceProgram && !secondChanceLabels.has(text(body.secondChanceProgram))) {
+      errors.secondChanceProgram = 'Invalid program preference.';
+    }
+
+    if (['repair-remediation', 'technical-troubleshooting'].includes(text(body.service)) && !text(body.problem)) {
+      errors.problem = 'Required for repair/troubleshooting requests.';
+    }
   }
 
   for (const [field, max] of Object.entries(limits)) {
     if (text(body[field]).length > max) errors[field] = 'Too long.';
-  }
-
-  if (['repair-remediation', 'technical-troubleshooting'].includes(text(body.service)) && !text(body.problem)) {
-    errors.problem = 'Required for repair/troubleshooting requests.';
   }
 
   return errors;
@@ -114,6 +133,31 @@ function formatWorkOrder(payload) {
   ].join('\n');
 }
 
+function formatMarketplaceInquiry(payload) {
+  return [
+    'PENNY\'S GARAGE — FOUNDER MARKETPLACE LISTING INQUIRY',
+    '',
+    formatLine('Timestamp', payload.timestamp),
+    formatLine('Name', payload.name),
+    formatLine('Email', payload.email),
+    formatLine('Phone', payload.phone),
+    formatLine('Current website / booking / shop platform', payload.platformDevice),
+    '',
+    'BUSINESS / LISTING SUMMARY',
+    payload.projectSummary || '—',
+    '',
+    'CUSTOMER ACTION / DESIRED LISTING OUTCOME',
+    payload.desiredOutcome || '—',
+    '',
+    'BUSINESS / LISTING DETAILS',
+    payload.additionalDetails || '—',
+    '',
+    formatLine('Source path', payload.sourcePath),
+    '',
+    'This inquiry starts Owner review only. It does not create or publish a provider listing.',
+  ].join('\n');
+}
+
 export default async function handler(request, response) {
   if (request.method !== 'POST') {
     response.setHeader('Allow', 'POST');
@@ -151,9 +195,11 @@ export default async function handler(request, response) {
     });
   }
 
-  const serviceSlug = text(body.service);
-  const secondChanceProgram = text(body.secondChanceProgram);
+  const type = requestType(body);
+  const serviceSlug = type === SERVICE_REQUEST ? text(body.service) : '';
+  const secondChanceProgram = type === SERVICE_REQUEST ? text(body.secondChanceProgram) : '';
   const payload = {
+    requestType: type,
     timestamp: new Date().toISOString(),
     recipient,
     name: text(body.name),
@@ -162,21 +208,23 @@ export default async function handler(request, response) {
     service: serviceSlug,
     serviceName: serviceNames.get(serviceSlug),
     platformDevice: text(body.platform),
-    urgency: text(body.urgency),
-    engagement: text(body.engagement),
+    urgency: type === SERVICE_REQUEST ? text(body.urgency) : '',
+    engagement: type === SERVICE_REQUEST ? text(body.engagement) : '',
     secondChanceProgram,
     secondChanceProgramLabel: secondChanceLabels.get(secondChanceProgram) || 'Not specified',
     projectSummary: text(body.project),
-    currentProblem: text(body.problem),
+    currentProblem: type === SERVICE_REQUEST ? text(body.problem) : '',
     desiredOutcome: text(body.outcome),
-    budget: text(body.budget),
-    targetDate: text(body.deadline),
+    budget: type === SERVICE_REQUEST ? text(body.budget) : '',
+    targetDate: type === SERVICE_REQUEST ? text(body.deadline) : '',
     additionalDetails: text(body.details),
     sourcePath: text(body.sourcePath),
   };
 
-  const subject = '[PENNY\'S GARAGE] Quote Request — ' +
-    singleLine(payload.serviceName) + ' — ' + singleLine(payload.name);
+  const subject = type === MARKETPLACE_REQUEST
+    ? '[PENNY\'S GARAGE] Marketplace Listing Inquiry — ' + singleLine(payload.name)
+    : '[PENNY\'S GARAGE] Quote Request — ' +
+      singleLine(payload.serviceName) + ' — ' + singleLine(payload.name);
 
   try {
     const resendResponse = await fetch('https://api.resend.com/emails', {
@@ -190,7 +238,9 @@ export default async function handler(request, response) {
         to: [recipient],
         reply_to: payload.email,
         subject,
-        text: formatWorkOrder(payload),
+        text: type === MARKETPLACE_REQUEST
+          ? formatMarketplaceInquiry(payload)
+          : formatWorkOrder(payload),
       }),
     });
 

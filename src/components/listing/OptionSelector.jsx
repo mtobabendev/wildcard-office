@@ -1,3 +1,5 @@
+import { formatMoney } from '../../data/products.js';
+
 export default function OptionSelector({ groups, selections, onChange }) {
   if (!groups?.length) return null;
 
@@ -9,6 +11,12 @@ export default function OptionSelector({ groups, selections, onChange }) {
           <div className="option-grid">
             {group.options.map((option) => {
               const selected = selections[group.id] === option.id;
+              const modifier = Number.isInteger(option.priceModifier) && option.priceModifier !== 0
+                ? (option.priceModifier > 0
+                    ? '+' + formatMoney(option.priceModifier)
+                    : formatMoney(option.priceModifier))
+                : null;
+
               return (
                 <button
                   type="button"
@@ -19,9 +27,7 @@ export default function OptionSelector({ groups, selections, onChange }) {
                   aria-pressed={selected}
                 >
                   <span>{option.label}</span>
-                  {option.priceModifier !== 0 && (
-                    <small>{option.priceModifier > 0 ? '+' : '-'}{'$'}{Math.abs(option.priceModifier).toFixed(2)} DEMO</small>
-                  )}
+                  {modifier && <small>{modifier}</small>}
                   {option.description && <small>{option.description}</small>}
                   {!option.available && <small>Unavailable</small>}
                 </button>

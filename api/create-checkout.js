@@ -22,22 +22,18 @@ function squareBaseUrl(environment) {
   return null;
 }
 
-function returnOrigin(request) {
+function returnOrigin() {
   const configured = text(process.env.CHECKOUT_RETURN_ORIGIN);
-  if (configured) {
-    try {
-      const url = new URL(configured);
-      if (['http:', 'https:'].includes(url.protocol)) return url.origin;
-    } catch {
-      return null;
-    }
+  if (!configured) return null;
+
+  try {
+    const url = new URL(configured);
+    if (!['http:', 'https:'].includes(url.protocol)) return null;
+    if (url.username || url.password) return null;
+    return url.origin;
+  } catch {
     return null;
   }
-
-  const host = text(request.headers['x-forwarded-host'] || request.headers.host);
-  const protocol = text(request.headers['x-forwarded-proto']) || 'https';
-  if (!host || !['http', 'https'].includes(protocol)) return null;
-  return protocol + '://' + host;
 }
 
 function safeProviderCode(value) {
@@ -67,7 +63,7 @@ export default async function handler(request, response) {
   const locationId = text(process.env.SQUARE_LOCATION_ID);
   const environment = text(process.env.SQUARE_ENVIRONMENT).toLowerCase();
   const baseUrl = squareBaseUrl(environment);
-  const origin = returnOrigin(request);
+  const origin = returnOrigin();
 
   if (!accessToken || !locationId || !baseUrl || !origin) {
     console.error('Square checkout configuration missing or invalid:', {

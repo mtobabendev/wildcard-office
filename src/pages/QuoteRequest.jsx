@@ -22,6 +22,7 @@ const secondChanceOptions = [
 ];
 
 const fieldLimits = {
+  requestType: 40,
   name: 120,
   email: 254,
   phone: 60,
@@ -40,16 +41,21 @@ const fieldLimits = {
 
 function initialForm() {
   const params = new URLSearchParams(window.location.search);
+  const marketplaceListing = params.get('marketplace') === 'listing';
   const requestedSecondChance = params.get('secondChanceProgram');
+
   return {
+    requestType: marketplaceListing ? 'marketplace-listing' : 'service-quote',
     name: '',
     email: '',
     phone: '',
-    service: params.get('service') || '',
+    service: marketplaceListing ? '' : (params.get('service') || ''),
     platform: params.get('platform') || '',
-    urgency: params.get('urgency') || 'standard',
-    engagement: params.get('engagement') || '',
-    secondChanceProgram: ['yes', 'no', 'private'].includes(requestedSecondChance) ? requestedSecondChance : '',
+    urgency: marketplaceListing ? '' : (params.get('urgency') || 'standard'),
+    engagement: marketplaceListing ? '' : (params.get('engagement') || ''),
+    secondChanceProgram: marketplaceListing
+      ? ''
+      : (['yes', 'no', 'private'].includes(requestedSecondChance) ? requestedSecondChance : ''),
     project: '',
     problem: '',
     outcome: '',
@@ -63,17 +69,24 @@ function initialForm() {
 
 function validate(values) {
   const errors = {};
-  const required = ['name', 'email', 'service', 'urgency', 'project', 'outcome'];
+  const marketplaceListing = values.requestType === 'marketplace-listing';
+  const required = marketplaceListing
+    ? ['name', 'email', 'project', 'outcome']
+    : ['name', 'email', 'service', 'urgency', 'project', 'outcome'];
 
   required.forEach((field) => {
     if (!String(values[field] || '').trim()) errors[field] = 'Required.';
   });
 
+  if (!['service-quote', 'marketplace-listing'].includes(values.requestType)) {
+    errors.requestType = 'Invalid request type.';
+  }
+
   if (values.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(values.email)) {
     errors.email = 'Enter a valid email address.';
   }
 
-  if (values.secondChanceProgram && !['yes', 'no', 'private'].includes(values.secondChanceProgram)) {
+  if (!marketplaceListing && values.secondChanceProgram && !['yes', 'no', 'private'].includes(values.secondChanceProgram)) {
     errors.secondChanceProgram = 'Choose one of the available options.';
   }
 
@@ -83,7 +96,8 @@ function validate(values) {
     }
   });
 
-  const repairStyle = ['repair-remediation', 'technical-troubleshooting'].includes(values.service);
+  const repairStyle = !marketplaceListing &&
+    ['repair-remediation', 'technical-troubleshooting'].includes(values.service);
   if (repairStyle && !String(values.problem || '').trim()) {
     errors.problem = 'Describe the current problem for repair or troubleshooting work.';
   }
@@ -95,6 +109,7 @@ export default function QuoteRequest() {
   const [form, setForm] = useState(initialForm);
   const [errors, setErrors] = useState({});
   const [status, setStatus] = useState({ type: 'idle', message: '' });
+  const marketplaceListing = form.requestType === 'marketplace-listing';
 
   const selectedService = useMemo(
     () => services.find((service) => service.slug === form.service),
@@ -117,7 +132,10 @@ export default function QuoteRequest() {
       return;
     }
 
-    setStatus({ type: 'submitting', message: 'Sending work order…' });
+    setStatus({
+      type: 'submitting',
+      message: marketplaceListing ? 'Sending listing inquiry…' : 'Sending work order…',
+    });
 
     try {
       const response = await fetch('/api/quote-request', {
@@ -132,12 +150,14 @@ export default function QuoteRequest() {
       const data = await response.json().catch(() => ({}));
 
       if (!response.ok) {
-        throw new Error(data.error || 'The work order could not be delivered.');
+        throw new Error(data.error || 'The request could not be delivered.');
       }
 
       setStatus({
         type: 'success',
-        message: 'WORK ORDER RECEIVED. Penny has your problem on the bench. We’ll review the request before any work, payment, or commitment begins.',
+        message: marketplaceListing
+          ? 'LISTING INQUIRY RECEIVED. Penny has it on the bench for Owner review. No listing, payment, or provider account has been created.'
+          : 'WORK ORDER RECEIVED. Penny has your problem on the bench. We’ll review the request before any work, payment, or commitment begins.',
       });
     } catch (error) {
       setStatus({
@@ -150,12 +170,24 @@ export default function QuoteRequest() {
   return (
     <section className="section-shell page-shell quote-page">
       <header className="page-heading">
-        <p className="eyebrow">INTAKE TERMINAL // WORK ORDER REQUEST</p>
-        <h1>Quote Request</h1>
-        <p>Tell the garage what wandered in. Intake is a request only. Scope and pricing must be agreed before work begins, and submitting this form does not create a charge.</p>
+        <p className="eyebrow">
+          {marketplaceListing ? 'FOUNDER MARKETPLACE // LISTING INQUIRY' : 'INTAKE TERMINAL // WORK ORDER REQUEST'}
+        </p>
+        <h1>{marketplaceListing ? 'Ask About Listing Your Business' : 'Quote Request'}</h1>
+        <p>
+          {marketplaceListing
+            ? 'Tell us what you want to list and how customers should reach or buy from you. This starts Owner review only. It does not create a provider account or publish a listing.'
+            : 'Tell the garage what wandered in. Intake is a request only. Scope and pricing must be agreed before work begins, and submitting this form does not create a charge.'}
+        </p>
       </header>
 
-      {selectedService && (
+      {marketplaceListing ? (
+        <div className="quote-context" aria-label="Founder Marketplace listing inquiry">
+          <span className="panel-kicker">REQUEST TYPE</span>
+          <strong>Founder Marketplace listing inquiry</strong>
+          <span>Independent provider review only</span>
+        </div>
+      ) : selectedService && (
         <div className="quote-context" aria-label="Selected service context">
           <span className="panel-kicker">SELECTED SERVICE</span>
           <strong>{selectedService.name}</strong>
@@ -168,55 +200,95 @@ export default function QuoteRequest() {
         <Field label="Email" name="email" type="email" required value={form.email} onChange={update} error={errors.email} autoComplete="email" />
         <Field label="Phone" name="phone" type="tel" value={form.phone} onChange={update} error={errors.phone} autoComplete="tel" />
 
-        <label>
-          Service <span aria-hidden="true">*</span>
-          <select name="service" required value={form.service} onChange={update} aria-invalid={Boolean(errors.service)} aria-describedby={errors.service ? 'service-error' : undefined}>
-            <option value="">Choose a service</option>
-            {services.map((service) => <option key={service.id} value={service.slug}>{service.name}</option>)}
-          </select>
-          {errors.service && <span id="service-error" className="field-error">{errors.service}</span>}
-        </label>
+        {!marketplaceListing && (
+          <>
+            <label>
+              Service <span aria-hidden="true">*</span>
+              <select name="service" required value={form.service} onChange={update} aria-invalid={Boolean(errors.service)} aria-describedby={errors.service ? 'service-error' : undefined}>
+                <option value="">Choose a service</option>
+                {services.map((service) => <option key={service.id} value={service.slug}>{service.name}</option>)}
+              </select>
+              {errors.service && <span id="service-error" className="field-error">{errors.service}</span>}
+            </label>
 
-        <Field label="Platform / device" name="platform" value={form.platform} onChange={update} error={errors.platform} placeholder="Website, Linux, Raspberry Pi, Android, Windows, mixed…" />
+            <Field label="Platform / device" name="platform" value={form.platform} onChange={update} error={errors.platform} placeholder="Website, Linux, Raspberry Pi, Android, Windows, mixed…" />
 
-        <label>
-          Urgency <span aria-hidden="true">*</span>
-          <select name="urgency" required value={form.urgency} onChange={update} aria-invalid={Boolean(errors.urgency)} aria-describedby={errors.urgency ? 'urgency-error' : undefined}>
-            {urgencyOptions.map(([value, label]) => <option key={value} value={value}>{label}</option>)}
-          </select>
-          {errors.urgency && <span id="urgency-error" className="field-error">{errors.urgency}</span>}
-        </label>
+            <label>
+              Urgency <span aria-hidden="true">*</span>
+              <select name="urgency" required value={form.urgency} onChange={update} aria-invalid={Boolean(errors.urgency)} aria-describedby={errors.urgency ? 'urgency-error' : undefined}>
+                {urgencyOptions.map(([value, label]) => <option key={value} value={value}>{label}</option>)}
+              </select>
+              {errors.urgency && <span id="urgency-error" className="field-error">{errors.urgency}</span>}
+            </label>
 
-        <label>
-          Engagement
-          <select name="engagement" value={form.engagement} onChange={update}>
-            <option value="">Not sure yet</option>
-            {engagementOptions.map(([value, label]) => <option key={value} value={value}>{label}</option>)}
-          </select>
-        </label>
+            <label>
+              Engagement
+              <select name="engagement" value={form.engagement} onChange={update}>
+                <option value="">Not sure yet</option>
+                {engagementOptions.map(([value, label]) => <option key={value} value={value}>{label}</option>)}
+              </select>
+            </label>
 
-        <label className="full-field">
-          Would you like to be considered for Second-Chance / RISE pricing?
-          <select
-            name="secondChanceProgram"
-            value={form.secondChanceProgram}
+            <label className="full-field">
+              Would you like to be considered for Second-Chance / RISE pricing?
+              <select
+                name="secondChanceProgram"
+                value={form.secondChanceProgram}
+                onChange={update}
+                aria-invalid={Boolean(errors.secondChanceProgram)}
+                aria-describedby={errors.secondChanceProgram ? 'second-chance-error' : 'second-chance-help'}
+              >
+                {secondChanceOptions.map(([value, label]) => <option key={value || 'none'} value={value}>{label}</option>)}
+              </select>
+              <span id="second-chance-help" className="fine-print">Optional. You do not need to explain your criminal history to ask about the program.</span>
+              {errors.secondChanceProgram && <span id="second-chance-error" className="field-error">{errors.secondChanceProgram}</span>}
+            </label>
+          </>
+        )}
+
+        {marketplaceListing && (
+          <Field
+            label="Current website / booking / shop platform"
+            name="platform"
+            value={form.platform}
             onChange={update}
-            aria-invalid={Boolean(errors.secondChanceProgram)}
-            aria-describedby={errors.secondChanceProgram ? 'second-chance-error' : 'second-chance-help'}
-          >
-            {secondChanceOptions.map(([value, label]) => <option key={value || 'none'} value={value}>{label}</option>)}
-          </select>
-          <span id="second-chance-help" className="fine-print">Optional. You do not need to explain your criminal history to ask about the program.</span>
-          {errors.secondChanceProgram && <span id="second-chance-error" className="field-error">{errors.secondChanceProgram}</span>}
-        </label>
+            error={errors.platform}
+            placeholder="Optional — website, Square, booking page, Etsy, other…"
+          />
+        )}
 
-        <Field label="What are we fixing or building?" name="project" required value={form.project} onChange={update} error={errors.project} />
-        <Field label="Budget range" name="budget" value={form.budget} onChange={update} error={errors.budget} />
-        <Field label="Deadline / target date" name="deadline" value={form.deadline} onChange={update} error={errors.deadline} />
+        <Field
+          label={marketplaceListing ? 'What business, service, or product would you like to list?' : 'What are we fixing or building?'}
+          name="project"
+          required
+          value={form.project}
+          onChange={update}
+          error={errors.project}
+        />
 
-        <TextField label="What happened / current problem?" name="problem" value={form.problem} onChange={update} error={errors.problem} />
-        <TextField label="Desired outcome" name="outcome" required value={form.outcome} onChange={update} error={errors.outcome} />
-        <TextField label="Additional details" name="details" value={form.details} onChange={update} error={errors.details} />
+        {!marketplaceListing && (
+          <>
+            <Field label="Budget range" name="budget" value={form.budget} onChange={update} error={errors.budget} />
+            <Field label="Deadline / target date" name="deadline" value={form.deadline} onChange={update} error={errors.deadline} />
+            <TextField label="What happened / current problem?" name="problem" value={form.problem} onChange={update} error={errors.problem} />
+          </>
+        )}
+
+        <TextField
+          label={marketplaceListing ? 'What should customers be able to do from your listing?' : 'Desired outcome'}
+          name="outcome"
+          required
+          value={form.outcome}
+          onChange={update}
+          error={errors.outcome}
+        />
+        <TextField
+          label={marketplaceListing ? 'Business / listing details' : 'Additional details'}
+          name="details"
+          value={form.details}
+          onChange={update}
+          error={errors.details}
+        />
 
         <label className="honeypot" aria-hidden="true">
           Company website
@@ -230,9 +302,15 @@ export default function QuoteRequest() {
 
         <div className="full-field">
           <button type="submit" className="button button-primary" disabled={status.type === 'submitting'}>
-            {status.type === 'submitting' ? 'Sending…' : 'Submit Work Order Request'}
+            {status.type === 'submitting'
+              ? (marketplaceListing ? 'Sending Inquiry…' : 'Sending…')
+              : (marketplaceListing ? 'Submit Listing Inquiry' : 'Submit Work Order Request')}
           </button>
-          <p className="fine-print">Requests are reviewed before any work, payment, or commitment begins.</p>
+          <p className="fine-print">
+            {marketplaceListing
+              ? 'Marketplace inquiries are reviewed before any provider listing is created or published.'
+              : 'Requests are reviewed before any work, payment, or commitment begins.'}
+          </p>
           {status.message && (
             <p className={'form-status ' + status.type} role="status" aria-live="polite">{status.message}</p>
           )}

@@ -1,21 +1,17 @@
 import { useRef, useState } from 'react';
 
-const ROTATE_X_MIN = -20;
-const ROTATE_X_MAX = 20;
-const ROTATE_Y_MIN = -35;
-const ROTATE_Y_MAX = 35;
 const DRAG_YAW_SENSITIVITY = 0.16;
 const DRAG_TILT_SENSITIVITY = 0.12;
 const KEYBOARD_STEP = 5;
 
-function clamp(value, min, max) {
-  return Math.min(max, Math.max(min, value));
+function normalizeVisualAngle(value) {
+  return ((value + 180) % 360 + 360) % 360 - 180;
 }
 
 export default function RotatableCardSurface({
   children,
   className = '',
-  ariaLabel = 'Interactive merchandise card. Drag to tilt and rotate. Use arrow keys to inspect angles.',
+  ariaLabel = 'Interactive merchandise card. Drag to rotate through full front, back, and edge views. Use arrow keys to inspect angles.',
   disabled = false,
   resetLabel = 'RESET VIEW',
 }) {
@@ -46,8 +42,8 @@ export default function RotatableCardSurface({
     const deltaY = event.clientY - start.y;
 
     setRotation({
-      x: clamp(start.rotateX - deltaY * DRAG_TILT_SENSITIVITY, ROTATE_X_MIN, ROTATE_X_MAX),
-      y: clamp(start.rotateY + deltaX * DRAG_YAW_SENSITIVITY, ROTATE_Y_MIN, ROTATE_Y_MAX),
+      x: start.rotateX - deltaY * DRAG_TILT_SENSITIVITY,
+      y: start.rotateY + deltaX * DRAG_YAW_SENSITIVITY,
     });
   };
 
@@ -66,12 +62,8 @@ export default function RotatableCardSurface({
     if (disabled) return;
 
     setRotation((current) => ({
-      x: axis === 'x'
-        ? clamp(current.x + amount, ROTATE_X_MIN, ROTATE_X_MAX)
-        : current.x,
-      y: axis === 'y'
-        ? clamp(current.y + amount, ROTATE_Y_MIN, ROTATE_Y_MAX)
-        : current.y,
+      x: axis === 'x' ? current.x + amount : current.x,
+      y: axis === 'y' ? current.y + amount : current.y,
     }));
   };
 
@@ -93,8 +85,11 @@ export default function RotatableCardSurface({
   };
 
   const resetView = () => setRotation({ x: 0, y: 0 });
-  const shadowX = Math.round(rotation.y * -0.45);
-  const shadowY = Math.round(18 + rotation.x * 0.35);
+
+  const visualX = normalizeVisualAngle(rotation.x);
+  const visualY = normalizeVisualAngle(rotation.y);
+  const shadowX = Math.round(Math.sin((visualY * Math.PI) / 180) * -16);
+  const shadowY = Math.round(18 + Math.sin((visualX * Math.PI) / 180) * 8);
 
   return (
     <div className={'rotatable-card-surface ' + className}>
@@ -120,8 +115,20 @@ export default function RotatableCardSurface({
           onPointerCancel={pointerUp}
           onKeyDown={keyDown}
         >
-          <div className="rotatable-card-depth" aria-hidden="true" />
-          <div className="rotatable-card-front">{children}</div>
+          <div className="rotatable-card-face rotatable-card-front">{children}</div>
+
+          <div className="rotatable-card-face rotatable-card-back" aria-hidden="true">
+            <div className="rotatable-card-back-inner">
+              <span className="rotatable-card-back-mark">♠</span>
+              <strong>WILDCARD DEV</strong>
+              <span>PENNY'S GARAGE</span>
+            </div>
+          </div>
+
+          <div className="rotatable-card-edge rotatable-card-edge-left" aria-hidden="true" />
+          <div className="rotatable-card-edge rotatable-card-edge-right" aria-hidden="true" />
+          <div className="rotatable-card-edge rotatable-card-edge-top" aria-hidden="true" />
+          <div className="rotatable-card-edge rotatable-card-edge-bottom" aria-hidden="true" />
         </div>
       </div>
 

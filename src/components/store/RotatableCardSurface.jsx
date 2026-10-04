@@ -1,7 +1,7 @@
 import { useRef, useState } from 'react';
 
-const DRAG_YAW_SENSITIVITY = 0.16;
-const DRAG_TILT_SENSITIVITY = 0.12;
+const DRAG_YAW_SENSITIVITY = 1.0;
+const DRAG_TILT_SENSITIVITY = 1.0;
 const KEYBOARD_STEP = 5;
 
 function normalizeVisualAngle(value) {

@@ -1,9 +1,15 @@
 export const startupPricing = [
   {
-    id: 'starter-build',
-    name: 'Starter Build',
+    id: 'launch-build',
+    name: 'Launch Build',
+    priceLabel: 'Starting at $995',
+    description: 'A polished responsive one-page business presence with custom branding, service/content sections, lead/contact presentation, mobile optimization, basic SEO/meta setup, deployment, and a focused revision scope.',
+  },
+  {
+    id: 'enhanced-build',
+    name: 'Enhanced Build',
     priceLabel: 'Starting at $1,500',
-    description: 'A focused launch path for landing pages, simple business websites, small service sites, lean startup launches, and limited custom functionality.',
+    description: 'Everything in the Launch Build plus premium interactive presentation, custom motion, richer service navigation, enhanced visual storytelling, and bespoke front-end effects.',
   },
   {
     id: 'custom-commerce',

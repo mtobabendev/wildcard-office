@@ -62,6 +62,8 @@
   --card-rotate-y:0deg;
   --card-shadow-x:0px;
   --card-shadow-y:18px;
+  --card-depth:16px;
+  --card-half-depth:8px;
   position:relative;
   width:100%;
   margin-inline:auto;
@@ -79,22 +81,79 @@
 .rotatable-card-object.is-grabbing { cursor:grabbing; transition:none; }
 .rotatable-card-object.is-disabled { cursor:default; }
 .rotatable-card-object:focus-visible { outline:2px solid var(--acid); outline-offset:8px; }
-.rotatable-card-front { position:relative; z-index:2; transform:translateZ(8px); backface-visibility:hidden; }
-.rotatable-card-depth {
+.rotatable-card-face {
+  backface-visibility:hidden;
+  -webkit-backface-visibility:hidden;
+}
+.rotatable-card-front {
+  position:relative;
+  z-index:2;
+  transform:translateZ(var(--card-half-depth));
+}
+.rotatable-card-back {
   position:absolute;
   z-index:1;
   inset:0;
+  display:grid;
+  place-items:center;
+  overflow:hidden;
   border:1px solid rgba(230,235,242,.48);
   border-radius:28px;
-  background:
-    linear-gradient(90deg,rgba(91,101,116,.95),rgba(230,235,242,.78) 40%,rgba(91,101,116,.9)),
-    linear-gradient(160deg,#11151d,#07080c 72%);
-  box-shadow:inset 0 0 0 2px rgba(255,255,255,.06);
-  transform:translateZ(-8px);
-  backface-visibility:hidden;
+  background:#080a0f;
+  transform:rotateY(180deg) translateZ(var(--card-half-depth));
   pointer-events:none;
 }
-.rotatable-card-depth::before { content:""; position:absolute; inset:9px; border:1px solid rgba(143,92,255,.22); border-radius:21px; }
+.rotatable-card-back-image {
+  width:100%;
+  height:100%;
+  object-fit:contain;
+  background:#080a0f;
+}
+.rotatable-card-back-fallback {
+  display:grid;
+  place-items:center;
+  width:100%;
+  height:100%;
+  background:linear-gradient(145deg,rgba(255,62,165,.12),rgba(143,92,255,.08)),#090b11;
+  color:var(--magenta);
+  font-size:clamp(2rem,8vw,5rem);
+}
+.rotatable-card-edge {
+  position:absolute;
+  z-index:3;
+  background:linear-gradient(90deg,rgba(75,82,94,.98),rgba(238,242,248,.92) 45%,rgba(102,110,124,.98));
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.14);
+  backface-visibility:visible;
+  pointer-events:none;
+}
+.rotatable-card-edge-left,
+.rotatable-card-edge-right {
+  top:0;
+  width:var(--card-depth);
+  height:100%;
+}
+.rotatable-card-edge-left {
+  left:calc(var(--card-half-depth) * -1);
+  transform:rotateY(90deg);
+}
+.rotatable-card-edge-right {
+  right:calc(var(--card-half-depth) * -1);
+  transform:rotateY(90deg);
+}
+.rotatable-card-edge-top,
+.rotatable-card-edge-bottom {
+  left:0;
+  width:100%;
+  height:var(--card-depth);
+}
+.rotatable-card-edge-top {
+  top:calc(var(--card-half-depth) * -1);
+  transform:rotateX(90deg);
+}
+.rotatable-card-edge-bottom {
+  bottom:calc(var(--card-half-depth) * -1);
+  transform:rotateX(90deg);
+}
 .rotatable-card-reset-row { display:flex; justify-content:flex-start; margin-top:.65rem; }
 .viewer-reset,.viewer-frame-button {
   min-height:44px;
@@ -120,6 +179,8 @@
 .viewer-card .wildcard-card-body { height:100%; }
 .viewer-face-media { position:relative; display:grid; place-items:center; width:100%; height:100%; min-height:440px; padding:4.2rem 2.5rem; overflow:hidden; }
 .viewer-face-media img { width:100%; height:100%; object-fit:contain; pointer-events:none; }
+.viewer-secondary-frame { display:grid; place-items:center; width:min(150px,42vw); aspect-ratio:5/7; margin:.75rem auto 0; padding:.35rem; border:1px solid var(--border); border-radius:16px; background:var(--charcoal-950); }
+.viewer-secondary-frame img { width:100%; height:100%; object-fit:contain; border-radius:12px; }
 .viewer-frame-controls { display:flex; align-items:center; gap:.5rem; }
 .viewer-frame-controls-standalone { justify-content:center; margin-top:.65rem; }
 .frame-counter { position:static; min-width:58px; padding:.35rem .5rem; border-radius:999px; background:rgba(7,8,12,.82); color:var(--silver); font-size:.7rem; text-align:center; }
@@ -158,7 +219,7 @@
   .rotatable-card-perspective { padding:.5rem .35rem .75rem; }
   .viewer-rotatable-card .rotatable-card-object { width:100%; }
   .viewer-card { border-radius:22px; }
-  .rotatable-card-depth { border-radius:22px; }
+  .rotatable-card-back { border-radius:22px; }
   .viewer-face-media { min-height:360px; padding:3.8rem 1.4rem; }
   .viewer-frame-controls { display:grid; grid-template-columns:1fr auto 1fr; width:100%; }
   .viewer-frame-button { width:100%; }

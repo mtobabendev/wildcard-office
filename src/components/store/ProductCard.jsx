@@ -4,15 +4,24 @@ import SuitBadge from './SuitBadge.jsx';
 import WildCardCardFrame from './WildCardCardFrame.jsx';
 import { formatMoney, statusLabel } from '../../data/products.js';
 
+const PENNY_FRONT = '/assets/products/penny-pillow/PennyMerchFront.png';
+const PENNY_BACK = '/assets/products/penny-pillow/PennyMerchBack.png';
+
 export default function ProductCard({ product, navigate }) {
   const price = formatMoney(product.basePrice, product.currency);
-  const primaryImage = product.viewer?.mainFrames?.[0] || product.media?.[0];
+  const fallbackImage = product.viewer?.mainFrames?.[0] || product.media?.[0];
+  const isPennyDemo = product.id === 'demo-product';
+  const primaryImage = isPennyDemo
+    ? { src: PENNY_FRONT, alt: 'Penny merchandise front view' }
+    : fallbackImage;
 
   return (
     <div className="product-card-rotation-wrap">
       <RotatableCardSurface
         className="catalog-card-rotator"
-        ariaLabel={'Interactive merchandise card for ' + product.name + '. Drag to tilt and rotate. Use arrow keys to inspect angles.'}
+        backSrc={isPennyDemo ? PENNY_BACK : undefined}
+        backAlt="Penny merchandise rear view"
+        ariaLabel={'Interactive merchandise object for ' + product.name + '. Drag to rotate through full front, back, and edge views. Use arrow keys to inspect angles.'}
       >
         <WildCardCardFrame
           as="article"
@@ -42,7 +51,7 @@ export default function ProductCard({ product, navigate }) {
         </WildCardCardFrame>
       </RotatableCardSurface>
 
-      <p className="product-card-rotate-hint">GRAB CARD TO TILT · ARROW KEYS TO ROTATE</p>
+      <p className="product-card-rotate-hint">GRAB CARD TO SPIN · ARROW KEYS TO ROTATE</p>
     </div>
   );
 }

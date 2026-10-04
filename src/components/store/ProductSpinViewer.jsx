@@ -64,6 +64,10 @@ export default function ProductSpinViewer({
   label,
   status,
   requestedIndex = 0,
+  physicalFrontSrc,
+  physicalFrontAlt,
+  physicalBackSrc,
+  physicalBackAlt,
 }) {
   const frames = useMemo(() => normalizedFrames(viewer, fallbackMedia), [viewer, fallbackMedia]);
   const sideImages = useMemo(() => normalizedSideImages(viewer), [viewer]);
@@ -78,6 +82,10 @@ export default function ProductSpinViewer({
   const hasFrameSequence = viewer?.mode === 'spin-sequence' && currentFrames.length > 1;
   const hasRail = sideImages.length > 0;
   const frame = currentFrames[Math.min(frameIndex, Math.max(0, currentFrames.length - 1))];
+  const physicalFront = physicalFrontSrc
+    ? { src: physicalFrontSrc, alt: physicalFrontAlt || 'Merchandise front view' }
+    : frame;
+  const showSecondaryFrames = Boolean(physicalFrontSrc && hasFrameSequence && frame);
 
   useEffect(() => {
     if (Number.isInteger(requestedIndex) && requestedIndex >= 0 && requestedIndex < frames.length) {
@@ -117,15 +125,17 @@ export default function ProductSpinViewer({
       <div className="viewer-main-column">
         <RotatableCardSurface
           className="viewer-rotatable-card"
-          disabled={!frame}
-          ariaLabel="Interactive merchandise card. Drag to tilt and rotate. Use arrow keys to inspect angles."
+          disabled={!physicalFront}
+          backSrc={physicalBackSrc}
+          backAlt={physicalBackAlt || 'Merchandise back view'}
+          ariaLabel="Interactive merchandise object. Drag to rotate through full front, back, and edge views. Use arrow keys to inspect angles."
         >
           <WildCardCardFrame suit={suit} label={label} status={status} className="viewer-card">
             <div className="viewer-face-media">
-              {frame ? (
+              {physicalFront ? (
                 <img
-                  src={frame.src}
-                  alt={frame.alt || 'Product image'}
+                  src={physicalFront.src}
+                  alt={physicalFront.alt || 'Product image'}
                   draggable="false"
                   loading="eager"
                 />
@@ -135,6 +145,12 @@ export default function ProductSpinViewer({
             </div>
           </WildCardCardFrame>
         </RotatableCardSurface>
+
+        {showSecondaryFrames && (
+          <div className="viewer-secondary-frame" aria-label="Secondary product image sequence">
+            <img src={frame.src} alt={frame.alt || 'Product angle image'} draggable="false" loading="lazy" />
+          </div>
+        )}
 
         {hasFrameSequence && (
           <div className="viewer-frame-controls viewer-frame-controls-standalone" aria-label="Frame sequence media controls">
@@ -151,8 +167,8 @@ export default function ProductSpinViewer({
         )}
 
         <p className="viewer-instruction">
-          GRAB CARD TO TILT · ARROW KEYS TO ROTATE
-          {hasFrameSequence ? ' · IMAGE BUTTONS CHANGE MEDIA' : ''}
+          GRAB CARD TO SPIN · ARROW KEYS TO ROTATE
+          {hasFrameSequence ? ' · IMAGE BUTTONS CHANGE SECONDARY MEDIA' : ''}
         </p>
       </div>
 

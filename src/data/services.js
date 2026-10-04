@@ -45,6 +45,16 @@ export const services = [
     featured: true,
     tags: ['web', 'react', 'pwa', 'frontend', 'full-stack', 'custom'],
     media: [],
+    showroom: {
+      launch: {
+        label: '$995 LAUNCH BUILD',
+        url: 'https://wildcard-showroom-enhanced-1500.vercel.app/launch/',
+      },
+      enhanced: {
+        label: '$1,500 ENHANCED BUILD',
+        url: 'https://wildcard-showroom-enhanced-1500.vercel.app/',
+      },
+    },
     optionGroups: intakeOptions,
     details: ['Architecture matched to the job.', 'Responsive customer-facing or internal interfaces.', 'Deployment and integration planning as scope requires.'],
     process,

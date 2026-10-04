@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import ListingHeader from '../components/listing/ListingHeader.jsx';
 import MediaGallery from '../components/listing/MediaGallery.jsx';
+import ServiceShowroomPreview from '../components/services/ServiceShowroomPreview.jsx';
 import OptionSelector from '../components/listing/OptionSelector.jsx';
 import { ServiceActionPanel } from '../components/listing/PurchasePanel.jsx';
 import DetailAccordion from '../components/listing/DetailAccordion.jsx';
@@ -33,7 +34,11 @@ export default function ServiceDetail({ service, navigate }) {
   return (
     <section className="section-shell detail-page">
       <div className="detail-grid">
-        <MediaGallery media={service.media} requestedIndex={mediaIndex} />
+        {service.showroom ? (
+          <ServiceShowroomPreview showroom={service.showroom} />
+        ) : (
+          <MediaGallery media={service.media} requestedIndex={mediaIndex} />
+        )}
         <div className="detail-info">
           <ListingHeader eyebrow="WORK ORDER // WILDCARD DEV SERVICE" name={service.name} subtitle={service.subtitle} tags={service.tags} />
           <p>{service.description}</p>

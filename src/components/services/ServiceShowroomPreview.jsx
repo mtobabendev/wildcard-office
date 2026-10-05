@@ -13,6 +13,12 @@ const TIER_COPY = {
     description: 'The same foundation with premium motion, interactive presentation, and custom front-end effects.',
     liveLabel: 'VIEW $1,500 LIVE DEMO',
   },
+  commerce: {
+    selectorLabel: '$3,000 COMMERCE',
+    title: 'CUSTOM COMMERCE',
+    description: 'Premium showcase presentation with richer product, package, merchandising, and commerce-style experiences.',
+    liveLabel: 'VIEW $3,000 LIVE DEMO',
+  },
 };
 
 export default function ServiceShowroomPreview({ showroom }) {
@@ -78,6 +84,9 @@ export default function ServiceShowroomPreview({ showroom }) {
         </a>
         <a className="button button-primary" href={showroom.enhanced.url} target="_blank" rel="noopener noreferrer">
           {TIER_COPY.enhanced.liveLabel}
+        </a>
+        <a className="button button-primary" href={showroom.commerce.url} target="_blank" rel="noopener noreferrer">
+          {TIER_COPY.commerce.liveLabel}
         </a>
       </div>
     </section>

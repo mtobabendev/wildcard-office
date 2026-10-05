@@ -4,10 +4,6 @@ const DRAG_YAW_SENSITIVITY = 1.0;
 const DRAG_TILT_SENSITIVITY = 1.0;
 const KEYBOARD_STEP = 5;
 
-function normalizeVisualAngle(value) {
-  return ((value + 180) % 360 + 360) % 360 - 180;
-}
-
 export default function RotatableCardSurface({
   children,
   backFace,
@@ -89,11 +85,6 @@ export default function RotatableCardSurface({
   };
 
   const resetView = () => setRotation({ x: 0, y: 0 });
-  const visualX = normalizeVisualAngle(rotation.x);
-  const visualY = normalizeVisualAngle(rotation.y);
-  const shadowX = Math.round(Math.sin((visualY * Math.PI) / 180) * -16);
-  const shadowY = Math.round(18 + Math.sin((visualX * Math.PI) / 180) * 8);
-
   return (
     <div className={'rotatable-card-surface ' + className}>
       <div className="rotatable-card-perspective">
@@ -109,8 +100,6 @@ export default function RotatableCardSurface({
           style={{
             '--card-rotate-x': rotation.x + 'deg',
             '--card-rotate-y': rotation.y + 'deg',
-            '--card-shadow-x': shadowX + 'px',
-            '--card-shadow-y': shadowY + 'px',
           }}
           onPointerDown={pointerDown}
           onPointerMove={pointerMove}

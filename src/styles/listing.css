@@ -60,8 +60,6 @@
 .rotatable-card-object {
   --card-rotate-x:0deg;
   --card-rotate-y:0deg;
-  --card-shadow-x:0px;
-  --card-shadow-y:18px;
   --card-depth:16px;
   --card-half-depth:8px;
   position:relative;
@@ -74,7 +72,7 @@
   touch-action:pan-y pinch-zoom;
   user-select:none;
   outline:none;
-  transition:transform 160ms ease,filter 160ms ease;
+  transition:transform 160ms ease;
   will-change:transform;
 }
 .rotatable-card-object.is-grabbing { cursor:grabbing; transition:none; }

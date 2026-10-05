@@ -10,6 +10,7 @@ function normalizeVisualAngle(value) {
 
 export default function RotatableCardSurface({
   children,
+  backFace,
   backSrc,
   backAlt = 'Merchandise back view',
   backContent,
@@ -120,27 +121,29 @@ export default function RotatableCardSurface({
           <div className="rotatable-card-face rotatable-card-front">{children}</div>
 
           <div className="rotatable-card-face rotatable-card-back">
-            {backSrc ? (
-              <div className="rotatable-card-back-layout">
-                <div className="rotatable-card-back-media">
-                  <img
-                    className="rotatable-card-back-image"
-                    src={backSrc}
-                    alt={backAlt}
-                    draggable="false"
-                    loading="eager"
-                  />
-                </div>
-                {backContent && (
-                  <div className="rotatable-card-back-copy">
-                    {backContent}
+            {backFace ?? (
+              backSrc ? (
+                <div className="rotatable-card-back-layout">
+                  <div className="rotatable-card-back-media">
+                    <img
+                      className="rotatable-card-back-image"
+                      src={backSrc}
+                      alt={backAlt}
+                      draggable="false"
+                      loading="eager"
+                    />
                   </div>
-                )}
-              </div>
-            ) : (
-              <div className="rotatable-card-back-fallback" aria-hidden="true">
-                <span>♠</span>
-              </div>
+                  {backContent && (
+                    <div className="rotatable-card-back-copy">
+                      {backContent}
+                    </div>
+                  )}
+                </div>
+              ) : (
+                <div className="rotatable-card-back-fallback" aria-hidden="true">
+                  <span>♠</span>
+                </div>
+              )
             )}
           </div>
 

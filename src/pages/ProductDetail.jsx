@@ -68,6 +68,10 @@ export default function ProductDetail({ product, addToCart, navigate }) {
           physicalFrontAlt="Penny merchandise front view"
           physicalBackSrc={isPennyDemo ? PENNY_BACK : undefined}
           physicalBackAlt="Penny merchandise rear view"
+          backTitle={product.name}
+          backSubtitle={product.subtitle}
+          backDescription={product.description}
+          backStatus={statusLabel(product.status)}
         />
 
         <div className="detail-info">

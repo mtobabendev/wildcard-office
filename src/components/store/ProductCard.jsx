@@ -21,6 +21,14 @@ export default function ProductCard({ product, navigate }) {
         className="catalog-card-rotator"
         backSrc={isPennyDemo ? PENNY_BACK : undefined}
         backAlt="Penny merchandise rear view"
+        backContent={isPennyDemo ? (
+          <>
+            <h3>{product.name}</h3>
+            <p className="card-subtitle">{product.subtitle}</p>
+            <p>{product.description}</p>
+            <p className={price ? 'catalog-price' : 'catalog-status'}>{price || statusLabel(product.status)}</p>
+          </>
+        ) : undefined}
         ariaLabel={'Interactive merchandise object for ' + product.name + '. Drag to rotate through full front, back, and edge views. Use arrow keys to inspect angles.'}
       >
         <WildCardCardFrame

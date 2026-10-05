@@ -68,6 +68,10 @@ export default function ProductSpinViewer({
   physicalFrontAlt,
   physicalBackSrc,
   physicalBackAlt,
+  backTitle,
+  backSubtitle,
+  backDescription,
+  backStatus,
 }) {
   const frames = useMemo(() => normalizedFrames(viewer, fallbackMedia), [viewer, fallbackMedia]);
   const sideImages = useMemo(() => normalizedSideImages(viewer), [viewer]);
@@ -128,6 +132,14 @@ export default function ProductSpinViewer({
           disabled={!physicalFront}
           backSrc={physicalBackSrc}
           backAlt={physicalBackAlt || 'Merchandise back view'}
+          backContent={physicalBackSrc ? (
+            <>
+              {backTitle && <h3>{backTitle}</h3>}
+              {backSubtitle && <p className="card-subtitle">{backSubtitle}</p>}
+              {backDescription && <p>{backDescription}</p>}
+              {backStatus && <p className="catalog-status">{backStatus}</p>}
+            </>
+          ) : undefined}
           ariaLabel="Interactive merchandise object. Drag to rotate through full front, back, and edge views. Use arrow keys to inspect angles."
         >
           <WildCardCardFrame suit={suit} label={label} status={status} className="viewer-card">

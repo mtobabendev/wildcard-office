@@ -12,6 +12,7 @@ export default function RotatableCardSurface({
   children,
   backSrc,
   backAlt = 'Merchandise back view',
+  backContent,
   className = '',
   ariaLabel = 'Interactive merchandise card. Drag to rotate through full front, back, and edge views. Use arrow keys to inspect angles.',
   disabled = false,
@@ -120,13 +121,22 @@ export default function RotatableCardSurface({
 
           <div className="rotatable-card-face rotatable-card-back">
             {backSrc ? (
-              <img
-                className="rotatable-card-back-image"
-                src={backSrc}
-                alt={backAlt}
-                draggable="false"
-                loading="eager"
-              />
+              <div className="rotatable-card-back-layout">
+                <div className="rotatable-card-back-media">
+                  <img
+                    className="rotatable-card-back-image"
+                    src={backSrc}
+                    alt={backAlt}
+                    draggable="false"
+                    loading="eager"
+                  />
+                </div>
+                {backContent && (
+                  <div className="rotatable-card-back-copy">
+                    {backContent}
+                  </div>
+                )}
+              </div>
             ) : (
               <div className="rotatable-card-back-fallback" aria-hidden="true">
                 <span>♠</span>

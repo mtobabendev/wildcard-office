@@ -151,13 +151,6 @@ export const products = [
   },
 ];
 
-export const listingSourceSystem = {
-  wildcard: { displaySuit: 'spade', displayLabel: 'WildCard Merch' },
-  'hosted-merch': { displaySuit: 'diamond', displayLabel: 'Hosted Merch' },
-  'hosted-service': { displaySuit: 'heart', displayLabel: 'Hosted Service' },
-  experimental: { displaySuit: 'club', displayLabel: 'Experimental' },
-};
-
 export function getProduct(productId) {
   return products.find((product) => product.id === productId);
 }

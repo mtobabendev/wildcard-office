@@ -21,7 +21,7 @@ function CatalogProductFace({
       suit={product.displaySuit}
       label={product.displayLabel}
       status={statusLabel(product.status)}
-      className="listing-card product-card wildcard-product-card"
+      className="listing-card wildcard-product-card"
     >
       <div className="product-card-heading">
         <SuitBadge suit={product.displaySuit} label={product.displayLabel} />

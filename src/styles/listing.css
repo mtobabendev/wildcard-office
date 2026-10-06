@@ -20,7 +20,6 @@
 .option-button:disabled { cursor: not-allowed; opacity: .45; }
 .purchase-panel { margin-top: var(--space-5); padding: var(--space-5); border: 1px solid var(--border); border-radius: var(--radius-md); background: linear-gradient(145deg,rgba(230,235,242,.06),transparent 35%),var(--surface-raised); box-shadow: var(--glow-pink); }
 .price-line { margin: 0; color: var(--acid); font-size: clamp(1.6rem,4vw,2.4rem); font-weight: 950; }
-.compare-price { margin: 0; color: var(--muted); text-decoration: line-through; }
 .availability { color: var(--acid); font-weight: 800; }
 .quantity-control { display: flex; align-items: center; justify-content: space-between; gap: var(--space-3); margin: var(--space-4) 0; }
 .quantity-control > div { display: grid; grid-template-columns: 44px 52px 44px; align-items: center; }

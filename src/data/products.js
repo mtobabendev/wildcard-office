@@ -20,7 +20,6 @@ export const products = [
         type: 'image',
         src: '/assets/products/penny-pillow/frames/PennyMyPillows01.png',
         alt: 'Penny Pillow 24-frame spin demonstration',
-        poster: '',
       },
     ],
     viewer: {

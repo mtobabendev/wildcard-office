@@ -140,7 +140,6 @@ export const products = [
     fulfillment: {
       type: 'demo',
       shippingRequired: false,
-      digitalDelivery: false,
     },
     details: [
       'Demonstrates production catalog mechanics without representing a real item for sale.',

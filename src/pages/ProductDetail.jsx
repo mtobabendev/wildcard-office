@@ -12,9 +12,6 @@ import {
   statusLabel,
 } from '../data/products.js';
 
-const PENNY_FRONT = '/assets/products/penny-pillow/PennyMerchFront.png';
-const PENNY_BACK = '/assets/products/penny-pillow/PennyMerchBack.png';
-
 export default function ProductDetail({ product, addToCart, navigate }) {
   const initialSelections = Object.fromEntries(
     product.optionGroups
@@ -52,8 +49,6 @@ export default function ProductDetail({ product, addToCart, navigate }) {
     { title: 'Payment', content: 'When sellable inventory is Owner-approved and Square is configured, card details are entered only on Square-hosted checkout.' },
   ];
 
-  const isPennyDemo = product.id === 'demo-product';
-
   return (
     <section className="section-shell detail-page">
       <div className="detail-grid">
@@ -64,9 +59,9 @@ export default function ProductDetail({ product, addToCart, navigate }) {
           label={product.displayLabel}
           status={statusLabel(product.status)}
           requestedIndex={mediaIndex}
-          physicalFrontSrc={isPennyDemo ? PENNY_FRONT : undefined}
+          physicalFrontSrc={product.physicalFaces?.front}
           physicalFrontAlt="Penny merchandise front view"
-          physicalBackSrc={isPennyDemo ? PENNY_BACK : undefined}
+          physicalBackSrc={product.physicalFaces?.back}
           physicalBackAlt="Penny merchandise rear view"
           backTitle={product.name}
           backSubtitle={product.subtitle}

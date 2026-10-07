@@ -4,9 +4,6 @@ import SuitBadge from './SuitBadge.jsx';
 import WildCardCardFrame from './WildCardCardFrame.jsx';
 import { formatMoney, statusLabel } from '../../data/products.js';
 
-const PENNY_FRONT = '/assets/products/penny-pillow/PennyMerchFront.png';
-const PENNY_BACK = '/assets/products/penny-pillow/PennyMerchBack.png';
-
 function CatalogProductFace({
   imageSrc,
   imageAlt,
@@ -50,18 +47,19 @@ function CatalogProductFace({
 export default function ProductCard({ product, navigate }) {
   const price = formatMoney(product.basePrice, product.currency);
   const fallbackImage = product.viewer?.mainFrames?.[0] || product.media?.[0];
-  const isPennyDemo = product.id === 'demo-product';
-  const primaryImage = isPennyDemo
-    ? { src: PENNY_FRONT, alt: 'Penny merchandise front view' }
+  const physicalFront = product.physicalFaces?.front;
+  const physicalBack = product.physicalFaces?.back;
+  const primaryImage = physicalFront
+    ? { src: physicalFront, alt: 'Penny merchandise front view' }
     : fallbackImage;
 
   return (
     <div className="product-card-rotation-wrap">
       <RotatableCardSurface
         className="catalog-card-rotator"
-        backFace={isPennyDemo ? (
+        backFace={physicalBack ? (
           <CatalogProductFace
-            imageSrc={PENNY_BACK}
+            imageSrc={physicalBack}
             imageAlt="Penny merchandise rear view"
             product={product}
             price={price}

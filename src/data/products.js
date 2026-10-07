@@ -15,6 +15,10 @@ export const products = [
     displaySuit: 'spade',
     displayLabel: 'WildCard Merch',
     tags: ['DEMO', 'NOT FOR SALE'],
+    physicalFaces: {
+      front: '/assets/products/penny-pillow/PennyMerchFront.png',
+      back: '/assets/products/penny-pillow/PennyMerchBack.png',
+    },
     media: [
       {
         type: 'image',

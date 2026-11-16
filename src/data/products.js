@@ -22,7 +22,7 @@ export const products = [
     media: [
       {
         type: 'image',
-        src: '/assets/products/penny-pillow/frames/PennyMyPillows01.png',
+        src: '/assets/products/penny-pillow/frames/PennyMyPillows01.webp',
         alt: 'Penny Pillow 24-frame spin demonstration',
       },
     ],
@@ -30,99 +30,99 @@ export const products = [
       mode: 'spin-sequence',
       mainFrames: [
         {
-          src: '/assets/products/penny-pillow/frames/PennyMyPillows01.png',
+          src: '/assets/products/penny-pillow/frames/PennyMyPillows01.webp',
           alt: 'Penny Pillow demo angle 01',
         },
         {
-          src: '/assets/products/penny-pillow/frames/PennyMyPillows02.png',
+          src: '/assets/products/penny-pillow/frames/PennyMyPillows02.webp',
           alt: 'Penny Pillow demo angle 02',
         },
         {
-          src: '/assets/products/penny-pillow/frames/PennyMyPillows03.png',
+          src: '/assets/products/penny-pillow/frames/PennyMyPillows03.webp',
           alt: 'Penny Pillow demo angle 03',
         },
         {
-          src: '/assets/products/penny-pillow/frames/PennyMyPillows04.png',
+          src: '/assets/products/penny-pillow/frames/PennyMyPillows04.webp',
           alt: 'Penny Pillow demo angle 04',
         },
         {
-          src: '/assets/products/penny-pillow/frames/PennyMyPillows05.png',
+          src: '/assets/products/penny-pillow/frames/PennyMyPillows05.webp',
           alt: 'Penny Pillow demo angle 05',
         },
         {
-          src: '/assets/products/penny-pillow/frames/PennyMyPillows06.png',
+          src: '/assets/products/penny-pillow/frames/PennyMyPillows06.webp',
           alt: 'Penny Pillow demo angle 06',
         },
         {
-          src: '/assets/products/penny-pillow/frames/PennyMyPillows07.png',
+          src: '/assets/products/penny-pillow/frames/PennyMyPillows07.webp',
           alt: 'Penny Pillow demo angle 07',
         },
         {
-          src: '/assets/products/penny-pillow/frames/PennyMyPillows08.png',
+          src: '/assets/products/penny-pillow/frames/PennyMyPillows08.webp',
           alt: 'Penny Pillow demo angle 08',
         },
         {
-          src: '/assets/products/penny-pillow/frames/PennyMyPillows09.png',
+          src: '/assets/products/penny-pillow/frames/PennyMyPillows09.webp',
           alt: 'Penny Pillow demo angle 09',
         },
         {
-          src: '/assets/products/penny-pillow/frames/PennyMyPillows10.png',
+          src: '/assets/products/penny-pillow/frames/PennyMyPillows10.webp',
           alt: 'Penny Pillow demo angle 10',
         },
         {
-          src: '/assets/products/penny-pillow/frames/PennyMyPillows11.png',
+          src: '/assets/products/penny-pillow/frames/PennyMyPillows11.webp',
           alt: 'Penny Pillow demo angle 11',
         },
         {
-          src: '/assets/products/penny-pillow/frames/PennyMyPillows12.png',
+          src: '/assets/products/penny-pillow/frames/PennyMyPillows12.webp',
           alt: 'Penny Pillow demo angle 12',
         },
         {
-          src: '/assets/products/penny-pillow/frames/PennyMyPillows13.png',
+          src: '/assets/products/penny-pillow/frames/PennyMyPillows13.webp',
           alt: 'Penny Pillow demo angle 13',
         },
         {
-          src: '/assets/products/penny-pillow/frames/PennyMyPillows14.png',
+          src: '/assets/products/penny-pillow/frames/PennyMyPillows14.webp',
           alt: 'Penny Pillow demo angle 14',
         },
         {
-          src: '/assets/products/penny-pillow/frames/PennyMyPillows15.png',
+          src: '/assets/products/penny-pillow/frames/PennyMyPillows15.webp',
           alt: 'Penny Pillow demo angle 15',
         },
         {
-          src: '/assets/products/penny-pillow/frames/PennyMyPillows16.png',
+          src: '/assets/products/penny-pillow/frames/PennyMyPillows16.webp',
           alt: 'Penny Pillow demo angle 16',
         },
         {
-          src: '/assets/products/penny-pillow/frames/PennyMyPillows17.png',
+          src: '/assets/products/penny-pillow/frames/PennyMyPillows17.webp',
           alt: 'Penny Pillow demo angle 17',
         },
         {
-          src: '/assets/products/penny-pillow/frames/PennyMyPillows18.png',
+          src: '/assets/products/penny-pillow/frames/PennyMyPillows18.webp',
           alt: 'Penny Pillow demo angle 18',
         },
         {
-          src: '/assets/products/penny-pillow/frames/PennyMyPillows19.png',
+          src: '/assets/products/penny-pillow/frames/PennyMyPillows19.webp',
           alt: 'Penny Pillow demo angle 19',
         },
         {
-          src: '/assets/products/penny-pillow/frames/PennyMyPillows20.png',
+          src: '/assets/products/penny-pillow/frames/PennyMyPillows20.webp',
           alt: 'Penny Pillow demo angle 20',
         },
         {
-          src: '/assets/products/penny-pillow/frames/PennyMyPillows21.png',
+          src: '/assets/products/penny-pillow/frames/PennyMyPillows21.webp',
           alt: 'Penny Pillow demo angle 21',
         },
         {
-          src: '/assets/products/penny-pillow/frames/PennyMyPillows22.png',
+          src: '/assets/products/penny-pillow/frames/PennyMyPillows22.webp',
           alt: 'Penny Pillow demo angle 22',
         },
         {
-          src: '/assets/products/penny-pillow/frames/PennyMyPillows23.png',
+          src: '/assets/products/penny-pillow/frames/PennyMyPillows23.webp',
           alt: 'Penny Pillow demo angle 23',
         },
         {
-          src: '/assets/products/penny-pillow/frames/PennyMyPillows24.png',
+          src: '/assets/products/penny-pillow/frames/PennyMyPillows24.webp',
           alt: 'Penny Pillow demo angle 24',
         },
       ],

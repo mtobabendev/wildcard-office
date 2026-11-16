@@ -1,14 +1,55 @@
 {
   "rewrites": [
-    { "source": "/services/:path*", "destination": "/index.html" },
-    { "source": "/merch/:path*", "destination": "/index.html" },
-    { "source": "/marketplace/:path*", "destination": "/index.html" },
-    { "source": "/marketplace", "destination": "/index.html" },
-    { "source": "/evidence", "destination": "/index.html" },
-    { "source": "/quote", "destination": "/index.html" },
-    { "source": "/cart", "destination": "/index.html" },
-    { "source": "/second-chance", "destination": "/index.html" },
-    { "source": "/order/success", "destination": "/index.html" },
-    { "source": "/order/cancel", "destination": "/index.html" }
+    {
+      "source": "/services/:path*",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/merch/:path*",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/marketplace/:path*",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/marketplace",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/evidence",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/quote",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/cart",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/second-chance",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/order/success",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/order/cancel",
+      "destination": "/index.html"
+    }
+  ],
+  "headers": [
+    {
+      "source": "/build-assets/(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=31536000, immutable"
+        }
+      ]
+    }
   ]
 }
